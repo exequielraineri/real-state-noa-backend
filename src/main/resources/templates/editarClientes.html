@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Real State NOA</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <nav>
+            <a th:href="@{/cliente}">Clientes</a>
+            <a th:href="@{/usuario}">Usuario</a>            
+        </nav>
+        <h1>Editar Cliente</h1>
+        <form th:action="@{/cliente/GuardarModificacion}" method="post" th:object="${cliente}">
+            <input type="hidden" th:field="*{id}"/> <!-- Campo oculto para el ID -->
+            <input type="text" placeholder="nombre" th:field="*{nombre}"/>
+            <input type="text" placeholder="apellido" th:field="*{apellido}"/>
+            <input type="text" placeholder="telefono" th:field="*{telefono}"/>
+            <input type="text" placeholder="provincia" th:field="*{provincia}"/>
+            <button type="submit">Guardar</button> 
+            <button th:text="cancelar" th:href="@{/cliente}">cancelar</button>
+        </form>
+    </body>
+</html>

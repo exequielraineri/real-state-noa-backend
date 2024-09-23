@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <main>
+            <nav >
+                <a th:href="@{/cliente}">Clientes</a>
+                <a th:href="@{/usuarios}">Usuarios</a>            
+            </nav>
+            <h1>Usuarios</h1>
+            <h2>Nuevo Usuario</h2>
+            <form th:action="@{/usuario/nuevoUsuario}" method="post" th:object="${usuario}">
+                <select name="Rol">
+                    <option value="Admin">Admin</option>
+                    <option value="Agente">Agente</option>
+                </select>
+                <input type="text" placeholder="nombre" th:field="*{nombre}"/>
+                <input type="text" placeholder="apellido" th:field="*{apellido}"/>
+                <input type="text" placeholder="correo" th:field="*{correo}"/>
+                <input type="text" placeholder="contraseña" th:field="*{contraseña}"/>
+                <input type="text" placeholder="fecha Nacimiento" th:field="*{fechaNacimiento}"/>
+                <input type="text" placeholder="provincia" th:field="*{provincia}"/>
+                <button type="submit">Guardar</button> 
+            </form>
+
+            <h3>Listado</h3>
+            <table>
+                <thead> 
+                    <tr>
+                        <th>Rol</th>  
+                        <th>Nombre</th>                    
+                        <th>Apellido</th> 
+                        <th>Correo</th>  
+                        <th>fecha Registro</th>
+                        <th>fecha nacimiento</th>
+                        <th>Provincia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="usuario : ${listadoUsuario}">
+                        <td th:text="${usuario.rol}"></td>  
+                        <td th:text="${usuario.nombre}"></td>                   
+                        <td th:text="${usuario.apellido}"></td> 
+                        <td th:text="${usuario.correo}"></td> 
+                        <td th:text="${usuario.fechaRegistro}"></td> 
+                        <td th:text="${usuario.fechaNacimiento}"></td> 
+                        <td th:text="${usuario.provincia}"></td> 
+                        <td>
+                        <td>
+                            <a th:href="@{/usuario/eliminar/{id}(id=${usuario.id})}">Eliminar</a>
+                            <a th:href="@{/usuario/editar/{id}(id=${usuario.id})}">Editar</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table> 
+        </main>
+    </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Real State NOA</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <nav >
+            <a th:href="@{/cliente}">Clientes</a>
+            <a th:href="@{/usuario}">Usuarios</a>            
+        </nav>
+        <main>
+            <h1>Cliente</h1>
+            <h2>Nuevo Cliente</h2>
+            <form th:action="@{/cliente/nuevoCliente}" method="post" th:object="${cliente}">
+                <input type="text" placeholder="nombre" th:field="*{nombre}"/>
+                <input type="text" placeholder="apellido" th:field="*{apellido}"/>
+                <input type="text" placeholder="telefono" th:field="*{telefono}"/>
+                <input type="text" placeholder="provincia" th:field="*{provincia}"/>
+                <button type="submit">Guardar</button> 
+            </form>
+
+            <h3>Listado</h3>
+            <table>
+                <thead> 
+                    <tr>
+                        <th>Nombre</th>                    
+                        <th>Apellido</th> 
+                        <th>Fecha Registro</th>
+                        <th>Teléfono</th>
+                        <th>Provincia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cliente : ${listadoCliente}">
+                        <td th:text="${cliente.nombre}"></td>                   
+                        <td th:text="${cliente.apellido}"></td> 
+                        <td th:text="${cliente.fechaRegistro}"></td> 
+                        <td th:text="${cliente.telefono}"></td> 
+                        <td th:text="${cliente.provincia}"></td> 
+                        <td>
+                        <td>
+                            <a th:href="@{/cliente/eliminar/{id}(id=${cliente.id})}">Eliminar</a>
+                            <a th:href="@{/cliente/editar/{id}(id=${cliente.id})}">Editar</a>
+                        </td>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table> 
+        </main>
+    </body>
+</html>
