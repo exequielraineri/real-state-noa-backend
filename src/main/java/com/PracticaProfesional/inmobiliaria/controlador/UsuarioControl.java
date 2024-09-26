@@ -35,6 +35,8 @@ public class UsuarioControl {
     public String cargaUsuario(Model model) {
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("listado_usuario", obtenerUsuario());
+        model.addAttribute("contenido", "users");
+        model.addAttribute("titulo", "Real State | Usuarios");
         return "users";
     }
 
@@ -74,6 +76,7 @@ public class UsuarioControl {
         return "editarUser";
     }
 
+
     @GetMapping("/filtrar")
     public String filtrarUsuario(
             @RequestParam(required = false) String rol,
@@ -99,5 +102,6 @@ public class UsuarioControl {
         model.addAttribute("listado_usuario", obtenerUsuario()); // Obtiene todos los clientes
         return "users"; // Retorna a la plantilla index
     }
+
 
 }

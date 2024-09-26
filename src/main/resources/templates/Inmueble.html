@@ -10,11 +10,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        
+
         <nav >
             <a th:href="@{/cliente}">Clientes</a>
             <a th:href="@{/usuario}">Usuarios</a> 
             <a th:href="@{/inmueble}">Inmuebles</a> 
         </nav>
+        <div th:fragment="fragmento">
         <main>
             <h1>Inmueble</h1>
             <h2>Filtrar Inmueble</h2>
@@ -116,5 +119,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </tbody>
             </table> 
         </main>
+            </div>
     </body>
 </html>
