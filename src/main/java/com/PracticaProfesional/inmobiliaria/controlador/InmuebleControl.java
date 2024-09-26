@@ -40,7 +40,7 @@ public class InmuebleControl {
         model.addAttribute("inmueble", new Inmueble());
         model.addAttribute("cliente", cliServicio.listar());
         model.addAttribute("imagen", new Imagen());
-        model.addAttribute("listdo_inmueble", obtenerInmueble());
+        model.addAttribute("listado_inmueble", obtenerInmueble());
         return "Inmueble";
     }
 
