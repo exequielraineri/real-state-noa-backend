@@ -7,6 +7,7 @@ package com.PracticaProfesional.inmobiliaria.servicios;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.interfaz.InmuebleInterface;
 import com.PracticaProfesional.inmobiliaria.repository.InmuebleInterfaceRepo;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class InmuebleServicios implements InmuebleInterface {
 
     @Override
     public Inmueble guardar(Inmueble inmueble) {
+        inmueble.setFechaRegistro(new Date());
         return repo.save(inmueble);
     }
 
@@ -40,6 +42,9 @@ public class InmuebleServicios implements InmuebleInterface {
     @Override
     public List<Inmueble> listar() {
         return repo.findAll();
+    }
+    public List<Inmueble> listarInmuebles(String tipoinmueble, String ubicacion,String estado){
+        return  repo.filtrarInmuebles(tipoinmueble, ubicacion, estado);
     }
 
 }

@@ -16,6 +16,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <a th:href="@{/usuarios}">Usuarios</a>            
             </nav>
             <h1>Usuarios</h1>
+             <h2>Filtrar Usuarios</h2>
+            <form th:action="@{/usuario/filtrar}" method="get">
+                <input type="text" name="rol" placeholder="Rol" th:value="${rolFiltro}" />
+                <input type="text" name="provincia" placeholder="Provincia" th:value="${provinciaFiltro}" />
+                <button type="submit">Filtrar</button>
+            </form>
+            <form th:action="@{/usuario/listar_todos}" method="get">
+                <button type="submit">Todos</button>
+            </form>
+
             <h2>Nuevo Usuario</h2>
             <form th:action="@{/usuario/nuevo_usuario}" method="post" th:object="${usuario}">
                 <select name="Rol">
@@ -28,7 +38,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <input type="text" placeholder="comision venta" th:field="*{comisionVenta}"/>
                 <input type="text" placeholder="comision alquiler" th:field="*{comisionAlquiler}"/>
                 <input type="text" placeholder="contraseña" th:field="*{contraseña}"/>
-                <input type="text" placeholder="fecha Nacimiento" th:field="*{fechaNacimiento}"/>
+                <input type="date" placeholder="fecha Nacimiento" th:field="*{fechaNacimiento}"/>
                 <input type="text" placeholder="provincia" th:field="*{provincia}"/>
                 <button type="submit">Guardar</button> 
             </form>

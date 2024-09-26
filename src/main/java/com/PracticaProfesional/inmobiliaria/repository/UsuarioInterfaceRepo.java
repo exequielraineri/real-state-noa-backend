@@ -5,7 +5,10 @@
 package com.PracticaProfesional.inmobiliaria.repository;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +17,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UsuarioInterfaceRepo extends JpaRepository<Usuario, Integer>{
-    
+    @Query("SELECT u FROM Usuario u WHERE "
+            + "(:rol IS NULL OR u.rol LIKE %:rol%) AND "
+            + "(:provincia IS NULL OR u.provincia LIKE %:provincia%)")
+    List<Usuario> filtrarUsuario(@Param("rol") String rol,
+            @Param("provincia") String provincia);
 }

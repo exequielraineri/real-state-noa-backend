@@ -15,7 +15,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <a th:href="@{/usuario}">Usuario</a>            
         </nav>
         <h1>Editar Usuario</h1>
-        <form th:action="@{/usuario/guardar-modificacion}" method="post" th:object="${usuario}">
+        <form th:action="@{/usuario/guardar_modificacion}" method="post" th:object="${usuario}">
             <input type="hidden" th:field="*{id}"/> <!-- Campo oculto para el ID -->
             <select name="Rol">
                 <option value="Admin">Admin</option>

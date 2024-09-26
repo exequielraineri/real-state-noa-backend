@@ -10,6 +10,111 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        
+        <nav >
+            <a th:href="@{/cliente}">Clientes</a>
+            <a th:href="@{/usuario}">Usuarios</a> 
+            <a th:href="@{/inmueble}">Inmuebles</a> 
+        </nav>
+        <main>
+            <h1>Inmueble</h1>
+            <h2>Filtrar Inmueble</h2>
+            <form th:action="@{/inmueble/filtrar}" method="get">
+                <input type="text" name="tipoinmueble" placeholder="Tipo Inmueble" th:value="${tipoinmuebleFiltro}" />
+                <input type="text" name="ubicacion" placeholder="Ubicacion" th:value="${ubicacionFiltro}" />
+                <input type="text" name="estado" placeholder="Estado" th:value="${estadoFiltro}" />
+                <button type="submit">Filtrar</button>
+            </form>
+            <form th:action="@{/inmueble/listar_todos}" method="get">
+                <button type="submit">Todos</button>
+            </form>
+     
+
+
+            <h2>Nuevo Inmueble</h2>
+            <form th:action="@{/inmueble/cargar}" method="post" th:object="${inmueble}">
+                <select th:field="*{idPropietario}" id="id">
+                    <option th:each="cliente : ${cliente}" 
+                            th:value="${cliente.id}" 
+                            th:text="${cliente.nombre}"></option> <!-- Eliminé el texto dentro del tag de cierre -->
+                </select>
+
+                </select>
+                <select th:field="*{tipoInmueble}">
+                    <option value="casa">Casa</option>
+                    <option value="departamento">Departamento</option>
+                    <option value="campo">Campo</option>
+                    <option value="local">Local</option>
+                </select>
+                <input type="text" placeholder="ubicacion" th:field="*{ubicacion}"/>
+                <input type="text" placeholder="precio Venta" th:field="*{precioVenta}"/>
+                <input type="text" placeholder="precio Alquiler" th:field="*{precioAlquiler}"/>
+                <input type="text" placeholder="impuesto Municipal" th:field="*{impMunicipales}"/>
+                <input type="text" placeholder="impuesto Inmobiliarios" th:field="*{impInmobiliarios}"/>
+                <input type="date" placeholder="fecha Publicacion" th:field="*{fechaPublicacion}"/>
+                <input type="text" placeholder="mts2" th:field="*{mts2}"/>
+                <input type="text" placeholder="cantidad Ambientes" th:field="*{cantAmbientes}"/>
+                <input type="text" placeholder="tipo_ambiente" th:field="*{tipoAmbiente}"/>                
+                <input type="text" placeholder="expensas" th:field="*{expensas}"/>
+                <input type="text" placeholder="hectareas" th:field="*{hectareas}"/>                
+                <input type="text" placeholder="tiene_riego" th:field="*{tieneRiego}"/>
+                <input type="text" placeholder="tiene_acceso_ruta" th:field="*{tieneAccesoRuta}"/>                
+                <input type="text" placeholder="tiene_vidriera_calle" th:field="*{tieneVidrieraCalle}"/>
+
+                <button type="submit">Guardar</button> 
+            </form>
+
+            <h3>Listado</h3>
+            <table>
+                <thead> 
+                    <tr>               
+                        <th>cliente</th> 
+                        <th>Tipo de Inmueble</th>
+                        <th>ubicacion</th>
+                        <th>precio Venta</th>
+                        <th>precio Alquiler</th>
+                        <th>impuesto Municipal</th>                    
+                        <th>impuesto Inmobiliarios</th> 
+                        <th>Fecha Registro</th>
+                        <th>fecha Publicacion</th>
+                        <th>mts2</th>
+                        <th>cantidad Ambientes</th>
+                        <th>tipo_ambiente</th>                    
+                        <th>expensas</th> 
+                        <th>hectareas</th>
+                        <th>tiene_riego</th>
+                        <th>tiene_acceso_ruta</th>
+                        <th>tiene_vidriera_calle</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="inmueble : ${listado_inmueble}">                
+                        <td th:text="${inmueble.idPropietario}"></td> 
+                        <td th:text="${inmueble.tipoInmueble}"></td> 
+                        <td th:text="${inmueble.ubicacion}"></td> 
+                        <td th:text="${inmueble.precioVenta}"></td> 
+                        <td th:text="${inmueble.precioAlquiler}"></td>                   
+                        <td th:text="${inmueble.impMunicipales}"></td> 
+                        <td th:text="${inmueble.impInmobiliarios}"></td> 
+                        <td th:text="${inmueble.fechaRegistro}"></td> 
+                        <td th:text="${inmueble.fechaPublicacion}"></td> 
+                        <td th:text="${inmueble.mts2}"></td>                   
+                        <td th:text="${inmueble.cantAmbientes}"></td> 
+                        <td th:text="${inmueble.tipoAmbiente}"></td> 
+                        <td th:text="${inmueble.expensas}"></td> 
+                        <td th:text="${inmueble.hectareas}"></td> 
+                        <td th:text="${inmueble.tieneRiego}"></td> 
+                        <td th:text="${inmueble.tieneAccesoRuta}"></td> 
+                        <td th:text="${inmueble.tieneVidrieraCalle}"></td> 
+                        <td>
+                            <a th:href="@{/inmueble/eliminar/{id}(id=${inmueble.id})}">Eliminar</a>
+                            <a th:href="@{/inmueble/editar/{id}(id=${inmueble.id})}">Editar</a>
+                        </td>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table> 
+        </main>
     </body>
 </html>
