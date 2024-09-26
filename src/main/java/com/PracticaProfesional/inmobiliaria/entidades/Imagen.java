@@ -6,6 +6,7 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
+
 /**
  *
  * @author Sofia
@@ -28,6 +29,7 @@ public class Imagen implements Serializable {
     @JoinColumn(name = "id_inmueble", referencedColumnName = "id")
     @ManyToOne
     private Inmueble idInmueble;
+
 
     public Imagen() {
     }
@@ -84,5 +86,5 @@ public class Imagen implements Serializable {
     public String toString() {
         return "com.PracticaProfesional.inmobiliaria.entidades.Imagen[ id=" + id + " ]";
     }
-    
+
 }
