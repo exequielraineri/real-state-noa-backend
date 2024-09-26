@@ -3,116 +3,78 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
-import jakarta.persistence.*;
 import java.util.Date;
-import java.util.Objects;
+import jakarta.persistence.*;
 
+/**
+ *
+ * @author Sofia
+ */
 @Entity
 @Table(name = "inmueble")
 @NamedQueries({
-    @NamedQuery(name = "Inmueble.findAll", query = "SELECT i FROM Inmueble i"),
-    @NamedQuery(name = "Inmueble.findById", query = "SELECT i FROM Inmueble i WHERE i.id = :id"),
-    @NamedQuery(name = "Inmueble.findByIdPropietario", query = "SELECT i FROM Inmueble i WHERE i.idPropietario = :idPropietario"),
-    @NamedQuery(name = "Inmueble.findByTipoInmueble", query = "SELECT i FROM Inmueble i WHERE i.tipoInmueble = :tipoInmueble"),
-    @NamedQuery(name = "Inmueble.findByUbicacion", query = "SELECT i FROM Inmueble i WHERE i.ubicacion = :ubicacion"),
-    @NamedQuery(name = "Inmueble.findByTipoOperacion", query = "SELECT i FROM Inmueble i WHERE i.tipoOperacion = :tipoOperacion"),
-    @NamedQuery(name = "Inmueble.findByPrecioVenta", query = "SELECT i FROM Inmueble i WHERE i.precioVenta = :precioVenta"),
-    @NamedQuery(name = "Inmueble.findByPrecioAlquiler", query = "SELECT i FROM Inmueble i WHERE i.precioAlquiler = :precioAlquiler"),
-    @NamedQuery(name = "Inmueble.findByImpMunicipales", query = "SELECT i FROM Inmueble i WHERE i.impMunicipales = :impMunicipales"),
-    @NamedQuery(name = "Inmueble.findByImpInmobiliarios", query = "SELECT i FROM Inmueble i WHERE i.impInmobiliarios = :impInmobiliarios"),
-    @NamedQuery(name = "Inmueble.findByFechaRegistro", query = "SELECT i FROM Inmueble i WHERE i.fechaRegistro = :fechaRegistro"),
-    @NamedQuery(name = "Inmueble.findByEstado", query = "SELECT i FROM Inmueble i WHERE i.estado = :estado"),
-    @NamedQuery(name = "Inmueble.findByFechaPublicacion", query = "SELECT i FROM Inmueble i WHERE i.fechaPublicacion = :fechaPublicacion"),
-    @NamedQuery(name = "Inmueble.findByMts2", query = "SELECT i FROM Inmueble i WHERE i.mts2 = :mts2"),
-    @NamedQuery(name = "Inmueble.findByCantAmbientes", query = "SELECT i FROM Inmueble i WHERE i.cantAmbientes = :cantAmbientes"),
-    @NamedQuery(name = "Inmueble.findByTipoAmbiente", query = "SELECT i FROM Inmueble i WHERE i.tipoAmbiente = :tipoAmbiente"),
-    @NamedQuery(name = "Inmueble.findByExpensas", query = "SELECT i FROM Inmueble i WHERE i.expensas = :expensas"),
-    @NamedQuery(name = "Inmueble.findByHectareas", query = "SELECT i FROM Inmueble i WHERE i.hectareas = :hectareas"),
     @NamedQuery(name = "Inmueble.findByTieneRiego", query = "SELECT i FROM Inmueble i WHERE i.tieneRiego = :tieneRiego"),
     @NamedQuery(name = "Inmueble.findByTieneAccesoRuta", query = "SELECT i FROM Inmueble i WHERE i.tieneAccesoRuta = :tieneAccesoRuta"),
     @NamedQuery(name = "Inmueble.findByTieneBanios", query = "SELECT i FROM Inmueble i WHERE i.tieneBanios = :tieneBanios"),
-    @NamedQuery(name = "Inmueble.findByTieneVidrieraCalle", query = "SELECT i FROM Inmueble i WHERE i.tieneVidrieraCalle = :tieneVidrieraCalle")
-})
+    @NamedQuery(name = "Inmueble.findByTieneVidrieraCalle", query = "SELECT i FROM Inmueble i WHERE i.tieneVidrieraCalle = :tieneVidrieraCalle")})
 public class Inmueble implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-
     @Column(name = "id_propietario")
     private Integer idPropietario;
-
     @Column(name = "tipo_inmueble")
     private String tipoInmueble;
-
     @Column(name = "ubicacion")
     private String ubicacion;
-
     @Column(name = "tipo_operacion")
     private String tipoOperacion;
-
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "precio_venta")
-    private BigDecimal precioVenta; // Cambiado a BigDecimal para mayor precisión
-
+    private BigDecimal precioVenta;
     @Column(name = "precio_alquiler")
     private BigDecimal precioAlquiler;
-
     @Column(name = "imp_municipales")
     private BigDecimal impMunicipales;
-
     @Column(name = "imp_inmobiliarios")
     private BigDecimal impInmobiliarios;
-
-
     @Column(name = "fecha_registro")
-    private Date fechaRegistro; // Usando LocalDateTime
-
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaRegistro;
     @Column(name = "estado")
     private String estado;
-
     @Column(name = "fecha_publicacion")
-    private Date fechaPublicacion; // Usando LocalDateTime
-
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaPublicacion;
     @Column(name = "mts2")
     private BigDecimal mts2;
-
     @Column(name = "cant_ambientes")
     private Integer cantAmbientes;
-
     @Column(name = "tipo_ambiente")
     private String tipoAmbiente;
-
     @Column(name = "expensas")
     private BigDecimal expensas;
-
     @Column(name = "hectareas")
     private BigDecimal hectareas;
-
     @Column(name = "tiene_riego")
     private Boolean tieneRiego;
-
     @Column(name = "tiene_acceso_ruta")
     private Boolean tieneAccesoRuta;
-
     @Column(name = "tiene_banios")
     private Boolean tieneBanios;
-
     @Column(name = "tiene_vidriera_calle")
     private Boolean tieneVidrieraCalle;
-
     @OneToMany(mappedBy = "idInmueble")
     private Collection<Contrato> contratoCollection;
-
-    @OneToMany(mappedBy = "idInmueble", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "idInmueble")
     private Collection<Imagen> imagenCollection;
-
     @OneToMany(mappedBy = "idInmueble")
     private Collection<Consulta> consultaCollection;
 
-    // Constructor vacío
     public Inmueble() {
     }
 
@@ -196,7 +158,6 @@ public class Inmueble implements Serializable {
         this.fechaRegistro = fechaRegistro;
     }
 
-   
     public String getEstado() {
         return estado;
     }
@@ -212,8 +173,6 @@ public class Inmueble implements Serializable {
     public void setFechaPublicacion(Date fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
-
-
 
     public BigDecimal getMts2() {
         return mts2;
@@ -311,77 +270,31 @@ public class Inmueble implements Serializable {
         this.consultaCollection = consultaCollection;
     }
 
-    // Constructor con todos los campos (excepto las colecciones)
-//    public Inmueble(Integer id, Integer idPropietario, String tipoInmueble, String ubicacion, String tipoOperacion,
-//            BigDecimal precioVenta, BigDecimal precioAlquiler, BigDecimal impMunicipales,
-//            BigDecimal impInmobiliarios, LocalDateTime fechaRegistro, String estado,
-//            Date fechaPublicacion, BigDecimal mts2, Integer cantAmbientes,
-//            String tipoAmbiente, BigDecimal expensas, BigDecimal hectareas,
-//            Boolean tieneRiego, Boolean tieneAccesoRuta, Boolean tieneBanios,
-//            Boolean tieneVidrieraCalle) {
-//        this.id = id;
-//        this.idPropietario = idPropietario;
-//        this.tipoInmueble = tipoInmueble;
-//        this.ubicacion = ubicacion;
-//        this.tipoOperacion = tipoOperacion;
-//        this.precioVenta = precioVenta;
-//        this.precioAlquiler = precioAlquiler;
-//        this.impMunicipales = impMunicipales;
-//        this.impInmobiliarios = impInmobiliarios;
-//        this.fechaRegistro = fechaRegistro;
-//        this.estado = estado;
-//        this.fechaPublicacion = fechaPublicacion;
-//        this.mts2 = mts2;
-//        this.cantAmbientes = cantAmbientes;
-//        this.tipoAmbiente = tipoAmbiente;
-//        this.expensas = expensas;
-//        this.hectareas = hectareas;
-//        this.tieneRiego = tieneRiego;
-//        this.tieneAccesoRuta = tieneAccesoRuta;
-//        this.tieneBanios = tieneBanios;
-//        this.tieneVidrieraCalle = tieneVidrieraCalle;
-//    }
+   
 
-    // Getters y Setters
-    // ... (sin cambios, puedes mantener los anteriores)
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
     }
 
     @Override
     public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Inmueble)) {
             return false;
         }
         Inmueble other = (Inmueble) object;
-        return Objects.equals(this.id, other.id);
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Inmueble{"
-                + "id=" + id
-                + ", idPropietario=" + idPropietario
-                + ", tipoInmueble='" + tipoInmueble + '\''
-                + ", ubicacion='" + ubicacion + '\''
-                + ", tipoOperacion='" + tipoOperacion + '\''
-                + ", precioVenta=" + precioVenta
-                + ", precioAlquiler=" + precioAlquiler
-                + ", impMunicipales=" + impMunicipales
-                + ", impInmobiliarios=" + impInmobiliarios
-                + ", fechaRegistro=" + fechaRegistro
-                + ", estado='" + estado + '\''
-                + ", fechaPublicacion=" + fechaPublicacion
-                + ", mts2=" + mts2
-                + ", cantAmbientes=" + cantAmbientes
-                + ", tipoAmbiente='" + tipoAmbiente + '\''
-                + ", expensas=" + expensas
-                + ", hectareas=" + hectareas
-                + ", tieneRiego=" + tieneRiego
-                + ", tieneAccesoRuta=" + tieneAccesoRuta
-                + ", tieneBanios=" + tieneBanios
-                + ", tieneVidrieraCalle=" + tieneVidrieraCalle
-                + '}';
+        return "com.PracticaProfesional.inmobiliaria.entidades.Inmueble[ id=" + id + " ]";
     }
+    
 }
