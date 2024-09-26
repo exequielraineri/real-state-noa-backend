@@ -3,7 +3,6 @@ package com.PracticaProfesional.inmobiliaria.servicios;
 import com.PracticaProfesional.inmobiliaria.repository.ClienteInterfaceRepo;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.interfaz.ClienteInterface;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +42,10 @@ public class ClienteServicios implements ClienteInterface {
     @Override
     public List<Cliente> listar() {
         return repo.findAll();
+    }
+
+    public List<Cliente> filtrarClientes(String nombre, String apellido, String provincia) {
+        return repo.filtrarClientes(nombre, apellido, provincia);
     }
 
 }

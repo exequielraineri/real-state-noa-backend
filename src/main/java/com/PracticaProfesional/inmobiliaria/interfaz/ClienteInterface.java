@@ -20,4 +20,5 @@ public interface ClienteInterface {
     public Optional<Cliente> obtener(Integer id);
     
     public List<Cliente> listar();
+    
 }

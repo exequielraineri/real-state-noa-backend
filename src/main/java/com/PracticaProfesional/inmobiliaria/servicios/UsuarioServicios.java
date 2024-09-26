@@ -26,8 +26,6 @@ public class UsuarioServicios implements UsuarioInterface {
     @Override
     public Usuario guardar(Usuario usuario) {
         usuario.setFechaRegistro(new Date());
-        usuario.setComisionAlquiler(null);
-        usuario.setComisionVenta(null);
         return repo.save(usuario);
     }
 

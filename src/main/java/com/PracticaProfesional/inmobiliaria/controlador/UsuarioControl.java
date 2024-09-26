@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.PracticaProfesional.inmobiliaria.control;
+package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
@@ -34,11 +34,11 @@ public class UsuarioControl {
     @GetMapping("")
     public String cargaUsuario(Model model) {
         model.addAttribute("usuario", new Usuario());
-        model.addAttribute("listadoUsuario", obtenerUsuario());
+        model.addAttribute("listado_usuario", obtenerUsuario());
         return "users";
     }
 
-    @PostMapping("/nuevoUsuario")
+    @PostMapping("/nuevo_usuario")
     public String crearUsuario(@ModelAttribute("usuario") Usuario usuario) {
         userSerive.guardar(usuario);
         return "redirect:/usuario";
@@ -54,7 +54,7 @@ public class UsuarioControl {
         return "redirect:/usuario";
     }
 
-    @PostMapping("/GuardarModificacion")
+    @PostMapping("/guardar_modificacion")
     public String modificar(@ModelAttribute("usuario") Usuario usuario, @RequestParam("fechaNacimiento") String fecha) {
         userSerive.guardar(usuario);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

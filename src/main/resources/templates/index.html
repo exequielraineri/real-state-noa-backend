@@ -16,8 +16,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </nav>
         <main>
             <h1>Cliente</h1>
+            <h2>Filtrar Clientes</h2>
+            <form th:action="@{/cliente/filtrar}" method="get">
+                <input type="text" name="nombre" placeholder="Nombre" th:value="${nombreFiltro}" />
+                <input type="text" name="apellido" placeholder="Apellido" th:value="${apellidoFiltro}" />
+                <input type="text" name="provincia" placeholder="Provincia" th:value="${provinciaFiltro}" />
+                <button type="submit">Filtrar</button>
+            </form>
+            <form th:action="@{/cliente/listar_todos}" method="get">
+                <button type="submit">Todos</button>
+            </form>
+
+
             <h2>Nuevo Cliente</h2>
-            <form th:action="@{/cliente/nuevoCliente}" method="post" th:object="${cliente}">
+            <form th:action="@{/cliente/nuevo_cliente}" method="post" th:object="${cliente}">
                 <input type="text" placeholder="nombre" th:field="*{nombre}"/>
                 <input type="text" placeholder="apellido" th:field="*{apellido}"/>
                 <input type="text" placeholder="telefono" th:field="*{telefono}"/>
@@ -38,7 +50,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="cliente : ${listadoCliente}">
+                    <tr th:each="cliente : ${listado_cliente}">
                         <td th:text="${cliente.nombre}"></td>                   
                         <td th:text="${cliente.apellido}"></td> 
                         <td th:text="${cliente.fechaRegistro}"></td> 

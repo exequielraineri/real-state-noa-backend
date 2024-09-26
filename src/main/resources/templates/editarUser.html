@@ -15,7 +15,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <a th:href="@{/usuario}">Usuario</a>            
         </nav>
         <h1>Editar Usuario</h1>
-        <form th:action="@{/usuario/GuardarModificacion}" method="post" th:object="${usuario}">
+        <form th:action="@{/usuario/guardar-modificacion}" method="post" th:object="${usuario}">
             <input type="hidden" th:field="*{id}"/> <!-- Campo oculto para el ID -->
             <select name="Rol">
                 <option value="Admin">Admin</option>
@@ -24,7 +24,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <input type="text" placeholder="nombre" th:field="*{nombre}"/>
             <input type="text" placeholder="apellido" th:field="*{apellido}"/>
             <input type="text" placeholder="correo" th:field="*{correo}"/>
-            <input type="text" placeholder="contraseña" th:field="*{contraseña}"/>
+            <input type="text" placeholder="contraseña" th:field="*{contraseña}"/>                
+            <input type="text" placeholder="comision venta" th:field="*{comisionVenta}"/>
+            <input type="text" placeholder="comision alquiler" th:field="*{comisionAlquiler}"/>
             <input type="date" placeholder="fecha Nacimiento" th:field="*{fechaNacimiento}"/>
             <input type="text" placeholder="provincia" th:field="*{provincia}"/>
             <button type="submit">Guardar</button> 

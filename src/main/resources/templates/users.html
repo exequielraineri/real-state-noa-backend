@@ -17,14 +17,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </nav>
             <h1>Usuarios</h1>
             <h2>Nuevo Usuario</h2>
-            <form th:action="@{/usuario/nuevoUsuario}" method="post" th:object="${usuario}">
+            <form th:action="@{/usuario/nuevo_usuario}" method="post" th:object="${usuario}">
                 <select name="Rol">
                     <option value="Admin">Admin</option>
                     <option value="Agente">Agente</option>
                 </select>
                 <input type="text" placeholder="nombre" th:field="*{nombre}"/>
                 <input type="text" placeholder="apellido" th:field="*{apellido}"/>
-                <input type="text" placeholder="correo" th:field="*{correo}"/>
+                <input type="text" placeholder="correo" th:field="*{correo}"/>                
+                <input type="text" placeholder="comision venta" th:field="*{comisionVenta}"/>
+                <input type="text" placeholder="comision alquiler" th:field="*{comisionAlquiler}"/>
                 <input type="text" placeholder="contraseña" th:field="*{contraseña}"/>
                 <input type="text" placeholder="fecha Nacimiento" th:field="*{fechaNacimiento}"/>
                 <input type="text" placeholder="provincia" th:field="*{provincia}"/>
@@ -38,7 +40,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <th>Rol</th>  
                         <th>Nombre</th>                    
                         <th>Apellido</th> 
-                        <th>Correo</th>  
+                        <th>Correo</th>                         
+                        <th>Comision Venta</th>  
+                        <th>Comision Alquiler</th>  
                         <th>fecha Registro</th>
                         <th>fecha nacimiento</th>
                         <th>Provincia</th>
@@ -46,11 +50,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="usuario : ${listadoUsuario}">
+                    <tr th:each="usuario : ${listado_usuario}">
                         <td th:text="${usuario.rol}"></td>  
                         <td th:text="${usuario.nombre}"></td>                   
                         <td th:text="${usuario.apellido}"></td> 
                         <td th:text="${usuario.correo}"></td> 
+                        <td th:text="${usuario.comisionVenta}"></td> 
+                        <td th:text="${usuario.comisionAlquiler}"></td> 
                         <td th:text="${usuario.fechaRegistro}"></td> 
                         <td th:text="${usuario.fechaNacimiento}"></td> 
                         <td th:text="${usuario.provincia}"></td> 
