@@ -32,7 +32,9 @@ public class ClienteControl {
     public String inicio(Model model) {
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("listado_cliente", obtenerCliente());
-        return "index";
+        model.addAttribute("contenido", "index");
+        model.addAttribute("titulo", "Real State | Clientes");
+        return "layout";
     }
 
     @PostMapping("/nuevo_cliente")

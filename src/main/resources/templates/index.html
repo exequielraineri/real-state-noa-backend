@@ -14,7 +14,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <a th:href="@{/cliente}">Clientes</a>
             <a th:href="@{/usuario}">Usuarios</a>            
         </nav>
-        <main>
+        <main th:fragment="fragmento">
             <h1>Cliente</h1>
             <h2>Filtrar Clientes</h2>
             <form th:action="@{/cliente/filtrar}" method="get">

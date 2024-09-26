@@ -33,7 +33,9 @@ public class InmuebleControl {
         model.addAttribute("inmuelbe", new Inmueble());
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("listdo-inmueble", obtenerInmueble());
-        return "Inmueble";
+        model.addAttribute("contenido", "inmueble");
+        model.addAttribute("titulo", "Real State | Inmuebles");
+        return "layout";
     }
 
     @PostMapping("/cargar")

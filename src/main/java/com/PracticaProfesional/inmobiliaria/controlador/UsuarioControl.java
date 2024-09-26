@@ -35,6 +35,8 @@ public class UsuarioControl {
     public String cargaUsuario(Model model) {
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("listado_usuario", obtenerUsuario());
+        model.addAttribute("contenido", "users");
+        model.addAttribute("titulo", "Real State | Usuarios");
         return "users";
     }
 
@@ -62,7 +64,7 @@ public class UsuarioControl {
             Date fechaNacimiento = sdf.parse(fecha);
             usuario.setFechaNacimiento(fechaNacimiento);
         } catch (ParseException e) {
-           
+
         }
         return "redirect:/usuario";
     }
@@ -73,7 +75,5 @@ public class UsuarioControl {
         model.addAttribute("usuario", usuario);
         return "editarUser";
     }
-
-    
 
 }
