@@ -37,20 +37,13 @@ public class InmuebleControl {
 
     @GetMapping("")
     public String nuevoInmueble(Model model) {
-<<<<<<< HEAD
         model.addAttribute("inmueble", new Inmueble());
         model.addAttribute("cliente", cliServicio.listar());
-        model.addAttribute("imagen", new Imagen());
-        model.addAttribute("listado_inmueble", obtenerInmueble());
-        return "Inmueble";
-=======
-        model.addAttribute("inmuelbe", new Inmueble());
-        model.addAttribute("cliente", new Cliente());
-        model.addAttribute("listdo-inmueble", obtenerInmueble());
+        model.addAttribute("listdo_inmueble", obtenerInmueble());
         model.addAttribute("contenido", "inmueble");
         model.addAttribute("titulo", "Real State | Inmuebles");
         return "layout";
->>>>>>> 8105553c71c5ed816aacde5a88696a1769ca0bc2
+
     }
 
     @PostMapping("/cargar")
