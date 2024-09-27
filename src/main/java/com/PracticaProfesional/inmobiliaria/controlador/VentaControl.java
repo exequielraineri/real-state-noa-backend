@@ -10,6 +10,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,27 +29,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Sofia
  */
 @Controller
-@RequestMapping("venta")
+@RequestMapping("ventas")
 public class VentaControl {
-    
+
     @Autowired
     private ContratoServicios conService;
-    
+
     @GetMapping("")
-    public String venta(Model model) {
+    public String venta(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
         model.addAttribute("contrato", new Contrato());
         model.addAttribute("pago", new Pagos());
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("listar", obtenerVenta());
-        return "";
+        model.addAttribute("contenido", "fragmentos/ventas");
+        model.addAttribute("titulo", "Real State | Ventas");
+        return "layout";
     }
-    
+
     private List<Contrato> obtenerVenta() {
         return conService.listar().stream()
                 .filter(transaccion -> "venta".equals(transaccion.getTipoOperacion()))
                 .collect(Collectors.toList());
     }
-    
+
     @PostMapping("asd")
     public String nuevaVenta(@ModelAttribute("transaccion") Contrato contrato,
             @ModelAttribute("pagos") Pagos pago,
@@ -64,7 +68,7 @@ public class VentaControl {
         conService.guardar(contrato);
         return "";
     }
-    
+
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         conService.eliminar(id);

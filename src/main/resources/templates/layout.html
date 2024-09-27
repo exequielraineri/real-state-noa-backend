@@ -19,6 +19,12 @@
         <!-- Lineicons CSS -->
         <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
+        <link rel="stylesheet" th:href="@{/estilosLayout.css}" />
     </head>
     <body>
         <div class="container-fluid">
@@ -28,7 +34,7 @@
                         class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100"
                         >
                         <a
-                            th:href="@{/cliente}"
+                            th:href="@{/}"
                             style="color: #989898;"
                             class="fw-bold text-dark d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none"
                             >
@@ -38,40 +44,45 @@
                             class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
                             id="menu"
                             >
-                            <li class="nav-item ">
+                            <li class="nav-item">
                                 <a
-                                    th:href="@{/cliente}"
-                                    class="nav-link  text-light align-middle active"
+                                    th:href="@{/}"
+                                    th:classappend="${request?.getRequestURI().endsWith('/')}?'active':''"
+                                    class="nav-link text-light align-middle"
                                     >
                                     <i class="lni lni-home"></i>
                                     <span class="ms-1 d-none d-sm-inline">Principal</span>
                                 </a>
                             </li>
 
-                            <li>
+                            <li class="nav-item">
                                 <a
-                                    th:href="@{/inmueble}"
-                                    class="nav-link text-light px-0 align-middle"
+
+                                    th:href="@{/inmuebles}"
+                                    th:classappend="${request?.getRequestURI().endsWith('/inmuebles')}?'active':''"
+                                    class="nav-link text-light align-middle"
                                     >
-                                    <i class=""></i>
+                                    <i class="lni lni-home"></i>
                                     <span class="ms-1 d-none d-sm-inline">Inmuebles</span></a
                                 >
                             </li>
-                            <li>
+                            <li class="nav-item">
                                 <a
-                                    th:href="@{/cliente}"
-                                    class="nav-link text-light px-0 align-middle"
+                                    th:href="@{/clientes}"
+                                    th:classappend="${request?.getRequestURI().endsWith('/clientes')}?'active':''"
+                                    class="nav-link text-light  align-middle"
                                     >
-                                    <i class="fs-4 bi-table"></i>
+                                    <i class="lni lni-home"></i>
                                     <span class="ms-1 d-none d-sm-inline">Clientes</span></a
                                 >
                             </li>
                             <li>
                                 <a
                                     th:href="@{/ventas}"
-                                    class="nav-link text-light px-0 align-middle"
+                                    th:classappend="${request?.getRequestURI().endsWith('/ventas')}?'active':''"
+                                    class="nav-link text-light  align-middle"
                                     >
-                                    <i class="fs-4 bi-table"></i>
+                                    <i class="lni lni-home"></i>
                                     <span class="ms-1 d-none d-sm-inline">Ventas</span></a
                                 >
                             </li>
@@ -79,9 +90,10 @@
 
                                 <a
                                     th:href="@{/alquiler}"
-                                    class="nav-link text-light px-0 align-middle"
+                                    th:classappend="${request?.getRequestURI().endsWith('/alquiler')}?'active':''"
+                                    class="nav-link text-light  align-middle"
                                     >
-                                    <i class="fs-4 bi-table"></i>
+                                    <i class="lni lni-home"></i>
                                     <span class="ms-1 d-none d-sm-inline">Alquiler</span></a
                                 >
                             </li>
@@ -89,9 +101,10 @@
 
                                 <a
                                     th:href="@{/consultas}"
-                                    class="nav-link text-light px-0 align-middle"
+                                    th:classappend="${request?.getRequestURI().endsWith('/consultas')}?'active':''"
+                                    class="nav-link text-light  align-middle"
                                     >
-                                    <i class="fs-4 bi-table"></i>
+                                    <i class="lni lni-home"></i>
                                     <span class="ms-1 d-none d-sm-inline">Consultas</span></a
                                 >
                             </li>
@@ -99,6 +112,7 @@
 
                                 <a
                                     th:href="@{/agentes}"
+                                    th:classappend="${request?.getRequestURI().endsWith('/agentes')}?'active':''"
                                     class="nav-link text-light px-0 align-middle"
                                     >
                                     <i class="fs-4 bi-table"></i>
@@ -109,6 +123,7 @@
 
                                 <a
                                     th:href="@{/contratos}"
+                                    th:classappend="${request?.getRequestURI().endsWith('/contratos')}?'active':''"
                                     class="nav-link text-light px-0 align-middle"
                                     >
                                     <i class="fs-4 bi-table"></i>
@@ -131,7 +146,7 @@
                             <img class="rounded-circle" src="./avatar.png" alt="Perfil" width="50">
                         </div>
                     </div>
-                    <div>
+                    <div class="p-3 bg-light" style="min-height: 100vh;">
                         <div th:replace="${contenido}::fragmento"></div>
                     </div>
                 </div>

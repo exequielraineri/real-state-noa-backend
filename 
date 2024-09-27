@@ -1,0 +1,61 @@
+[33mcommit 6a6ff5f97b1307e5851cef326c894675036eab1b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: unknown <axelseba483@gmail.com>
+Date:   Thu Sep 26 21:01:26 2024 -0300
+
+    carga inmueble sin propietario
+
+[33mcommit 712d99ac43f90f4a07e898e022230093e4d1b35c[m
+Merge: 4725afa 8105553
+Author: unknown <axelseba483@gmail.com>
+Date:   Thu Sep 26 20:48:55 2024 -0300
+
+    carga inmueble sin propietario
+
+[33mcommit 4725afa05baadb1a9422ab712dc612a80d7f6c9c[m
+Author: unknown <axelseba483@gmail.com>
+Date:   Thu Sep 26 20:46:59 2024 -0300
+
+    sin cambios
+
+[33mcommit 1d46aba220fb58e21c390d7e3d55e817629cd4d6[m
+Author: unknown <axelseba483@gmail.com>
+Date:   Thu Sep 26 20:41:22 2024 -0300
+
+    carga inmueble sin propietario
+
+[33mcommit e5fb7ff5a1f14e0579c49317c70153fcdcc3abee[m
+Author: unknown <axelseba483@gmail.com>
+Date:   Thu Sep 26 20:37:49 2024 -0300
+
+    inmueble carga, falta que muestre el propietario en la tabla
+
+[33mcommit 8105553c71c5ed816aacde5a88696a1769ca0bc2[m
+Merge: d1c0776 2743016
+Author: Exequiel Raineri <exeraineri15@gmail.com>
+Date:   Thu Sep 26 19:35:41 2024 -0300
+
+    merge 1
+
+[33mcommit d1c0776ab920e811a28f5b735fb1ee22adb0df1b[m
+Author: Exequiel Raineri <exeraineri15@gmail.com>
+Date:   Thu Sep 26 19:27:03 2024 -0300
+
+     +diseño, fragmente, include, alquiler
+
+[33mcommit 274301675f926f120c7a729d26210eb24d1d4e1d[m
+Author: unknown <axelseba483@gmail.com>
+Date:   Thu Sep 26 19:25:23 2024 -0300
+
+    tercer commit
+
+[33mcommit 8df4d35b94f2b5740bdc8b3e40a9fafb59c8ad07[m
+Author: unknown <axelseba483@gmail.com>
+Date:   Thu Sep 26 15:29:03 2024 -0300
+
+    segundo commit
+
+[33mcommit 692d1fa123078026001a76b5f2550de54c52d522[m
+Author: unknown <axelseba483@gmail.com>
+Date:   Mon Sep 23 15:24:04 2024 -0300
+
+    primer commit

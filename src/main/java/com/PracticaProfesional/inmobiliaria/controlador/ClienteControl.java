@@ -7,6 +7,7 @@ package com.PracticaProfesional.inmobiliaria.controlador;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import org.springframework.ui.Model;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,17 +23,18 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Sofia
  */
 @Controller
-@RequestMapping("cliente")
+@RequestMapping("clientes")
 public class ClienteControl {
 
     @Autowired
     ClienteServicios cliService;
 
-    @GetMapping("")
-    public String inicio(Model model) {
+    @GetMapping
+    public String inicio(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("listado_cliente", obtenerCliente());
-        model.addAttribute("contenido", "index");
+        model.addAttribute("contenido", "fragmentos/clientes");
         model.addAttribute("titulo", "Real State | Clientes");
         return "layout";
     }

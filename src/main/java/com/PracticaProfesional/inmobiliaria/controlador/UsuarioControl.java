@@ -6,6 +6,7 @@ package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
+import jakarta.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,19 +26,20 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Sofia
  */
 @Controller
-@RequestMapping("usuario")
+@RequestMapping("usuarios")
 public class UsuarioControl {
 
     @Autowired
     UsuarioServicios userService;
 
     @GetMapping("")
-    public String cargaUsuario(Model model) {
+    public String cargaUsuario(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("listado_usuario", obtenerUsuario());
-        model.addAttribute("contenido", "users");
+        model.addAttribute("contenido", "fragmentos/users");
         model.addAttribute("titulo", "Real State | Usuarios");
-        return "users";
+        return "layout";
     }
 
     @PostMapping("/nuevo_usuario")
@@ -76,7 +78,6 @@ public class UsuarioControl {
         return "editarUser";
     }
 
-
     @GetMapping("/filtrar")
     public String filtrarUsuario(
             @RequestParam(required = false) String rol,
@@ -89,7 +90,6 @@ public class UsuarioControl {
         // Añadir los filtros actuales al modelo para mantener el valor en los inputs
         model.addAttribute("rolFiltro", rol);
         model.addAttribute("provinciaFiltro", provincia);
-        
 
         // Enviar la lista filtrada a la vista
         model.addAttribute("listado_usuario", usuarioFiltrados);
@@ -102,6 +102,5 @@ public class UsuarioControl {
         model.addAttribute("listado_usuario", obtenerUsuario()); // Obtiene todos los clientes
         return "users"; // Retorna a la plantilla index
     }
-
 
 }

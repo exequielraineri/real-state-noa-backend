@@ -4,26 +4,26 @@
  */
 package com.PracticaProfesional.inmobiliaria.controlador;
 
+import jakarta.faces.annotation.RequestMap;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  *
- * @author exera
+ * @author Exequiel
  */
 @Controller
-@RequestMapping("alquiler")
-public class AlquilerControlador {
-    
-    @GetMapping
-    public String inicioAlquiler(Model model, HttpServletRequest request) {
+public class ErrorControl implements ErrorController {
+
+    @RequestMapping("/error")
+    public String manejarError(Model model,HttpServletRequest request) {
         model.addAttribute("request", request);
-        model.addAttribute("contenido", "fragmentos/alquiler");
-        model.addAttribute("titulo", "Real State | Alquiler");
+        model.addAttribute("contenido", "fragmentos/404");
+        model.addAttribute("titulo", "Not Fount");
         return "layout";
     }
-    
+
 }
