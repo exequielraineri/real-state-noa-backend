@@ -12,18 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  *
- * @author exera
+ * @author Exequiel
  */
 @Controller
-@RequestMapping("alquiler")
-public class AlquilerControlador {
-    
+@RequestMapping
+public class InicioController {
+
     @GetMapping
-    public String inicioAlquiler(Model model, HttpServletRequest request) {
+    public String inicio(Model model, HttpServletRequest request) {
+        model.addAttribute("contenido", "fragmentos/inicio");
+        model.addAttribute("titulo", "Real State");
         model.addAttribute("request", request);
-        model.addAttribute("contenido", "fragmentos/alquiler");
-        model.addAttribute("titulo", "Real State | Alquiler");
         return "layout";
     }
-    
 }

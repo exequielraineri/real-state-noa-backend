@@ -9,6 +9,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Imagen;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Sofia
  */
 @Controller
-@RequestMapping("inmueble")
+@RequestMapping("inmuebles")
 public class InmuebleControl {
 
     @Autowired
@@ -35,12 +36,15 @@ public class InmuebleControl {
     @Autowired
     private ClienteServicios cliServicio;
 
-    @GetMapping("")
-    public String nuevoInmueble(Model model) {
+    @GetMapping
+    public String nuevoInmueble(Model model, HttpServletRequest request) {
+        model.addAttribute("request", request);
         model.addAttribute("inmueble", new Inmueble());
         model.addAttribute("cliente", cliServicio.listar());
         model.addAttribute("listado_inmueble", obtenerInmueble());
         model.addAttribute("contenido", "inmueble");
+        model.addAttribute("listdo_inmueble", obtenerInmueble());
+        model.addAttribute("contenido", "fragmentos/inmueble");
         model.addAttribute("titulo", "Real State | Inmuebles");
         return "layout";
 
