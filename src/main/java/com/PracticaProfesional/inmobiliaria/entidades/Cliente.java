@@ -49,7 +49,7 @@ public class Cliente implements Serializable {
     private Collection<Contrato> contratoCollection;
     @OneToMany(mappedBy = "idCliente")
     private Collection<Consulta> consultaCollection;
-
+    
     public Cliente() {
     }
 

@@ -39,7 +39,7 @@ public class InmuebleControl {
     public String nuevoInmueble(Model model) {
         model.addAttribute("inmueble", new Inmueble());
         model.addAttribute("cliente", cliServicio.listar());
-        model.addAttribute("listdo_inmueble", obtenerInmueble());
+        model.addAttribute("listado_inmueble", obtenerInmueble());
         model.addAttribute("contenido", "inmueble");
         model.addAttribute("titulo", "Real State | Inmuebles");
         return "layout";
@@ -48,9 +48,11 @@ public class InmuebleControl {
 
     @PostMapping("/cargar")
     public String cargar(@ModelAttribute("inmueble") Inmueble inmueble,
-            @ModelAttribute("cliente") Cliente cliente,
+            @ModelAttribute("idPropietario") Cliente cliente,
             @ModelAttribute("imagen") Imagen imagen) {
         inmueble.setIdPropietario(cliente.getId());
+        inmueble.setApPro(cliente.getApellido());
+        inmueble.setNomPro(cliente.getNombre());
         Collection<Imagen> imagenes = new ArrayList<>();
         imagenes.add(imagen);
         inmueble.setImagenCollection(imagenes);

@@ -6,6 +6,7 @@ package com.PracticaProfesional.inmobiliaria.repository;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,5 +26,7 @@ public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer> {
     List<Cliente> filtrarClientes(@Param("nombre") String nombre,
             @Param("apellido") String apellido,
             @Param("provincia") String provincia);
+
+    public Optional<Cliente> findById(Integer id);
 
 }

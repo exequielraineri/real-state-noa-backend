@@ -48,6 +48,13 @@ public class ClienteServicios implements ClienteInterface {
         return repo.filtrarClientes(nombre, apellido, provincia);
     }
 
-   
+    public Cliente buscarPorId(Integer id) {
+        Optional<Cliente> clienteOpt = repo.findById(id);
+        if (clienteOpt.isPresent()) {
+            return clienteOpt.get();
+        } else {
+            return null;  // O lanzar una excepción personalizada si el cliente no existe
+        }
+    }
 
 }

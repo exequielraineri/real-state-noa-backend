@@ -27,6 +27,8 @@ public class Inmueble implements Serializable {
     private Integer id;
     @Column(name = "id_propietario")
     private Integer idPropietario;
+    private String nomPro;
+    private String apPro;
     @Column(name = "tipo_inmueble")
     private String tipoInmueble;
     @Column(name = "ubicacion")
@@ -74,6 +76,22 @@ public class Inmueble implements Serializable {
     private Collection<Imagen> imagenCollection;
     @OneToMany(mappedBy = "idInmueble")
     private Collection<Consulta> consultaCollection;
+
+    public void setNomPro(String nomPro) {
+        this.nomPro = nomPro;
+    }
+
+    public void setApPro(String apPro) {
+        this.apPro = apPro;
+    }
+
+    public String getNomPro() {
+        return nomPro;
+    }
+
+    public String getApPro() {
+        return apPro;
+    }
 
     public Inmueble() {
     }
@@ -270,8 +288,6 @@ public class Inmueble implements Serializable {
         this.consultaCollection = consultaCollection;
     }
 
-   
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -296,5 +312,5 @@ public class Inmueble implements Serializable {
     public String toString() {
         return "com.PracticaProfesional.inmobiliaria.entidades.Inmueble[ id=" + id + " ]";
     }
-    
+
 }
