@@ -10,17 +10,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-
-
-        <nav >
-            <a th:href="@{/cliente}">Clientes</a>
-            <a th:href="@{/usuario}">Usuarios</a> 
-            <a th:href="@{/inmueble}">Inmuebles</a> 
-        </nav>
         <div th:fragment="fragmento">
             <main>
                 <h1>Inmueble</h1>
+
+
                 <h2>Filtrar Inmueble</h2>
+
+
                 <form th:action="@{/inmueble/filtrar}" method="get">
                     <input type="text" name="tipoinmueble" placeholder="Tipo Inmueble" th:value="${tipoinmuebleFiltro}" />
                     <input type="text" name="ubicacion" placeholder="Ubicacion" th:value="${ubicacionFiltro}" />
@@ -38,7 +35,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <select th:field="*{idPropietario}" id="id">
                         <option th:each="cliente : ${cliente}" 
                                 th:value="${cliente.id}" 
-                                th:text="${cliente.nombre}"></option> <!-- Eliminé el texto dentro del tag de cierre -->
+                                th:text="${cliente.nombre}">
+                        </option> 
                     </select>
 
                     </select>
@@ -58,14 +56,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <input type="text" placeholder="cantidad Ambientes" th:field="*{cantAmbientes}"/>
                     <input type="text" placeholder="tipo_ambiente" th:field="*{tipoAmbiente}"/>                
                     <input type="text" placeholder="expensas" th:field="*{expensas}"/>
-                    <input type="text" placeholder="hectareas" th:field="*{hectareas}"/>   <label for="tieneAccesoRuta">Tiene acceso a ruta:</label>
+                    <input type="text" placeholder="hectareas" th:field="*{hectareas}"/> 
+                    <label for="tieneAccesoRuta">Tiene acceso a ruta:</label>
                     <input type="radio" th:field="*{tieneAccesoRuta}" value="true" /> Sí
                     <input type="radio" th:field="*{tieneAccesoRuta}" value="false" /> No
                     <label for="tieneRiego">Tiene riego:</label>
                     <input type="radio" th:field="*{tieneRiego}" value="true" /> Sí
                     <input type="radio" th:field="*{tieneRiego}" value="false" /> No               
                     <input type="text" placeholder="tiene_vidriera_calle" th:field="*{tieneVidrieraCalle}"/>
-
                     <button type="submit">Guardar</button> 
                 </form>
 
@@ -116,8 +114,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <td>
                                 <a th:href="@{/inmueble/eliminar/{id}(id=${inmueble.id})}">Eliminar</a>
                                 <a th:href="@{/inmueble/editar/{id}(id=${inmueble.id})}">Editar</a>
-                            </td>
-
                             </td>
                         </tr>
                     </tbody>
