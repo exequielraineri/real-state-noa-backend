@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Sofia
  */
 @Controller
-@RequestMapping("inmuebles")
+@RequestMapping("inmueble")
 public class InmuebleControl {
 
     @Autowired
@@ -52,17 +52,14 @@ public class InmuebleControl {
 
     @PostMapping("/cargar")
     public String cargar(@ModelAttribute("inmueble") Inmueble inmueble,
-            @ModelAttribute("idPropietario") Cliente cliente,
-            @ModelAttribute("imagen") Imagen imagen) {
+            @ModelAttribute("idPropietario") Cliente cliente) {
         inmueble.setIdPropietario(cliente.getId());
         inmueble.setApPro(cliente.getApellido());
         inmueble.setNomPro(cliente.getNombre());
-        Collection<Imagen> imagenes = new ArrayList<>();
-        imagenes.add(imagen);
-        inmueble.setImagenCollection(imagenes);
         inmuServicio.guardar(inmueble);
         return "redirect:/inmueble";
     }
+    
 
     private List<Inmueble> obtenerInmueble() {
         return inmuServicio.listar();
