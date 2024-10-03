@@ -5,11 +5,21 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
  * @author Sofia
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "inmueble")
 @NamedQueries({
@@ -71,246 +81,20 @@ public class Inmueble implements Serializable {
     @Column(name = "tiene_vidriera_calle")
     private Boolean tieneVidrieraCalle;
     @OneToMany(mappedBy = "idInmueble")
-    private Collection<Contrato> contratoCollection;
+    private List<Contrato> contratoCollection;
+
+    @OneToMany(mappedBy = "idInmueble", cascade = CascadeType.ALL)
+    private List<Imagen> imagenCollection;
     @OneToMany(mappedBy = "idInmueble")
-    private Collection<Imagen> imagenCollection;
-    @OneToMany(mappedBy = "idInmueble")
-    private Collection<Consulta> consultaCollection;
+    private List<Consulta> consultaCollection;
 
-    public void setNomPro(String nomPro) {
-        this.nomPro = nomPro;
-    }
-
-    public void setApPro(String apPro) {
-        this.apPro = apPro;
-    }
-
-    public String getNomPro() {
-        return nomPro;
-    }
-
-    public String getApPro() {
-        return apPro;
-    }
-
-    public Inmueble() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getIdPropietario() {
-        return idPropietario;
-    }
-
-    public void setIdPropietario(Integer idPropietario) {
-        this.idPropietario = idPropietario;
-    }
-
-    public String getTipoInmueble() {
-        return tipoInmueble;
-    }
-
-    public void setTipoInmueble(String tipoInmueble) {
-        this.tipoInmueble = tipoInmueble;
-    }
-
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
-    }
-
-    public String getTipoOperacion() {
-        return tipoOperacion;
-    }
-
-    public void setTipoOperacion(String tipoOperacion) {
-        this.tipoOperacion = tipoOperacion;
-    }
-
-    public BigDecimal getPrecioVenta() {
-        return precioVenta;
-    }
-
-    public void setPrecioVenta(BigDecimal precioVenta) {
-        this.precioVenta = precioVenta;
-    }
-
-    public BigDecimal getPrecioAlquiler() {
-        return precioAlquiler;
-    }
-
-    public void setPrecioAlquiler(BigDecimal precioAlquiler) {
-        this.precioAlquiler = precioAlquiler;
-    }
-
-    public BigDecimal getImpMunicipales() {
-        return impMunicipales;
-    }
-
-    public void setImpMunicipales(BigDecimal impMunicipales) {
-        this.impMunicipales = impMunicipales;
-    }
-
-    public BigDecimal getImpInmobiliarios() {
-        return impInmobiliarios;
-    }
-
-    public void setImpInmobiliarios(BigDecimal impInmobiliarios) {
-        this.impInmobiliarios = impInmobiliarios;
-    }
-
-    public Date getFechaRegistro() {
-        return fechaRegistro;
-    }
-
-    public void setFechaRegistro(Date fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public Date getFechaPublicacion() {
-        return fechaPublicacion;
-    }
-
-    public void setFechaPublicacion(Date fechaPublicacion) {
-        this.fechaPublicacion = fechaPublicacion;
-    }
-
-    public BigDecimal getMts2() {
-        return mts2;
-    }
-
-    public void setMts2(BigDecimal mts2) {
-        this.mts2 = mts2;
-    }
-
-    public Integer getCantAmbientes() {
-        return cantAmbientes;
-    }
-
-    public void setCantAmbientes(Integer cantAmbientes) {
-        this.cantAmbientes = cantAmbientes;
-    }
-
-    public String getTipoAmbiente() {
-        return tipoAmbiente;
-    }
-
-    public void setTipoAmbiente(String tipoAmbiente) {
-        this.tipoAmbiente = tipoAmbiente;
-    }
-
-    public BigDecimal getExpensas() {
-        return expensas;
-    }
-
-    public void setExpensas(BigDecimal expensas) {
-        this.expensas = expensas;
-    }
-
-    public BigDecimal getHectareas() {
-        return hectareas;
-    }
-
-    public void setHectareas(BigDecimal hectareas) {
-        this.hectareas = hectareas;
-    }
-
-    public Boolean getTieneRiego() {
-        return tieneRiego;
-    }
-
-    public void setTieneRiego(Boolean tieneRiego) {
-        this.tieneRiego = tieneRiego;
-    }
-
-    public Boolean getTieneAccesoRuta() {
-        return tieneAccesoRuta;
-    }
-
-    public void setTieneAccesoRuta(Boolean tieneAccesoRuta) {
-        this.tieneAccesoRuta = tieneAccesoRuta;
-    }
-
-    public Boolean getTieneBanios() {
-        return tieneBanios;
-    }
-
-    public void setTieneBanios(Boolean tieneBanios) {
-        this.tieneBanios = tieneBanios;
-    }
-
-    public Boolean getTieneVidrieraCalle() {
-        return tieneVidrieraCalle;
-    }
-
-    public void setTieneVidrieraCalle(Boolean tieneVidrieraCalle) {
-        this.tieneVidrieraCalle = tieneVidrieraCalle;
-    }
-
-    public Collection<Contrato> getContratoCollection() {
-        return contratoCollection;
-    }
-
-    public void setContratoCollection(Collection<Contrato> contratoCollection) {
-        this.contratoCollection = contratoCollection;
-    }
-
-    public Collection<Imagen> getImagenCollection() {
-        return imagenCollection;
-    }
-
-    public void setImagenCollection(Collection<Imagen> imagenCollection) {
-        this.imagenCollection = imagenCollection;
-    }
-
-    public Collection<Consulta> getConsultaCollection() {
-        return consultaCollection;
-    }
-
-    public void setConsultaCollection(Collection<Consulta> consultaCollection) {
-        this.consultaCollection = consultaCollection;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Inmueble)) {
-            return false;
+    // Métodos para agregar/quitar imágenes
+    public void addImagen(Imagen imagen) {
+        if (imagenCollection == null) {
+            imagenCollection = new ArrayList<>();
         }
-        Inmueble other = (Inmueble) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.PracticaProfesional.inmobiliaria.entidades.Inmueble[ id=" + id + " ]";
+        imagenCollection.add(imagen);
+        imagen.setIdInmueble(this);
     }
 
 }

@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class ErrorControl implements ErrorController {
-
+/*
     @RequestMapping("/error")
-    public String manejarError(Model model,HttpServletRequest request) {
+    public String manejarError(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         model.addAttribute("contenido", "fragmentos/404");
         model.addAttribute("titulo", "Not Fount");
         return "layout";
     }
-
+*/
 }

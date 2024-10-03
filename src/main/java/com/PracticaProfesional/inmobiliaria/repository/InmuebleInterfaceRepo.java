@@ -16,8 +16,9 @@ import org.springframework.stereotype.Repository;
  * @author Sofia
  */
 @Repository
-public interface InmuebleInterfaceRepo extends JpaRepository<Inmueble, Integer>{
-     @Query("SELECT i FROM Inmueble i WHERE "
+public interface InmuebleInterfaceRepo extends JpaRepository<Inmueble, Integer> {
+
+    @Query("SELECT i FROM Inmueble i WHERE "
             + "(:tipoInmueble IS NULL OR i.tipoInmueble LIKE %:tipoInmueble%) AND "
             + "(:ubicacion IS NULL OR i.ubicacion LIKE %:ubicacion%) AND "
             + "(:estado IS NULL OR i.estado LIKE %:estado%)")

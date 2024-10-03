@@ -43,8 +43,9 @@ public class InmuebleServicios implements InmuebleInterface {
     public List<Inmueble> listar() {
         return repo.findAll();
     }
-    public List<Inmueble> listarInmuebles(String tipoinmueble, String ubicacion,String estado){
-        return  repo.filtrarInmuebles(tipoinmueble, ubicacion, estado);
+
+    public List<Inmueble> listarInmuebles(String tipoinmueble, String ubicacion, String estado) {
+        return repo.filtrarInmuebles(tipoinmueble, ubicacion, estado);
     }
 
 }

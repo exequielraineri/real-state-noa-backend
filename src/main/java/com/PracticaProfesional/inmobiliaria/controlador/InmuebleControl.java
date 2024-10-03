@@ -8,8 +8,15 @@ import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.entidades.Imagen;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
+import com.PracticaProfesional.inmobiliaria.servicios.ImagenServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
+import com.fasterxml.jackson.databind.cfg.ContextAttributes;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,66 +29,98 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
  * @author Sofia
  */
 @Controller
-@RequestMapping("inmueble")
+@RequestMapping("inmuebles")
 public class InmuebleControl {
 
     @Autowired
-    private InmuebleServicios inmuServicio;
+    private InmuebleServicios inmobiliariaServicio;
     @Autowired
-    private ClienteServicios cliServicio;
+    private ClienteServicios clienteServicio;
+
+    @Autowired
+    private ImagenServicios imagenServicios;
+    private Inmueble inmueble;
+
+    private String RUTA_IMAGENES = "src/main/resources/static/img";
 
     @GetMapping
     public String nuevoInmueble(Model model, HttpServletRequest request) {
-        model.addAttribute("request", request);
-        model.addAttribute("inmueble", new Inmueble());
-        model.addAttribute("cliente", cliServicio.listar());
-        model.addAttribute("listado_inmueble", obtenerInmueble());
-        model.addAttribute("contenido", "inmueble");
-        model.addAttribute("listdo_inmueble", obtenerInmueble());
-        model.addAttribute("contenido", "fragmentos/inmueble");
+        model.addAttribute("contenido", "fragmentos/Inmueble");
         model.addAttribute("titulo", "Real State | Inmuebles");
+        model.addAttribute("request", request);
+
+        inmueble = new Inmueble();
+        model.addAttribute("inmueble", inmueble);
+        model.addAttribute("cliente", clienteServicio.listar());
+        model.addAttribute("listado_inmueble", inmobiliariaServicio.listar());
+
         return "layout";
 
     }
 
-    @PostMapping("/cargar")
+    @PostMapping(value = "/nuevo", consumes = {"multipart/form-data"})
     public String cargar(@ModelAttribute("inmueble") Inmueble inmueble,
-            @ModelAttribute("idPropietario") Cliente cliente) {
+            @ModelAttribute("idPropietario") Cliente cliente,
+            @RequestParam(value = "imagenPrincipal") MultipartFile imagenPrincipal, HttpServletRequest request) throws IOException {
         inmueble.setIdPropietario(cliente.getId());
         inmueble.setApPro(cliente.getApellido());
         inmueble.setNomPro(cliente.getNombre());
-        inmuServicio.guardar(inmueble);
-        return "redirect:/inmueble";
-    }
-    
+        System.out.println(imagenPrincipal);
+        System.out.println("Entra");
+        System.out.println("tipo: " + request.getContentType());
+        //inmueble = inmobiliariaServicio.guardar(inmueble);
 
-    private List<Inmueble> obtenerInmueble() {
-        return inmuServicio.listar();
+        Path directorioPath = Paths.get(RUTA_IMAGENES);
+        if (!Files.exists(directorioPath)) {
+            Files.createDirectories(directorioPath); // Crear directorio si no existe
+        }
+
+        if (imagenPrincipal != null) {
+
+            if (imagenPrincipal != null) {
+
+                Path rutaAbsoluta = directorioPath.resolve(imagenPrincipal.getOriginalFilename());
+                Files.write(rutaAbsoluta, imagenPrincipal.getBytes());
+
+                Imagen imagen = new Imagen();
+                imagen.setNombre(imagenPrincipal.getOriginalFilename());
+                inmueble.addImagen(imagen);
+                System.out.println("----->" + inmueble.getId());
+
+            }
+
+        }
+
+        inmobiliariaServicio.guardar(inmueble);
+//System.out.println("Imagen nombre: " + imagenPrincipal.getOriginalFilename());
+        return "redirect:/";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
-        inmuServicio.eliminar(id);
-        return "redirect:/inmueble";
+        inmobiliariaServicio.eliminar(id);
+        return "redirect:/inmuebles";
     }
 
     @PostMapping("/guardar_modificacion")
     public String modificar(@ModelAttribute("inmueble") Inmueble inmueble) {
-        inmuServicio.guardar(inmueble);
-        return "redirect:/inmueble";
+        inmobiliariaServicio.guardar(inmueble);
+        return "redirect:/inmuebles";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
-        Inmueble inmueble = inmuServicio.obtener(id).get();
+        Inmueble inmueble = inmobiliariaServicio.obtener(id).get();
         model.addAttribute("inmueble", inmueble);
-        return "editarInmueble";
+
+        return "redirect:/inmuebles";
     }
 
     @GetMapping("/filtrar")
@@ -92,7 +131,7 @@ public class InmuebleControl {
             Model model) {
 
         // Filtrar la lista de clientes según los parámetros de búsqueda
-        List<Inmueble> inmuebleFiltrados = inmuServicio.listarInmuebles(tipoinmueble, ubicacion, estado);
+        List<Inmueble> inmuebleFiltrados = inmobiliariaServicio.listarInmuebles(tipoinmueble, ubicacion, estado);
         model.addAttribute("inmueble", new Inmueble());
         // Añadir los filtros actuales al modelo para mantener el valor en los inputs
         model.addAttribute("tipoinmuebleFiltro", tipoinmueble);
@@ -107,7 +146,7 @@ public class InmuebleControl {
     @GetMapping("/listar_todos")
     public String listarTodos(Model model) {
         model.addAttribute("inmueble", new Inmueble());
-        model.addAttribute("listado_inmueble", obtenerInmueble()); // Obtiene todos los clientes
+        model.addAttribute("listado_inmueble", inmobiliariaServicio.listar()); // Obtiene todos los clientes
         return "Inmueble"; // Retorna a la plantilla index
     }
 }

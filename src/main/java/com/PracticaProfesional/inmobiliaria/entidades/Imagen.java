@@ -21,7 +21,7 @@ public class Imagen implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
     @Column(name = "nombre")
@@ -29,7 +29,6 @@ public class Imagen implements Serializable {
     @JoinColumn(name = "id_inmueble", referencedColumnName = "id")
     @ManyToOne
     private Inmueble idInmueble;
-
 
     public Imagen() {
     }

@@ -39,10 +39,10 @@ public class ClienteControl {
         return "layout";
     }
 
-    @PostMapping("/nuevo_cliente")
-    public String nuevoCliente(@ModelAttribute("cliente") Cliente clienete) {
-        cliService.guardar(clienete);
-        return "redirect:/cliente";
+    @PostMapping("/nuevo")
+    public String nuevoCliente(@ModelAttribute("cliente") Cliente cliente) {
+        cliService.guardar(cliente);
+        return "redirect:/clientes";
     }
 
     private List<Cliente> obtenerCliente() {

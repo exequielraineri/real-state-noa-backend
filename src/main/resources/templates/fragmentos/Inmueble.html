@@ -31,7 +31,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
 
                 <h2>Nuevo Inmueble</h2>
-                <form th:action="@{/inmueble/cargar}" method="post" th:object="${inmueble}">
+                <form th:action="@{/inmuebles/nuevo}" method="POST" th:object="${inmueble}" enctype="multipart/form-data">
                     <select th:field="*{idPropietario}" id="id">
                         <option th:each="cliente : ${cliente}" 
                                 th:value="${cliente.id}" 
@@ -47,77 +47,83 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <option value="local">Local</option>
                     </select>
                     <input type="text" placeholder="ubicacion" th:field="*{ubicacion}"/>
-                    <input type="text" placeholder="precio Venta" th:field="*{precioVenta}"/>
-                    <input type="text" placeholder="precio Alquiler" th:field="*{precioAlquiler}"/>
-                    <input type="text" placeholder="impuesto Municipal" th:field="*{impMunicipales}"/>
-                    <input type="text" placeholder="impuesto Inmobiliarios" th:field="*{impInmobiliarios}"/>
+                    <input type="number" placeholder="precio Venta" th:field="*{precioVenta}"/>
+                    <input type="number" placeholder="precio Alquiler" th:field="*{precioAlquiler}"/>
+                    <input type="number" placeholder="impuesto Municipal" th:field="*{impMunicipales}"/>
+                    <input type="number" placeholder="impuesto Inmobiliarios" th:field="*{impInmobiliarios}"/>
                     <!--<input type="date" placeholder="fecha Publicacion" th:field="*{fechaPublicacion}"/>-->
-                    <input type="text" placeholder="mts2" th:field="*{mts2}"/>
-                    <input type="text" placeholder="cantidad Ambientes" th:field="*{cantAmbientes}"/>
+                    <input type="number" placeholder="mts2" th:field="*{mts2}"/>
+                    <input type="number" placeholder="cantidad Ambientes" th:field="*{cantAmbientes}"/>
                     <input type="text" placeholder="tipo_ambiente" th:field="*{tipoAmbiente}"/>                
-                    <input type="text" placeholder="expensas" th:field="*{expensas}"/>
-                    <input type="text" placeholder="hectareas" th:field="*{hectareas}"/> 
-                    <label for="tieneAccesoRuta">Tiene acceso a ruta:</label>
-                    <input type="radio" th:field="*{tieneAccesoRuta}" value="true" /> Sí
-                    <input type="radio" th:field="*{tieneAccesoRuta}" value="false" /> No
-                    <label for="tieneRiego">Tiene riego:</label>
-                    <input type="radio" th:field="*{tieneRiego}" value="true" /> Sí
-                    <input type="radio" th:field="*{tieneRiego}" value="false" /> No               
-                    <input type="text" placeholder="tiene_vidriera_calle" th:field="*{tieneVidrieraCalle}"/>
+                    <input type="number" placeholder="expensas" th:field="*{expensas}"/>
+                    <input type="number" placeholder="hectareas" th:field="*{hectareas}"/> 
+                    <input type="checkbox" th:field="*{tieneAccesoRuta}"   /> Acceso Ruta
+                    <input type="checkbox" th:field="*{tieneRiego}"   /> Riego       
+                    <input type="checkbox" th:field="*{tieneVidrieraCalle}"  /> Tiene Vidriera a la calle
+                    <br/>
+                    <input type="file" name="imagenPrincipal" accept="image/png, image/gif, image/jpeg"/>
                     <button type="submit">Guardar</button> 
                 </form>
 
+
                 <h3>Listado</h3>
-                <table>
-                    <thead> 
-                        <tr>               
-                            <th>cliente</th> 
-                            <th>Tipo de Inmueble</th>
-                            <th>ubicacion</th>
-                            <th>precio Venta</th>
-                            <th>precio Alquiler</th>
-                            <th>impuesto Municipal</th>                    
-                            <th>impuesto Inmobiliarios</th> 
-                            <th>Fecha Registro</th>
-                            <th>fecha Publicacion</th>
-                            <th>mts2</th>
-                            <th>cantidad Ambientes</th>
-                            <th>tipo_ambiente</th>                    
-                            <th>expensas</th> 
-                            <th>hectareas</th>
-                            <th>tiene_riego</th>
-                            <th>tiene_acceso_ruta</th>
-                            <th>tiene_vidriera_calle</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="inmueble : ${listado_inmueble}">                 
-                            <td th:text="${inmueble.nomPro}"></td> 
-                            <td th:text="${inmueble.apPro}"></td> 
-                            <td th:text="${inmueble.tipoInmueble}"></td> 
-                            <td th:text="${inmueble.ubicacion}"></td> 
-                            <td th:text="${inmueble.precioVenta}"></td> 
-                            <td th:text="${inmueble.precioAlquiler}"></td>                   
-                            <td th:text="${inmueble.impMunicipales}"></td> 
-                            <td th:text="${inmueble.impInmobiliarios}"></td> 
-                            <td th:text="${inmueble.fechaRegistro}"></td> 
-                            <td th:text="${inmueble.fechaPublicacion}"></td> 
-                            <td th:text="${inmueble.mts2}"></td>                   
-                            <td th:text="${inmueble.cantAmbientes}"></td> 
-                            <td th:text="${inmueble.tipoAmbiente}"></td> 
-                            <td th:text="${inmueble.expensas}"></td> 
-                            <td th:text="${inmueble.hectareas}"></td> 
-                            <td th:text="${inmueble.tieneRiego}"></td> 
-                            <td th:text="${inmueble.tieneAccesoRuta}"></td> 
-                            <td th:text="${inmueble.tieneVidrieraCalle}"></td> 
-                            <td>
-                                <a th:href="@{/inmueble/eliminar/{id}(id=${inmueble.id})}">Eliminar</a>
-                                <a th:href="@{/inmueble/editar/{id}(id=${inmueble.id})}">Editar</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> 
+                <div class="table-responsive">
+
+
+                    <table class="table table-hover table-striped">
+                        <thead> 
+                            <tr>               
+                                <th>cliente</th> 
+                                <th>Tipo de Inmueble</th>
+                                <th>ubicacion</th>
+                                <th>precio Venta</th>
+                                <th>precio Alquiler</th>
+                                <th>impuesto Municipal</th>                    
+                                <th>impuesto Inmobiliarios</th> 
+                                <th>Fecha Registro</th>
+                                <th>fecha Publicacion</th>
+                                <th>mts2</th>
+                                <th>cantidad Ambientes</th>
+                                <th>tipo_ambiente</th>                    
+                                <th>expensas</th> 
+                                <th>hectareas</th>
+                                <th>tiene_riego</th>
+                                <th>tiene_acceso_ruta</th>
+                                <th>tiene_vidriera_calle</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="inmueble : ${listado_inmueble}">                 
+                                <td th:text="${inmueble.nomPro}"></td> 
+                                <td>
+                                    <img width="100" th:src="@{/img/font.png}" alt="alt"/>
+                                </td> 
+                                <td th:text="${inmueble.apPro}"></td> 
+                                <td th:text="${inmueble.tipoInmueble}"></td> 
+                                <td th:text="${inmueble.ubicacion}"></td> 
+                                <td th:text="${inmueble.precioVenta}"></td> 
+                                <td th:text="${inmueble.precioAlquiler}"></td>                   
+                                <td th:text="${inmueble.impMunicipales}"></td> 
+                                <td th:text="${inmueble.impInmobiliarios}"></td> 
+                                <td th:text="${inmueble.fechaRegistro}"></td> 
+                                <td th:text="${inmueble.fechaPublicacion}"></td> 
+                                <td th:text="${inmueble.mts2}"></td>                   
+                                <td th:text="${inmueble.cantAmbientes}"></td> 
+                                <td th:text="${inmueble.tipoAmbiente}"></td> 
+                                <td th:text="${inmueble.expensas}"></td> 
+                                <td th:text="${inmueble.hectareas}"></td> 
+                                <td th:text="${inmueble.tieneRiego}"></td> 
+                                <td th:text="${inmueble.tieneAccesoRuta}"></td> 
+                                <td th:text="${inmueble.tieneVidrieraCalle}"></td> 
+                                <td>
+                                    <a th:href="@{/inmuebles/eliminar/{id}(id=${inmueble.id})}">Eliminar</a>
+                                    <a th:href="@{/inmuebles/editar/{id}(id=${inmueble.id})}">Editar</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                 
+                </div>
             </main>
         </div>
     </body>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div th:fragment="fragmento">
+
+            <div>
+                <h3 class="border-bottom">Inmuebles</h3>
+            </div>
+            <div class="shadow-sm p-3 bg-white rounded-2">
+                <p class="border-bottom">Criterios de busquedas</p>
+                <div class="d-flex gap-3">
+                    <div class="col-2 d-flex flex-column">
+                        <label class="form-label mb-0">Tipo de Inmueble</label>
+                        <select class="form-select" defaultValue="0">
+                            <option value="0">Todos</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Departamento">Departamento</option>
+                            <option value="Terreno">Terreno</option>
+                            <option value="Local">Local Comercial</option>
+                        </select>
+                    </div>
+                    <div class="col-2 d-flex flex-column">
+                        <label class="form-label mb-0">Provincia</label>
+                        <select class="form-select" defaultValue="0">
+                            <option value="0">Todos</option>
+                            <option value="1">Santiago Del Estero</option>
+                            <option value="2">Tucuman</option>
+                            <option value="3">Catamarca</option>
+                            <option value="4">Cordoba</option>
+                        </select>
+                    </div>
+                    <div class="col-2 d-flex flex-column" defaultValue="0">
+                        <label class="form-label mb-0">Precio</label>
+                        <select class="form-select">
+                            <option value="0">Todos</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-sm btn-secondary">Filtrar</button>
+                </div>
+            </div>
+            <div class="my-3 d-flex justify-content-between align-items-end">
+                <div class="d-flex justify-content-end">
+                    <h5 class="fw-light">Encontrados 5 de 150</h5>
+                </div>
+
+                <div>
+                    <button class="btn btn-sm btn-danger" disabled="true">Imprimir</button>
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalFormulario">Nuevo</button>
+                </div>
+                <div class="modal fade" id="modalFormulario"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content p-3">
+                            <form>
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalFormulario">Nuevo Inmueble</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="border-bottom mb-3 fw-bold">Datos Principales</p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div class="col-12">
+                                            <label class="form-label mb-0">Cliente</label>
+                                            <input class="form-control" type="text" placeholder="Ingrese un dni">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label mb-0">Inmueble</label>
+                                            <select class="form-select">
+                                                <option value="">
+                                                    Casa Quinta - Santiago del Estero
+                                                </option>
+                                                <option value="">
+                                                    Departamento Amoblado- Tucuman
+                                                </option>
+                                                <option value="">
+                                                    Terreno Campo - Santiago del Estero
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label mb-0">Fecha Inicio</label>
+                                            <input class="form-control" type="date" placeholder="Ingrese un dni">
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label mb-0">Fecha Fin</label>
+                                            <input class="form-control" type="date" placeholder="Ingrese un dni">
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label mb-0">Total</label>
+                                            <input class="form-control" disabled type="text">
+                                        </div>
+                                    </div>
+                                    <p class="border-bottom mb-3 mt-5 fw-bold">Pago Primer Mes</p>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label mb-0">Mes</label>
+                                            <input class="form-control" type="text" value="Octubre" disabled>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label mb-0">Importe</label>
+                                            <input class="form-control" type="text" value="$ 30.000,00" disabled>
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label class="form-label mb-0">Metodo de Pago</label>
+                                            <input class="form-control" type="text"  placeholder="Ingrese metodo ..">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-sm p-3 rounded-2 bg-white table-responsive">
+                <table class="table table-striped table-dense table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Cliente</th>
+                            <th>Inmueble</th>
+                            <th>Monto</th>
+                            <th>Contrato</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Utl. Pago</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Raineri Exequiel</td>
+                            <td>Casa Quinta</td>
+                            <td>24/02/24</td>
+                            <td>03/6/6</td>
+                            <td>5/5/5</td>
+                            <td>5/5/5</td>
+                            <td>5/5/5</td>
+                            <td>Adeuda</td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button class="btn btn-sm btn-warning"  data-bs-toggle="modal" data-bs-target="#modalFormulario">Editar</button>
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </body>
+</html>
