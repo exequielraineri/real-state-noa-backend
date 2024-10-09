@@ -3,47 +3,37 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div th:fragment="fragmento">
+        <div layout:fragment="contenido">
 
             <div>
-                <h3 class="border-bottom">Inmuebles</h3>
+                <h3 class="border-bottom">Alquiler</h3>
             </div>
             <div class="shadow-sm p-3 bg-white rounded-2">
                 <p class="border-bottom">Criterios de busquedas</p>
                 <div class="d-flex gap-3">
-                    <div class="col-2 d-flex flex-column">
-                        <label class="form-label mb-0">Tipo de Inmueble</label>
-                        <select class="form-select" defaultValue="0">
-                            <option value="0">Todos</option>
-                            <option value="Casa">Casa</option>
-                            <option value="Departamento">Departamento</option>
-                            <option value="Terreno">Terreno</option>
-                            <option value="Local">Local Comercial</option>
-                        </select>
-                    </div>
-                    <div class="col-2 d-flex flex-column">
-                        <label class="form-label mb-0">Provincia</label>
-                        <select class="form-select" defaultValue="0">
-                            <option value="0">Todos</option>
-                            <option value="1">Santiago Del Estero</option>
-                            <option value="2">Tucuman</option>
-                            <option value="3">Catamarca</option>
-                            <option value="4">Cordoba</option>
-                        </select>
-                    </div>
-                    <div class="col-2 d-flex flex-column" defaultValue="0">
-                        <label class="form-label mb-0">Precio</label>
+                    <div class="col-4 d-flex flex-column">
+                        <label class="form-label mb-0">Mes</label>
                         <select class="form-select">
-                            <option value="0">Todos</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                        </select>
+                    </div>
+                    <div class="col-4 d-flex flex-column">
+                        <label class="form-label mb-0">Estado</label>
+                        <select class="form-select">
+                            <option value="Todos">Todos</option>
+                            <option value="Alquilado">Adeuda</option>
+                            <option value="Pagado">Pagado</option>
                         </select>
                     </div>
                 </div>
@@ -57,16 +47,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
 
                 <div>
-                    <button class="btn btn-sm btn-danger" disabled="true">Imprimir</button>
+                    <button class="btn btn-sm btn-danger">Imprimir</button>
                     <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalFormulario">Nuevo</button>
                 </div>
                 <div class="modal fade" id="modalFormulario"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content p-3">
                             <form>
 
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalFormulario">Nuevo Inmueble</h5>
+                                    <h5 class="modal-title" id="modalFormulario">Nuevo Alquiler</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
- * @author Sofia
+ * 
  */
 public interface InmuebleInterface {
 

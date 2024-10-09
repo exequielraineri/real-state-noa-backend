@@ -17,13 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("alquiler")
 public class AlquilerControlador {
-    
+
     @GetMapping
     public String inicioAlquiler(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
-        model.addAttribute("contenido", "fragmentos/alquiler");
         model.addAttribute("titulo", "Real State | Alquiler");
-        return "layout";
+        return "alquiler";
     }
-    
+
 }

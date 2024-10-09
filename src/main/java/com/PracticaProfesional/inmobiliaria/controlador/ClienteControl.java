@@ -34,9 +34,8 @@ public class ClienteControl {
         model.addAttribute("request", request);
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("listado_cliente", obtenerCliente());
-        model.addAttribute("contenido", "fragmentos/clientes");
         model.addAttribute("titulo", "Real State | Clientes");
-        return "layout";
+        return "clientes";
     }
 
     @PostMapping("/nuevo")

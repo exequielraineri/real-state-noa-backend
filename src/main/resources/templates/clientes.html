@@ -3,7 +3,8 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
     <head>
         <title>Real State NOA</title>
         <meta charset="UTF-8">
@@ -15,7 +16,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <a th:href="@{/usuario}">Usuarios</a> 
             <a th:href="@{/inmueble}">Inmuebles</a>    
         </nav>
-        <main th:fragment="fragmento">
+        <main layout:fragment="contenido">
             <h1>Cliente</h1>
             <h2>Filtrar Clientes</h2>
             <form th:action="@{/cliente/filtrar}" method="get">

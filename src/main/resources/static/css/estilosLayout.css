@@ -6,8 +6,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Created on : 26 sep. 2024, 23:41:00
     Author     : Exequiel
 */
-
+:root{
+    --azul-oscuro:#1E3A8A;
+    --azul-claro:#3B82F6;
+}
 body{
     font-size: 14px;
     font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+
+#menu .active{
+    background-color: var(--azul-claro);
 }

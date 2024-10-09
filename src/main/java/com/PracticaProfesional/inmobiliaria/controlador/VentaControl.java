@@ -35,16 +35,15 @@ public class VentaControl {
     @Autowired
     private ContratoServicios conService;
 
-    @GetMapping("")
+    @GetMapping
     public String venta(Model model, HttpServletRequest request) {
         model.addAttribute("request", request);
         model.addAttribute("contrato", new Contrato());
         model.addAttribute("pago", new Pagos());
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("listar", obtenerVenta());
-        model.addAttribute("contenido", "fragmentos/ventas");
         model.addAttribute("titulo", "Real State | Ventas");
-        return "layout";
+        return "ventas";
     }
 
     private List<Contrato> obtenerVenta() {
@@ -64,7 +63,7 @@ public class VentaControl {
         contrato.setIdInmueble(inmueble);
         Collection<Pagos> pagos = new ArrayList<>();
         pagos.add(pago);
-        contrato.setPagosCollection(pagos);
+        contrato.setPagosCollection((List<Pagos>) pagos);
         conService.guardar(contrato);
         return "";
     }

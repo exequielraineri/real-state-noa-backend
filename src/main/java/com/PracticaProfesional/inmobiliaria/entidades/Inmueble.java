@@ -1,8 +1,8 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -11,10 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
- * @author Sofia
+ *
  */
 @Getter
 @Setter
@@ -22,11 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "inmueble")
-@NamedQueries({
-    @NamedQuery(name = "Inmueble.findByTieneRiego", query = "SELECT i FROM Inmueble i WHERE i.tieneRiego = :tieneRiego"),
-    @NamedQuery(name = "Inmueble.findByTieneAccesoRuta", query = "SELECT i FROM Inmueble i WHERE i.tieneAccesoRuta = :tieneAccesoRuta"),
-    @NamedQuery(name = "Inmueble.findByTieneBanios", query = "SELECT i FROM Inmueble i WHERE i.tieneBanios = :tieneBanios"),
-    @NamedQuery(name = "Inmueble.findByTieneVidrieraCalle", query = "SELECT i FROM Inmueble i WHERE i.tieneVidrieraCalle = :tieneVidrieraCalle")})
+@ToString
 public class Inmueble implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,17 +32,18 @@ public class Inmueble implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "id_propietario")
-    private Integer idPropietario;
-    private String nomPro;
-    private String apPro;
+
+    private String titulo;
+    @ManyToOne
+    @JoinColumn(name = "id_propietario")
+    private Cliente propietario;
     @Column(name = "tipo_inmueble")
-    private String tipoInmueble;
-    @Column(name = "ubicacion")
-    private String ubicacion;
+    private EnumTipoInmuebles tipoInmueble;
+    @Column(name = "direccion")
+    private String direccion;
+    private String descripcion;
     @Column(name = "tipo_operacion")
     private String tipoOperacion;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "precio_venta")
     private BigDecimal precioVenta;
     @Column(name = "precio_alquiler")
@@ -72,28 +70,22 @@ public class Inmueble implements Serializable {
     private BigDecimal expensas;
     @Column(name = "hectareas")
     private BigDecimal hectareas;
-    @Column(name = "tiene_riego")
-    private Boolean tieneRiego;
-    @Column(name = "tiene_acceso_ruta")
-    private Boolean tieneAccesoRuta;
-    @Column(name = "tiene_banios")
-    private Boolean tieneBanios;
-    @Column(name = "tiene_vidriera_calle")
-    private Boolean tieneVidrieraCalle;
+    private Boolean isRiego;
+    private Boolean isAccesoRuta;
+    private Integer banios;
+    private Boolean isVidriera;
+    private Boolean isVenta;
     @OneToMany(mappedBy = "idInmueble")
-    private List<Contrato> contratoCollection;
+    private List<Contrato> contratos = new ArrayList<>();
 
     @OneToMany(mappedBy = "idInmueble", cascade = CascadeType.ALL)
-    private List<Imagen> imagenCollection;
+    private List<Imagen> imagenes = new ArrayList<>();
     @OneToMany(mappedBy = "idInmueble")
-    private List<Consulta> consultaCollection;
+    private List<Consulta> consultas = new ArrayList<>();
 
     // Métodos para agregar/quitar imágenes
     public void addImagen(Imagen imagen) {
-        if (imagenCollection == null) {
-            imagenCollection = new ArrayList<>();
-        }
-        imagenCollection.add(imagen);
+        imagenes.add(imagen);
         imagen.setIdInmueble(this);
     }
 

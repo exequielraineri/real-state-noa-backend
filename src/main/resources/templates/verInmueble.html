@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inmueble</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    </head>
+    <body>
+        <div layout:fragment="contenido">
+            <div>
+                <h3 th:text="${inmueble.titulo}"></h3>
+                <cite class="text-end d-inline-block w-100" th:text="${inmueble.isVenta?'Propiedad para la Venta':'Propiedad para Alquiler'}"></cite>
+                <section class="mt-2 d-flex gap-3 flex-wrap">
+                    <img class="col" th:each='img : ${inmueble.imagenes}' th:src="@{'/img/'+${img.nombre}}" width="100" alt="imagen" style="object-fit: cover; object-position: center">
+                </section>
+            </div>
+
+            <div class="mt-3">
+                <h4 class="border-bottom pb-2">Datos Principales</h4>
+                <p th:text="${inmueble.descripcion}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi ex iste exercitationem laboriosam repellendus deserunt! Possimus dolorum accusamus eos qui.</p>
+
+                <p>
+
+                    Tipo Propiedad: <b th:text="${inmueble.tipoInmueble}">Casa</b>
+                    <br>
+                    Dirección: <b th:text="${inmueble.direccion}">Aristobulo del valle</b>
+                    <br>
+                    Propietario: <b th:text="${inmueble.propietario.nombre +', '+inmueble.propietario.apellido}">Exequiel Raineri</b>
+                    <br>
+                    <span th:if="${inmueble.isVenta}">
+                        Precio Venta: <b th:text="${'$ '+#numbers.formatDecimal(inmueble.precioVenta,0,'POINT',2,'COMMA')}">$ 999.899</b>
+                    <br>
+                    </span>
+                    <span th:if="${inmueble.isVenta==false}">
+                        Precio Alquiler: <b th:text="${'$ '+#numbers.formatDecimal(inmueble.precioAlquiler,0,'POINT',2,'COMMA')}">$ 999.899</b>
+                    </span>
+                </p>
+
+                <h5 class="border-bottom pb-2">Datos Extras</h5>
+                <ul>
+                    <li th:if="${inmueble.isBanios}" th:text="${inmueble.isBanios?'Con Baños':'Sin Baños'}">Baños</li>
+                    <li th:text="${'Expensas: $ '+#numbers.formatDecimal(inmueble.expensas,0,'POINT',2,'COMMA')}">Expensas: 2321</li>
+                    <li th:text="${'Impuestos Inmobiliarios $ '+#numbers.formatDecimal(inmueble.impInmobiliarios,0,'POINT',2,'COMMA')}">Inmpuesto Mun/Inm: </li>
+                    <li th:text="${'Impuestos Municipales $ '+#numbers.formatDecimal(inmueble.impMunicipales,0,'POINT',2,'COMMA')}">Inmpuesto Mun/Inm: </li>
+                    <li th:text="${'Dimensión: '+inmueble.mts2.intValue+' mts2'}">Metros Cuadrados</li>
+                    <li th:if="${inmueble.tipoInmueble=='Casa'}" th:text="${'Ambientes: '+inmueble.cantAmbientes}">Ambientes</li>
+                    <li  th:if="${inmueble.tipoInmueble=='Campo'}" th:text="${'Hectareas: '+inmueble.hectareas}">Hectareas</li>
+                    <li  th:if="${inmueble.tipoInmueble=='Campo'}" th:text="${inmueble.isAccesoRuta?'Con Acceso a Ruta':'Sin Acceo a Ruta'}">Hectareas</li>
+                    <li  th:if="${inmueble.tipoInmueble=='Oficina'}" th:text="${'Vidriera a la Calle: $'+inmueble.isVidriera}">Hectareas</li>
+                    <li  th:if="${inmueble.tipoInmueble=='Campo'}" th:text="${inmueble.isRiego?'Con Riego':'Sin Riego'}">Hectareas</li>
+
+                </ul>
+
+                <div class="d-flex justify-content-end">
+                    <button data-bs-toggle="modal" data-bs-target="#modalFormularioInmueble" class="btn btn-warning">Editar</button>
+                </div>
+            </div>
+
+
+
+            <div>
+                <div class="modal fade" id="modalFormularioInmueble"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content p-3">
+                            <form th:action="@{/inmuebles/nuevo}" method="post" enctype="multipart/form-data" th:object="${inmueble}">
+                                <input type="text" name="id" th:field="*{id}"  hidden>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalFormulario">Modificando Inmueble</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body d-flex gap-3 justify-content-start">
+                                    <div class="col">
+                                        <p class="col-12 border-bottom mb-3 fw-bold">Datos Principales</p>
+                                        <section class="d-grid gap-3 justify-content-between" style="grid-template-columns: repeat(2,1fr);">
+                                            <div class="col">
+                                                <label class="form-label mb-1" for="titulo">Titulo</label>
+                                                <input required  class="form-control form-control" type="text" id="titulo" th:field="*{titulo}" name="titulo" placeholder="Ingrese un titulo">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label class="form-label mb-1" for="precioAlquiler">Precio Alquiler</label>
+                                                    <input required  class="form-control form-control" type="number" min="1" id="precioAlquiler" th:field="*{precioAlquiler}" name="precioAlquiler" placeholder="Ingrese un precio">
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label mb-1" for="precioVenta">Precio Venta</label>
+                                                    <input required  class="form-control form-control" type="number" min="1" id="precioVenta" th:field="*{precioVenta}" name="precioVenta" placeholder="Ingrese un precio">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label mb-1" for="direccion">Dirección</label>
+                                                <input required  class="form-control form-control" type="text" id="direccion" th:field="*{direccion}" name="direccion" placeholder="Ingrese una dirección">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label mb-1" for="tipoInmueble">Tipo de Inmueble</label>
+                                                <select  class="form-select" th:field="*{tipoInmueble}"  name="tipoInmueble" id="tipoInmueble">
+                                                    <option value="0">Casa</option>
+                                                    <option value="1">Departamento</option>
+                                                    <option value="2">Campo</option>
+                                                    <option value="3">Local Comercial</option>
+                                                </select>
+                                            </div>
+                                            <div class="col" style="grid-column: span 2;" >
+                                                <label class="form-label" for="descripcion">Descripción</label>
+                                                <textarea th:value="*{descripcion}" th:field="*{descripcion}" name="descripcion" id="descripcion" class="form-control" rows="3"></textarea>
+                                            </div>
+                                            <div class="form-check">
+                                                <input  class="form-check-input" type="checkbox"  name="isVenta" value="" id="isVenta">
+                                                <label class="form-check-label fw-bold" for="isVenta" >
+                                                    Disponible para venta
+                                                </label>
+                                            </div>
+                                        </section>
+
+                                        <p class="border-bottom mb-3 mt-3 fw-bold">Propietario </p>
+                                        <section class="d-flex justify-content-between flex-wrap gap-3">
+                                            <div class="col">
+                                                <label class="form-label mb-1">Nombre</label>
+                                                <input required disabled type="text" th:field="*{propietario.nombre}" name="nombre" id="nombre" class="form-control">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label mb-1">Listado de propietarios</label>
+                                                <select required class="form-select" th:field="*{propietario}" name="propietario" id="propietario">
+                                                    <option value="0" selected disabled>Selecciona un propietario</option>
+                                                    <option th:each="propietario : ${clientes}" th:value="${propietario.id}" class="text-capitalize" th:text="${propietario.nombre+', '+propietario.apellido}"></option>
+                                                </select>
+                                            </div>
+                                        </section>
+                                        <p class="border-bottom mb-3 mt-3 fw-bold">Imagenes </p>
+                                        <section>
+                                            <div class="col">
+                                                <label for="archivos">Maximo de 4 imagenes!</label>
+                                                <input  accept="image/*" required class="form-control" type="file" multiple="true"  name="archivos" id="archivos">
+                                            </div>
+                                        </section>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <section class="d-flex gap-1 flex-column">
+                                            <p class="border-bottom mb-3 fw-bold">Datos Extras</p>
+                                            <div class="form-check ">
+                                                <input  class="form-check-input" type="checkbox" th:field="*{isAccesoRuta}" name="isAccesoRuta" value="" id="isAccesoRuta">
+                                                <label class="form-check-label" for="isAccesoRuta">
+                                                    Acceso Ruta
+                                                </label>
+                                            </div>
+                                            <div class="form-check ">
+                                                <input  class="form-check-input" type="checkbox" th:field="*{isRiego}" name="isRiego" value="" id="isRiego">
+                                                <label class="form-check-label" for="isRiego">
+                                                    Riego
+                                                </label>
+                                            </div>
+                                            <div class="form-check   ">
+                                                <input  class="form-check-input" type="checkbox" th:field="*{isVidriera}" name="isVidriera" value="" id="isVidriera">
+                                                <label class="form-check-label" for="isVidriera">
+                                                    Vidriera a la calle
+                                                </label>
+                                            </div>
+                                            <div class="form-check   ">
+                                                <input  class="form-check-input" type="checkbox" th:field="*{isBanios}" name="isBanios" value="" id="isBanios">
+                                                <label class="form-check-label" for="isBanios">
+                                                    Baños
+                                                </label>
+                                            </div>
+                                            <div class="col  ">
+                                                <label class="form-label" for="impMunicipales">Imp. Municipales</label>
+                                                <input required class="form-control form-control-sm" type="number" min="0" th:field="*{impMunicipales}" name="impMunicipales" id="impMunicipales">
+                                            </div>
+                                            <div class="col  ">
+                                                <label class="form-label" for="impInmobiliarios">Imp. Inmobiliarios</label>
+                                                <input required class="form-control form-control-sm" type="number" min="0" th:field="*{impInmobiliarios}" name="impInmobiliarios" id="impInmobiliarios">
+                                            </div>
+                                            <div class="col  ">
+                                                <label class="form-label" for="expensas">Expensas</label>
+                                                <input required class="form-control form-control-sm" type="number" min="0" th:field="*{expensas}" name="expensas" id="expensas">
+                                            </div>
+                                            <div class="col  ">
+                                                <label class="form-label" for="mts2">Metros Cuadrados</label>
+                                                <input required class="form-control form-control-sm" type="number" min="0" th:field="*{mts2}" name="mts2" id="mts2">
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label" for="hectareas">Hectareas</label>
+                                                <input required class="form-control form-control-sm" type="number" min="0" th:field="*{hectareas}" name="hectareas" id="hectareas">
+                                            </div>                                            
+                                        </section>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
+</html>

@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 public class InicioController {
 
-    @GetMapping
+    @GetMapping({"", "/","/inicio"})
     public String inicio(Model model, HttpServletRequest request) {
-        model.addAttribute("contenido", "fragmentos/inicio");
         model.addAttribute("titulo", "Real State");
         model.addAttribute("request", request);
-        return "layout";
+        return "inicio";
     }
+
 }

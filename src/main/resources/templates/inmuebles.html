@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    </head>
+    <body >
+        <div layout:fragment="contenido">
+            <main>
+                <div class="shadow p-3 rounded-2 bg-white">
+                    <h3 class="border-bottom pb-1 text-primary">Inmuebles</h3>
+
+
+                    <h6 class="text-secondary">Filtrar Inmueble</h6>
+                    <form th:action="@{/inmuebles}" method="get" class="d-flex gap-3 col-12 col-md-8">
+                        <div class="col">
+                            <label class="form-label mb-1" for="tipo">Tipo Inmumeble</label>
+                            <select class="form-select" id="tipo" name="tipo">
+                                <option th:selected="${param.tipo!=null && param.tipo.toString()=='Todos'}" value="Todos">Todos</option>
+                                <option th:selected="${param.tipo!=null && param.tipo.toString()=='Casa'}" value="Casa">Casa</option>
+                                <option th:selected="${param.tipo!=null && param.tipo.toString()=='Departamento'}" value="Departamento">Departamento</option>
+                                <option th:selected="${param.tipo!=null && param.tipo.toString()=='Campo'}" value="Campo" >Campo</option>
+                                <option th:selected="${param.tipo!=null && param.tipo.toString()=='Oficina'}" value="Oficina">Oficina</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="form-label mb-1" for="ubicacion">Ubicación</label>
+                            <input class="form-control" type="text" id="ubicacion" name="ubicacion" placeholder="Ubicacion" th:value="${param.ubicacion == null ? null: param.ubicacion.toString()}" />
+                        </div>
+                        <div class="col">
+                            <label class="form-label mb-1" for="estado">Estado</label>
+                            <select class="form-select" id="estado" name="estado">
+                                <option th:selected="${param.estado!=null && param.estado.toString()=='Todos'}" value="Todos">Todos</option>
+                                <option th:selected="${param.estado!=null && param.estado.toString()=='Alquilado'}" value="Alquilado">Alquilado</option>
+                                <option th:selected="${param.estado!=null && param.estado.toString()=='Vendido'}" value="Vendido">Vendido</option>
+                                <option th:selected="${param.estado!=null && param.estado.toString()=='Mantenimiento'}" value="Mantenimiento" >Mantenimiento</option>
+                                <option th:selected="${param.estado!=null && param.estado.toString()=='Cancelado'}" value="Cancelado">Cancelado</option>
+                            </select>
+                        </div>
+
+                        <div class="col d-flex align-items-end">
+                            <button class="btn btn-outline-secondary" type="submit">Filtrar</button>
+                        </div>
+                    </form>
+
+
+                    <div class="d-flex justify-content-end">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                Nuevo
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" th:href="@{/inmuebles/nuevo?tipo=Casa}">Casa</a></li>
+                                <li><a class="dropdown-item" th:href="@{/inmuebles/nuevo?tipo=Departamento}">Departamento</a></li>
+                                <li><a class="dropdown-item" th:href="@{/inmuebles/nuevo?tipo=Campo}">Campo</a></li>
+                                <li><a class="dropdown-item" th:href="@{/inmuebles/nuevo?tipo=Oficina}">Oficina</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 shadow p-3 bg-white rounded-3">
+                    <h3>Listado </h3>
+                    <p class="pb-0 mb-0 fw-ligth" th:text="${'Encontrados '+inmuebles.size}"></p>
+                    <div class="table-responsive">
+
+
+                        <table class="table table-hover table-ligth table-striped table-sm ">
+                            <thead class="table-dark"> 
+                                <tr>               
+                                    <th>Imagen</th> 
+                                    <th>Cliente</th> 
+                                    <th>Tipo de Inmueble</th>
+                                    <th>Ubicación</th>
+                                    <th>Prec. Venta</th>
+                                    <th>Prec. Alquiler</th>
+                                    <th hidden>Imp. Municipal</th>                    
+                                    <th hidden> Imp. Inmobiliario</th> 
+                                    <th hidden> Fecha Registro</th>
+                                    <th hidden> fecha Publicación</th>
+                                    <th hidden>Mts2</th>
+                                    <th hidden> Ambientes</th>
+                                    <th hidden> Tipo Ambiente</th>                    
+                                    <th hidden>Expensas</th> 
+                                    <th hidden>Hectareas</th>
+                                    <th hidden>Riego</th>
+                                    <th hidden>Acceso Ruta</th>
+                                    <th hidden>Vidriera</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr th:if="${inmuebles.size<1}">
+                                    <td colspan="7">
+                                        <span th:text="${inmuebles.size<1?'No se encontraron inmuebles':''}"></span>
+                                    </td>
+                                </tr>
+                                <tr th:each="inmueble : ${inmuebles}" style="font-size: .9em" class="text-capitalize" >    
+                                    <td>
+                                        <img style="height: 60px; width: 100px; object-fit: cover; object-position: center" th:src="@{'img/'+${inmueble.imagenes[0].nombre}}" alt="alt"/>
+                                    </td> 
+                                    <td th:text="${inmueble.propietario.nombre + ', '+ inmueble.propietario.apellido}">aqui</td> 
+                                    <td hdden th:text="${inmueble.tipoInmueble}"></td> 
+                                    <td th:text="${inmueble.direccion}"></td> 
+                                    <td th:text="${inmueble.isVenta ? '$ '+#numbers.formatDecimal(inmueble.precioVenta, 0, 'POINT', 2, 'COMMA'):'-'}"  ></td> 
+                                    <td th:text="${'$ '+#numbers.formatDecimal(inmueble.precioAlquiler, 0, 'POINT', 2, 'COMMA')}"></td>                   
+                                    <td hidden th:text="${inmueble.impMunicipales}"></td> 
+                                    <td hidden th:text="${inmueble.impInmobiliarios}"></td> 
+                                    <td hidden th:text="${inmueble.fechaRegistro}"></td> 
+                                    <td hidden th:text="${inmueble.fechaPublicacion}"></td> 
+                                    <td hidden th:text="${inmueble.mts2}"></td>                   
+                                    <td hidden th:text="${inmueble.cantAmbientes}"></td> 
+                                    <td hidden th:text="${inmueble.tipoAmbiente}"></td> 
+                                    <td hidden th:text="${inmueble.expensas}"></td> 
+                                    <td hidden th:text="${inmueble.hectareas}"></td> 
+                                    <td hidden th:text="${inmueble.isRiego}"></td> 
+                                    <td hidden th:text="${inmueble.isAccesoRuta}"></td> 
+                                    <td hidden th:text="${inmueble.isVidriera}"></td> 
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-info" th:href="@{/inmuebles/ver/{id}(id=${inmueble.id})}"><i class="fa-solid fa-search"></i></a>
+                                        <a class="btn btn-sm btn-outline-danger" th:href="@{/inmuebles/eliminar/{id}(id=${inmueble.id})}"><i class="fa-solid fa-trash"></i></a>
+                                        <a class="btn btn-sm btn-outline-warning" th:href="@{/inmuebles/editar/{id}(id=${inmueble.id},tipo=${inmueble.tipoInmueble.toString()})}">
+                                           <i class="fa-solid fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>                 
+                    </div>
+                </div>
+            </main>
+
+
+
+
+        </div>
+    </body>
+</html>

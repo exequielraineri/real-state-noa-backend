@@ -10,6 +10,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>TODO write content</div>
+        <div th:fragment="fragmento">
+            <h3 th:text="${inmueble.titulo}"></h3>
+            <section class="d-flex gap-3 flex-wrap" style="place-content: center">
+                <img class="col-5 col-md-3" style="object-fit: cover; object-position:center" th:each="inm : ${inmueble.imagenes}" th:src="@{'/img/'+${inm.nombre}}"/>
+            </section>
+        </div>
     </body>
 </html>

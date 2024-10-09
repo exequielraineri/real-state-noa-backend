@@ -8,21 +8,21 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 /**
  *
- * @author Sofia
+ * 
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "transaccion")
-@NamedQueries({
-    @NamedQuery(name = "Transaccion.findAll", query = "SELECT t FROM Transaccion t"),
-    @NamedQuery(name = "Transaccion.findById", query = "SELECT t FROM Transaccion t WHERE t.id = :id"),
-    @NamedQuery(name = "Transaccion.findByTipoTransaccion", query = "SELECT t FROM Transaccion t WHERE t.tipoTransaccion = :tipoTransaccion"),
-    @NamedQuery(name = "Transaccion.findByTipoOperacion", query = "SELECT t FROM Transaccion t WHERE t.tipoOperacion = :tipoOperacion"),
-    @NamedQuery(name = "Transaccion.findByImporte", query = "SELECT t FROM Transaccion t WHERE t.importe = :importe"),
-    @NamedQuery(name = "Transaccion.findByDescripcion", query = "SELECT t FROM Transaccion t WHERE t.descripcion = :descripcion"),
-    @NamedQuery(name = "Transaccion.findByFechaTransaccion", query = "SELECT t FROM Transaccion t WHERE t.fechaTransaccion = :fechaTransaccion"),
-    @NamedQuery(name = "Transaccion.findByEstado", query = "SELECT t FROM Transaccion t WHERE t.estado = :estado")})
+
 public class Transaccion implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,100 +48,5 @@ public class Transaccion implements Serializable {
     @ManyToOne
     private Usuario idAgente;
 
-    public Transaccion() {
-    }
-
-    public Transaccion(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTipoTransaccion() {
-        return tipoTransaccion;
-    }
-
-    public void setTipoTransaccion(String tipoTransaccion) {
-        this.tipoTransaccion = tipoTransaccion;
-    }
-
-    public String getTipoOperacion() {
-        return tipoOperacion;
-    }
-
-    public void setTipoOperacion(String tipoOperacion) {
-        this.tipoOperacion = tipoOperacion;
-    }
-
-    public BigDecimal getImporte() {
-        return importe;
-    }
-
-    public void setImporte(BigDecimal importe) {
-        this.importe = importe;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public Date getFechaTransaccion() {
-        return fechaTransaccion;
-    }
-
-    public void setFechaTransaccion(Date fechaTransaccion) {
-        this.fechaTransaccion = fechaTransaccion;
-    }
-
-    public Boolean getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Boolean estado) {
-        this.estado = estado;
-    }
-
-    public Usuario getIdAgente() {
-        return idAgente;
-    }
-
-    public void setIdAgente(Usuario idAgente) {
-        this.idAgente = idAgente;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Transaccion)) {
-            return false;
-        }
-        Transaccion other = (Transaccion) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.PracticaProfesional.inmobiliaria.entidades.Transaccion[ id=" + id + " ]";
-    }
     
 }
