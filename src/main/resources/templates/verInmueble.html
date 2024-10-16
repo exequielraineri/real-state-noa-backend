@@ -13,7 +13,7 @@
                 <h3 th:text="${inmueble.titulo}"></h3>
                 <cite class="text-end d-inline-block w-100" th:text="${inmueble.isVenta?'Propiedad para la Venta':'Propiedad para Alquiler'}"></cite>
                 <section class="mt-2 d-flex gap-3 flex-wrap">
-                    <img class="col" th:each='img : ${inmueble.imagenes}' th:src="@{'/img/'+${img.nombre}}" width="100" alt="imagen" style="object-fit: cover; object-position: center">
+                    <img class="col-4" th:each='img : ${inmueble.imagenes}' th:src="@{'/img/'+${img.nombre}}" width="60" alt="imagen" style="object-fit: cover; object-position: center">
                 </section>
             </div>
 
@@ -40,7 +40,7 @@
 
                 <h5 class="border-bottom pb-2">Datos Extras</h5>
                 <ul>
-                    <li th:if="${inmueble.isBanios}" th:text="${inmueble.isBanios?'Con Baños':'Sin Baños'}">Baños</li>
+                    <li th:if="${inmueble.banios > 0}" th:text="${inmueble.banios +' Baños'}">Baños</li>
                     <li th:text="${'Expensas: $ '+#numbers.formatDecimal(inmueble.expensas,0,'POINT',2,'COMMA')}">Expensas: 2321</li>
                     <li th:text="${'Impuestos Inmobiliarios $ '+#numbers.formatDecimal(inmueble.impInmobiliarios,0,'POINT',2,'COMMA')}">Inmpuesto Mun/Inm: </li>
                     <li th:text="${'Impuestos Municipales $ '+#numbers.formatDecimal(inmueble.impMunicipales,0,'POINT',2,'COMMA')}">Inmpuesto Mun/Inm: </li>
@@ -158,8 +158,8 @@
                                                 </label>
                                             </div>
                                             <div class="form-check   ">
-                                                <input  class="form-check-input" type="checkbox" th:field="*{isBanios}" name="isBanios" value="" id="isBanios">
-                                                <label class="form-check-label" for="isBanios">
+                                                <input  class="form-check-input" type="checkbox" th:field="*{banios}" name="banios" value="" id="banios">
+                                                <label class="form-check-label" for="banios">
                                                     Baños
                                                 </label>
                                             </div>

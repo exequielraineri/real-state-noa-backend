@@ -8,9 +8,64 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+        <script>
+            function updatePrice() {
+                var select = document.getElementById("inmuebles");
+                var selectedOption = select.options[select.selectedIndex];
+                var inmueblePrice = selectedOption.getAttribute("data-price");
+                document.getElementById("valorInmueble").value = inmueblePrice;
+            }
+            function toggleCuotasFields() {
+                var metodoPago = document.querySelector('input[name="metodoPago"]:checked').value;
+                var cuotasFields = document.getElementById('cuotasFields');
+                if (metodoPago === 'cuotas') {
+                    cuotasFields.style.display = 'block';
+                } else {
+                    cuotasFields.style.display = 'none';
+                }
+            }
+
+            // Ejecutar la función al cargar la página para establecer el estado inicial
+            window.onload = toggleCuotasFields;
+        </script>
     </head>
     <body>
-        <div layout:fragment="contenido">TODO write content</div>
+        <div layout:fragment="contenido"> 
+            <form th:action="@{/ventas/nuevo}" method="post" th:object="${contrato}">
+                <label for="clientes">Cliente:</label>
+                <select th:field="*{idCliente.id}" name="clientes" id="clientes">
+                    <option th:each="cliente : ${clientes}" th:value="${cliente.id}" 
+                            th:text="${cliente.nombre + ', ' + cliente.apellido}"></option>
+                </select>
+
+
+                <label for="inmuebles">Inmueble:</label>
+                <select th:field="*{idInmueble.id}" name="inmuebles" id="inmuebles" onchange="updatePrice()">
+                    <option th:each="inmueble : ${inmuebles}" th:value="${inmueble.id}" th:data-price="${inmueble.precioVenta}"
+                            th:text="${inmueble.titulo}">
+                    </option>
+                </select>
+
+                <label for="valorInmueble">Valor del inmueble:</label>
+                <input type="text" id="valorInmueble" name="valorInmueble" readonly>
+
+                <label>
+                    <input type="radio" name="metodoPago" value="efectivo" onclick="toggleCuotasFields()" checked>
+                    Pago en efectivo
+                </label>
+                <label>
+                    <input type="radio" name="metodoPago" value="cuotas" onclick="toggleCuotasFields()">
+                    Pago en cuotas
+                </label>
+
+                <div id="cuotasFields" style="display: none;">
+                    <label for="numCuotas">Número de cuotas:</label>
+                    <input type="number" id="numCuotas" name="numCuotas" min="1" th:field="*{cantCuota}">
+                </div>
+
+                <button type="submit">Guardar</button> 
+            </form>
+        </div>
     </body>
 </html>

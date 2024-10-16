@@ -12,9 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMin;
+
 /**
  *
- * 
+ *
  */
 @Entity
 @Table(name = "pagos")
@@ -38,6 +41,8 @@ public class Pagos implements Serializable {
     private Integer numCuota;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "monto")
+    @NotNull
+    @DecimalMin("0.0")
     private BigDecimal monto;
     @Column(name = "interes")
     private BigDecimal interes;
@@ -47,5 +52,4 @@ public class Pagos implements Serializable {
     @ManyToOne
     private Contrato idContrato;
 
-    
 }

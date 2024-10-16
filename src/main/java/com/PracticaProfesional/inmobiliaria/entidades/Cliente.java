@@ -59,6 +59,4 @@ public class Cliente implements Serializable {
     private List<Contrato> contratos=new ArrayList<>();
     @OneToMany(mappedBy = "idCliente")
     private List<Consulta> consultas=new ArrayList<>();
-    
-
 }

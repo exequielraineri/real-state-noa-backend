@@ -6,7 +6,6 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import jakarta.persistence.*;
 import java.util.ArrayList;
