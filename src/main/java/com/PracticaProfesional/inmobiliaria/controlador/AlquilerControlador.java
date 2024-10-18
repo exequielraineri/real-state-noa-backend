@@ -16,13 +16,17 @@ import com.PracticaProfesional.inmobiliaria.servicios.PagosServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -75,14 +79,16 @@ public class AlquilerControlador {
             @RequestParam Integer idUsuario,
             @RequestParam Integer idContrato,
             @RequestParam Integer idInmueble,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio,
             @RequestBody Pagos pago) throws Exception {
         try {
             Cliente cliente = cliService.obtener(idCliente).orElseThrow(() -> new Exception("Cliente no encontrado"));
             Usuario usuario = userService.obtener(idUsuario).orElseThrow(() -> new Exception("Usuario no encontrado"));
             Inmueble inmueble = inmuService.obtener(idInmueble).orElseThrow(() -> new Exception("Inmueble no encontrado"));
             Contrato contrato = conService.obtener(idContrato).orElseThrow(() -> new Exception("Contrato no encontrado"));
-            inicializarContrato(contrato, cliente, usuario, inmueble);
 
+            contrato.setFechaInicio(fechaInicio);
+            inicializarContrato(contrato, cliente, usuario, inmueble);
             if ("alquiler".equalsIgnoreCase(contrato.getTipoOperacion())) {
                 procesarAlquiler(contrato, pago, inmueble);
             }
@@ -177,17 +183,36 @@ public class AlquilerControlador {
     private void procesarPagoCuotas(Contrato contrato, Pagos pago, Inmueble inmueble, int numeroCuotas) {
         BigDecimal montoTotal = inmueble.getPrecioAlquiler();
         BigDecimal montoCuota = montoTotal.divide(BigDecimal.valueOf(numeroCuotas), RoundingMode.HALF_UP);
+        LocalDate fechaInicio = contrato.getFechaInicio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate fechaUltimoPago = fechaInicio;
 
         for (int i = 1; i <= numeroCuotas; i++) {
             Pagos pagoCuota = new Pagos();
             pagoCuota.setMetodoPago(pago.getMetodoPago());
-            pagoCuota.setFechaPago(new Date());
             pagoCuota.setNumCuota(i);
-            pagoCuota.setMonto(montoCuota);
             pagoCuota.setEstado("Pendiente");
             pagoCuota.setIdContrato(contrato);
+
+            fechaUltimoPago = fechaInicio.plusMonths(i - 1);
+            LocalDate fechaPagoCuota = fechaUltimoPago.withDayOfMonth(1);
+            pagoCuota.setFechaPago(Date.from(fechaPagoCuota.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+            Date fechaPagoEfectiva = pago.getFechaPago();
+
+            LocalDate fechaLimite = fechaUltimoPago.withDayOfMonth(10);
+            LocalDate fechaEfectivaPago = fechaPagoEfectiva.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            if (fechaEfectivaPago.isAfter(fechaLimite)) {
+                BigDecimal recargo = montoCuota.multiply(BigDecimal.valueOf(0.10));
+                montoCuota = montoCuota.add(recargo);
+            }
+
+            pagoCuota.setMonto(montoCuota);
+
             pagoService.guardar(pagoCuota);
         }
+
+        contrato.setFechaFin(Date.from(fechaUltimoPago.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
     private void actualizarDatos(Contrato viejo, Contrato nuevo) {
