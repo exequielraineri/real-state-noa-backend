@@ -75,18 +75,14 @@ public class AlquilerControlador {
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> nuevoAlquiler(
-            @RequestParam Integer idCliente,
-            @RequestParam Integer idUsuario,
-            @RequestParam Integer idContrato,
-            @RequestParam Integer idInmueble,
+            @RequestParam Cliente cliente,
+            @RequestParam Usuario usuario,
+            @RequestParam Inmueble inmueble,
+            @RequestParam Contrato contrato,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio,
             @RequestBody Pagos pago) throws Exception {
         try {
-            Cliente cliente = cliService.obtener(idCliente).orElseThrow(() -> new Exception("Cliente no encontrado"));
-            Usuario usuario = userService.obtener(idUsuario).orElseThrow(() -> new Exception("Usuario no encontrado"));
-            Inmueble inmueble = inmuService.obtener(idInmueble).orElseThrow(() -> new Exception("Inmueble no encontrado"));
-            Contrato contrato = conService.obtener(idContrato).orElseThrow(() -> new Exception("Contrato no encontrado"));
-
+            
             contrato.setFechaInicio(fechaInicio);
             inicializarContrato(contrato, cliente, usuario, inmueble);
             if ("alquiler".equalsIgnoreCase(contrato.getTipoOperacion())) {
