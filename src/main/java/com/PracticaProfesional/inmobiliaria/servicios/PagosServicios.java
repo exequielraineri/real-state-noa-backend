@@ -4,13 +4,14 @@
  */
 package com.PracticaProfesional.inmobiliaria.servicios;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Pagos;
+import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.interfaz.PagosInterface;
 import com.PracticaProfesional.inmobiliaria.repository.PagosInterfaceRepo;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -23,7 +24,8 @@ public class PagosServicios implements PagosInterface {
     private PagosInterfaceRepo repo;
 
     @Override
-    public Pagos guardar(Pagos pagos) {
+    @Transactional
+    public Pago guardar(Pago pagos) {
         return repo.save(pagos);
     }
 
@@ -33,12 +35,12 @@ public class PagosServicios implements PagosInterface {
     }
 
     @Override
-    public Optional<Pagos> obtener(Integer id) {
+    public Optional<Pago> obtener(Integer id) {
         return repo.findById(id);
     }
 
     @Override
-    public List<Pagos> listar() {
+    public List<Pago> listar() {
         return repo.findAll();
     }
 

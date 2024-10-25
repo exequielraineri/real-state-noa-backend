@@ -4,6 +4,7 @@
  */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,10 +29,13 @@ public class Imagen implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
+    
     @Column(name = "nombre")
     private String nombre;
-    @JoinColumn(name = "id_inmueble", referencedColumnName = "id")
+    
+    @JsonBackReference(value = "inmueble-imagenes")
     @ManyToOne
-    private Inmueble idInmueble;
+    @JoinColumn(name = "id_inmueble")
+    private Inmueble inmueble;
 
 }

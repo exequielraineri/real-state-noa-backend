@@ -7,7 +7,7 @@ package com.PracticaProfesional.inmobiliaria.controlador;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
-import com.PracticaProfesional.inmobiliaria.entidades.Pagos;
+import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
@@ -19,17 +19,14 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,34 +35,53 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author exera
  */
 @CrossOrigin("*")
-@Controller
+@RestController
 @RequestMapping("alquiler")
 public class AlquilerControlador {
 
-    Map<String, Object> response;
+    private Map<String, Object> response;
     @Autowired
-    private ContratoServicios conService;
+    private ContratoServicios contratoService;
     @Autowired
     private PagosServicios pagoService;
+
     @Autowired
-    private ClienteServicios cliService;
+    private ClienteServicios clienteService;
     @Autowired
-    private UsuarioServicios userService;
+    private UsuarioServicios usuarioService;
     @Autowired
-    private InmuebleServicios inmuService;
+    private InmuebleServicios inmuebleService;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> inicioAlquiler() {
         try {
             response = new HashMap<>();
-            response.put("data", listarAlquiler());
+            List<Contrato> contratos = contratoService.listar();
+            response.put("data", contratos);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Map<String, Object>> obtenerInmueble(@PathVariable Integer id) {
+        try {
+            response = new HashMap<>();
+            Contrato contrato = contratoService.obtener(id).orElse(null);
+            if (contrato == null) {
+                response.put("data", "No se encontro el contrato");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            response.put("data", contrato);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
@@ -74,27 +90,40 @@ public class AlquilerControlador {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> nuevoAlquiler(
-            @RequestParam Cliente cliente,
-            @RequestParam Usuario usuario,
-            @RequestParam Inmueble inmueble,
-            @RequestParam Contrato contrato,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio,
-            @RequestBody Pagos pago) throws Exception {
+    public ResponseEntity<Map<String, Object>> nuevoAlquiler(@RequestBody Contrato contrato) {
         try {
-            
-            contrato.setFechaInicio(fechaInicio);
-            inicializarContrato(contrato, cliente, usuario, inmueble);
-            if ("alquiler".equalsIgnoreCase(contrato.getTipoOperacion())) {
-                procesarAlquiler(contrato, pago, inmueble);
+            response = new HashMap<>();
+            System.out.println(contrato.toString());
+            Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
+            Cliente cliente = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
+            Usuario agente = usuarioService.obtener(contrato.getAgente().getId()).orElse(null);
+
+            if (inmueble == null) {
+                response.put("data", "No se encontro el inmueble");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            if (cliente == null) {
+                response.put("data", "No se encontro el cliente");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            if (agente == null) {
+                response.put("data", "No se encontro el agente");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            Contrato contratoDB = conService.guardar(contrato);
+            contrato.setFechaContrato(new Date());
+            contrato.setEstado("Emitido");
+            contrato.setTipoCliente("Inquilino");
+            contrato.setTipoOperacion("Alquiler");
 
-            response = new HashMap<>();
+            contrato.setInmueble(inmueble);
+            contrato.setAgente(agente);
+            contrato.setCliente(cliente);
+
+            Contrato contratoDB = contratoService.guardar(contrato);
             response.put("data", contratoDB);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             response.put("error", "Error al procesar el Alquiler");
             response.put("mensaje", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -105,12 +134,12 @@ public class AlquilerControlador {
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            Contrato contrato = conService.obtener(id).orElse(null);
+            Contrato contrato = contratoService.obtener(id).orElse(null);
             if (contrato == null) {
                 response.put("data", "No se Encontro Contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            conService.eliminar(contrato.getId());
+            contratoService.eliminar(contrato.getId());
             response.put("data", "Se elimino contrato id " + id);
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
         } catch (Exception e) {
@@ -123,13 +152,13 @@ public class AlquilerControlador {
     public ResponseEntity<Map<String, Object>> modificar(@RequestBody Contrato contrato, @PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            Contrato contratoDB = conService.obtener(id).orElse(null);
+            Contrato contratoDB = contratoService.obtener(id).orElse(null);
             if (contratoDB == null) {
                 response.put("data", "No se encontro contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
             actualizarDatos(contratoDB, contrato);
-            response.put("data", conService.guardar(contrato));
+            response.put("data", contratoService.guardar(contrato));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
@@ -138,22 +167,12 @@ public class AlquilerControlador {
     }
 
     private List<Contrato> listarAlquiler() {
-        return conService.listar().stream()
-                .filter(transaccion -> "alquiler".equals(transaccion.getTipoOperacion()))
+        return contratoService.listar().stream()
+                .filter(contrato -> "alquiler".equals(contrato.getTipoOperacion().toLowerCase()))
                 .collect(Collectors.toList());
     }
 
-    private void inicializarContrato(Contrato contrato, Cliente cliente, Usuario usuario, Inmueble inmueble) {
-        contrato.setIdCliente(cliente);
-        contrato.setIdAgente(usuario);
-        contrato.setIdInmueble(inmueble);
-        contrato.setImporte(inmueble.getPrecioAlquiler());
-        contrato.setTipoOperacion("Alquiler");
-        contrato.setTipoCliente("Inquilino");
-        contrato.setFechaContrato(new Date());
-    }
-
-    private void procesarAlquiler(Contrato contrato, Pagos pago, Inmueble inmueble) {
+    private void procesarAlquiler(Contrato contrato, Pago pago, Inmueble inmueble) {
         contrato.setImporte(inmueble.getPrecioAlquiler());
         String metodoPago = pago.getMetodoPago();
 
@@ -165,29 +184,29 @@ public class AlquilerControlador {
         }
     }
 
-    private void procesarPagoEfectivo(Pagos pago, Contrato contrato) {
+    private void procesarPagoEfectivo(Pago pago, Contrato contrato) {
         pago.setMetodoPago("efectivo");
         pago.setFechaPago(new Date());
         pago.setEstado("Pagado");
-        pago.setIdContrato(contrato);
+        pago.setContrato(contrato);
         pagoService.guardar(pago);
-        List<Pagos> pagos = new ArrayList<>();
+        List<Pago> pagos = new ArrayList<>();
         pagos.add(pago);
-        contrato.setPagosCollection(pagos);
+        contrato.setPagos(pagos);
     }
 
-    private void procesarPagoCuotas(Contrato contrato, Pagos pago, Inmueble inmueble, int numeroCuotas) {
+    private void procesarPagoCuotas(Contrato contrato, Pago pago, Inmueble inmueble, int numeroCuotas) {
         BigDecimal montoTotal = inmueble.getPrecioAlquiler();
         BigDecimal montoCuota = montoTotal.divide(BigDecimal.valueOf(numeroCuotas), RoundingMode.HALF_UP);
         LocalDate fechaInicio = contrato.getFechaInicio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate fechaUltimoPago = fechaInicio;
 
         for (int i = 1; i <= numeroCuotas; i++) {
-            Pagos pagoCuota = new Pagos();
+            Pago pagoCuota = new Pago();
             pagoCuota.setMetodoPago(pago.getMetodoPago());
             pagoCuota.setNumCuota(i);
             pagoCuota.setEstado("Pendiente");
-            pagoCuota.setIdContrato(contrato);
+            pagoCuota.setContrato(contrato);
 
             fechaUltimoPago = fechaInicio.plusMonths(i - 1);
             LocalDate fechaPagoCuota = fechaUltimoPago.withDayOfMonth(1);
@@ -217,9 +236,9 @@ public class AlquilerControlador {
         viejo.setFechaContrato(nuevo.getFechaContrato());
         viejo.setFechaFin(nuevo.getFechaFin());
         viejo.setFechaInicio(nuevo.getFechaInicio());
-        viejo.setIdAgente(nuevo.getIdAgente());
-        viejo.setIdCliente(nuevo.getIdCliente());
-        viejo.setIdInmueble(nuevo.getIdInmueble());
+        viejo.setAgente(nuevo.getAgente());
+        viejo.setCliente(nuevo.getCliente());
+        viejo.setInmueble(nuevo.getInmueble());
         viejo.setImporte(nuevo.getImporte());
         viejo.setTipoCliente(nuevo.getTipoCliente());
     }

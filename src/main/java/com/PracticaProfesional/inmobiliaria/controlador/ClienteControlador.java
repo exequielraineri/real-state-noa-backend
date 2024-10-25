@@ -7,6 +7,7 @@ package com.PracticaProfesional.inmobiliaria.controlador;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controlador de clientes
@@ -27,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Sofia
  */
 @CrossOrigin("*")
-@Controller
+@RestController
 @RequestMapping("clientes")
 public class ClienteControlador {
 
@@ -38,15 +41,23 @@ public class ClienteControlador {
 
     /**
      *
+     * @param tipoCliente
      * @return
      */
     @GetMapping
-    public ResponseEntity<Map<String, Object>> inicio() {
+    public ResponseEntity<Map<String, Object>> listar(
+            @RequestParam(name = "tipoCliente", defaultValue = "") String tipoCliente) {
         try {
             response = new HashMap<>();
-            response.put("data", cliService.listar());
+
+            if (tipoCliente.isEmpty()) {
+                response.put("data", cliService.listar());
+            } else {
+                response.put("data", cliService.listarPorTipoCliente(tipoCliente));
+            }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
+            response.put("tipoCliente", tipoCliente);
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

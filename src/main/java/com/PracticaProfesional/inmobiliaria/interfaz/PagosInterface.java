@@ -5,7 +5,7 @@
 package com.PracticaProfesional.inmobiliaria.interfaz;
 
 
-import com.PracticaProfesional.inmobiliaria.entidades.Pagos;
+import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,11 +14,11 @@ import java.util.Optional;
  * @author Sofia
  */
 public interface PagosInterface {
-    public Pagos guardar(Pagos pagos);
+    public Pago guardar(Pago pagos);
     
     public void eliminar(Integer id);
     
-    public Optional<Pagos> obtener(Integer id);
+    public Optional<Pago> obtener(Integer id);
     
-    public List<Pagos> listar();
+    public List<Pago> listar();
 }

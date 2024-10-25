@@ -2,6 +2,7 @@ package com.PracticaProfesional.inmobiliaria.servicios;
 
 import com.PracticaProfesional.inmobiliaria.repository.ClienteInterfaceRepo;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.interfaz.ClienteInterface;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ public class ClienteServicios implements ClienteInterface {
     @Override
     public Cliente guardar(Cliente cliente) {
         cliente.setFechaRegistro(new Date());
+        
         return repo.save(cliente);
     }
 
@@ -42,6 +44,10 @@ public class ClienteServicios implements ClienteInterface {
     @Override
     public List<Cliente> listar() {
         return repo.findAll();
+    }
+    
+    public List<Cliente> listarPorTipoCliente(String tipo) {
+        return repo.findByTipoCliente(EnumTipoCliente.valueOf(tipo));
     }
 
     public List<Cliente> filtrarClientes(String nombre, String apellido, String provincia) {

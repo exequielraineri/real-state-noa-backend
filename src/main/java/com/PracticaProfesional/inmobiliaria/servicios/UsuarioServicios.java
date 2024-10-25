@@ -43,8 +43,13 @@ public class UsuarioServicios implements UsuarioInterface {
     public List<Usuario> listar() {
         return repo.findAll();
     }
-     public List<Usuario> filtrarUsuario(String rol, String provincia) {
+
+    public List<Usuario> filtrarUsuario(String rol, String provincia) {
         return repo.filtrarUsuario(rol, provincia);
+    }
+
+    public Optional<Usuario> findByCorreoAndPassword(String correo, String password) {
+        return repo.findByCorreoAndPassword(correo, password);
     }
 
 }

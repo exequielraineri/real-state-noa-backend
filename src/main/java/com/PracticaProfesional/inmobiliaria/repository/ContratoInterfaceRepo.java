@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Sofia
  */
 @Repository
-public interface ContratoInterfaceRepo extends JpaRepository<Contrato, Integer>{
-    
+public interface ContratoInterfaceRepo extends JpaRepository<Contrato, Integer> {
+
 }

@@ -4,7 +4,7 @@
  */
 package com.PracticaProfesional.inmobiliaria.repository;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Pagos;
+import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Sofia
  */
 @Repository
-public interface PagosInterfaceRepo extends JpaRepository<Pagos, Integer>{
+public interface PagosInterfaceRepo extends JpaRepository<Pago, Integer>{
     
 }

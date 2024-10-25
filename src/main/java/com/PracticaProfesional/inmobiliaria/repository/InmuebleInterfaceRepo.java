@@ -26,4 +26,8 @@ public interface InmuebleInterfaceRepo extends JpaRepository<Inmueble, Integer> 
     List<Inmueble> filtrarInmuebles(@Param("tipoInmueble") EnumTipoInmuebles tipoInmueble,
             @Param("direccion") String direccion,
             @Param("estado") String estado);
+    
+    
+   
+    
 }

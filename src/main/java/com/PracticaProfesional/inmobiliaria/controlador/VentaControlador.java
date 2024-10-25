@@ -5,7 +5,7 @@
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
-import com.PracticaProfesional.inmobiliaria.entidades.Pagos;
+import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
@@ -35,13 +35,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author Sofia
  */
 @CrossOrigin("*")
-@Controller
+@RestController
 @RequestMapping("ventas")
 public class VentaControlador {
 
@@ -76,7 +77,7 @@ public class VentaControlador {
             @RequestParam Integer idUsuario,
             @RequestParam Integer idContrato,
             @RequestParam Integer idInmueble,
-            @RequestBody Pagos pago) throws Exception {
+            @RequestBody Pago pago) throws Exception {
         try {
             Cliente cliente = cliService.obtener(idCliente).orElseThrow(() -> new Exception("Cliente no encontrado"));
             Usuario usuario = userService.obtener(idUsuario).orElseThrow(() -> new Exception("Usuario no encontrado"));
@@ -143,16 +144,16 @@ public class VentaControlador {
     }
 
     private void inicializarContrato(Contrato contrato, Cliente cliente, Usuario usuario, Inmueble inmueble) {
-        contrato.setIdCliente(cliente);
-        contrato.setIdAgente(usuario);
-        contrato.setIdInmueble(inmueble);
+        contrato.setCliente(cliente);
+        contrato.setAgente(usuario);
+        contrato.setInmueble(inmueble);
         contrato.setImporte(inmueble.getPrecioVenta());
         contrato.setTipoOperacion("Venta");
         contrato.setTipoCliente("Comprador");
         contrato.setFechaContrato(new Date());
     }
 
-    private void procesarVenta(Contrato contrato, Pagos pago, Inmueble inmueble) {
+    private void procesarVenta(Contrato contrato, Pago pago, Inmueble inmueble) {
         contrato.setImporte(inmueble.getPrecioVenta());
         String metodoPago = pago.getMetodoPago();
 
@@ -164,29 +165,29 @@ public class VentaControlador {
         }
     }
 
-    private void procesarPagoEfectivo(Pagos pago, Contrato contrato) {
+    private void procesarPagoEfectivo(Pago pago, Contrato contrato) {
         pago.setMetodoPago("efectivo");
         pago.setFechaPago(new Date());
         pago.setEstado("Pagado");
-        pago.setIdContrato(contrato);
+        pago.setContrato(contrato);
         pagoService.guardar(pago);
-        List<Pagos> pagos = new ArrayList<>();
+        List<Pago> pagos = new ArrayList<>();
         pagos.add(pago);
-        contrato.setPagosCollection(pagos);
+        contrato.setPagos(pagos);
     }
 
-    private void procesarPagoCuotas(Contrato contrato, Pagos pago, Inmueble inmueble, int numeroCuotas) {
+    private void procesarPagoCuotas(Contrato contrato, Pago pago, Inmueble inmueble, int numeroCuotas) {
         BigDecimal montoTotal = inmueble.getPrecioVenta();
         BigDecimal montoCuota = montoTotal.divide(BigDecimal.valueOf(numeroCuotas), RoundingMode.HALF_UP);
 
         for (int i = 1; i <= numeroCuotas; i++) {
-            Pagos pagoCuota = new Pagos();
+            Pago pagoCuota = new Pago();
             pagoCuota.setMetodoPago(pago.getMetodoPago());
             pagoCuota.setFechaPago(new Date());
             pagoCuota.setNumCuota(i);
             pagoCuota.setMonto(montoCuota);
             pagoCuota.setEstado("Pendiente");
-            pagoCuota.setIdContrato(contrato);
+            pagoCuota.setContrato(contrato);
             pagoService.guardar(pagoCuota);
         }
     }
@@ -197,9 +198,9 @@ public class VentaControlador {
         viejo.setFechaContrato(nuevo.getFechaContrato());
         viejo.setFechaFin(nuevo.getFechaFin());
         viejo.setFechaInicio(nuevo.getFechaInicio());
-        viejo.setIdAgente(nuevo.getIdAgente());
-        viejo.setIdCliente(nuevo.getIdCliente());
-        viejo.setIdInmueble(nuevo.getIdInmueble());
+        viejo.setAgente(nuevo.getAgente());
+        viejo.setCliente(nuevo.getCliente());
+        viejo.setInmueble(nuevo.getInmueble());
         viejo.setImporte(nuevo.getImporte());
         viejo.setTipoCliente(nuevo.getTipoCliente());
     }

@@ -5,6 +5,7 @@
 package com.PracticaProfesional.inmobiliaria.repository;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,5 +29,8 @@ public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer> {
             @Param("provincia") String provincia);
 
     public Optional<Cliente> findById(Integer id);
+
+    @Query("SELECT c FROM Cliente c WHERE c.tipoCliente=:tipo")
+    List<Cliente> findByTipoCliente(EnumTipoCliente tipo);
 
 }

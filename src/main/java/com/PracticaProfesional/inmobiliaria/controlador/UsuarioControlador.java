@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author Sofia
  */
 @CrossOrigin("*")
-@Controller
+@RestController
 @RequestMapping("usuarios")
 public class UsuarioControlador {
 
@@ -100,10 +101,9 @@ public class UsuarioControlador {
         viejo.setNombre(nuevo.getNombre());
         viejo.setApellido(nuevo.getApellido());
         viejo.setCorreo(nuevo.getCorreo());
-        viejo.setContraseña(nuevo.getContraseña());
+        viejo.setPassword(nuevo.getPassword());
         viejo.setProvincia(nuevo.getProvincia());
         viejo.setRol(nuevo.getRol());
-        viejo.setFechaNacimiento(nuevo.getFechaNacimiento());
         viejo.setComisionAlquiler(nuevo.getComisionAlquiler());
         viejo.setComisionVenta(nuevo.getComisionVenta());
         viejo.setFechaRegistro(nuevo.getFechaRegistro());

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -23,21 +24,25 @@ public class ContratoServicios implements ContratoInterface {
     private ContratoInterfaceRepo repo;
 
     @Override
+    @Transactional
     public Contrato guardar(Contrato contrato) {
         return repo.save(contrato);
     }
 
     @Override
+    @Transactional
     public void eliminar(Integer id) {
         repo.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Contrato> obtener(Integer id) {
         return repo.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Contrato> listar() {
         return repo.findAll();
     }

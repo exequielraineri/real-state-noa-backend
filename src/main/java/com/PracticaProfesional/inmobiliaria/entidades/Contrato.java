@@ -4,6 +4,11 @@
  */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -14,11 +19,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
- * 
+ *
  */
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,41 +36,66 @@ public class Contrato implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
+
     @Column(name = "tipo_operacion")
     private String tipoOperacion;
+
     @Column(name = "tipo_cliente")
     private String tipoCliente;
+
     @Column(name = "fecha_contrato")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaContrato;
+
     @Column(name = "fecha_inicio")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaInicio;
+
     @Column(name = "fecha_fin")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaFin;
+
     @Column(name = "cant_cuota")
     private Integer cantCuota;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+
     @Column(name = "importe")
     private BigDecimal importe;
+
     @Column(name = "estado")
     private String estado;
-    @JoinColumn(name = "id_cliente", referencedColumnName = "id")
+
+    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "contratos"})
+    @JsonBackReference(value = "cliente-contratos")
     @ManyToOne
-    private Cliente idCliente;
-    @JoinColumn(name = "id_inmueble", referencedColumnName = "id")
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
+
+    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "contratos"})
+    @JsonBackReference(value = "inmueble-contratos")
     @ManyToOne
-    private Inmueble idInmueble;
-    @JoinColumn(name = "id_agente", referencedColumnName = "id")
+    @JoinColumn(name = "id_inmueble")
+    private Inmueble inmueble;
+
+    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "contratos"})
+    @JsonBackReference(value = "agente-contratos")
     @ManyToOne
-    private Usuario idAgente;
-    @OneToMany(mappedBy = "idContrato")
-    private List<Pagos> pagosCollection=new ArrayList<>();
-    @OneToMany(mappedBy = "idContrato")
-    private List<Notificacion> notificacionCollection=new ArrayList<>();
+    @JoinColumn(name = "id_agente")
+    private Usuario agente;
+
+    @JsonManagedReference(value = "contrato-pagos")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "contrato", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Pago> pagos = new ArrayList<>();
+
+    @JsonManagedReference(value = "contrato-notificaciones")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contrato", orphanRemoval = true)
+    private List<Notificacion> notificaciones = new ArrayList<>();
+
+    public void agregarPago(Pago pago) {
+        pagos.add(pago);
+        pago.setContrato(this);
+    }
 
 }
