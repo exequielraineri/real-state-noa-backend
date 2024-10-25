@@ -4,6 +4,8 @@
  */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -40,13 +42,10 @@ public class Contrato implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "tipo_operacion")
-    private String tipoOperacion;
+    @Column(name = "tipo_contrato", nullable = false)
+    private EnumTipoContrato tipoContrato;
 
-    @Column(name = "tipo_cliente")
-    private String tipoCliente;
-
-    @Column(name = "fecha_contrato")
+    @Column(name = "fecha_contrato", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date fechaContrato;
 
@@ -58,23 +57,21 @@ public class Contrato implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fechaFin;
 
-    @Column(name = "cant_cuota")
-    private Integer cantCuota;
-
-    @Column(name = "importe")
+    @Column(name = "importe", nullable = false)
     private BigDecimal importe;
 
     @Column(name = "estado")
-    private String estado;
+    private EnumEstadoContrato estado;
 
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "contratos"})
-    @JsonBackReference(value = "cliente-contratos")
+    //@JsonBackReference(value = "cliente-contratos")
+    @JsonIgnoreProperties({"contratos", "contratos"})
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "contratos"})
-    @JsonBackReference(value = "inmueble-contratos")
+    //@JsonBackReference(value = "inmueble-contratos")
+    @JsonIgnoreProperties({"contratos"})
     @ManyToOne
     @JoinColumn(name = "id_inmueble")
     private Inmueble inmueble;

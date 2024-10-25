@@ -9,6 +9,9 @@ import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
@@ -16,6 +19,7 @@ import com.PracticaProfesional.inmobiliaria.servicios.PagosServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -58,6 +62,8 @@ public class AlquilerControlador {
     private UsuarioServicios usuarioService;
     @Autowired
     private InmuebleServicios inmuebleService;
+
+    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> inicioAlquiler() {
@@ -112,9 +118,14 @@ public class AlquilerControlador {
             }
 
             contrato.setFechaContrato(new Date());
-            contrato.setEstado("Emitido");
-            contrato.setTipoCliente("Inquilino");
-            contrato.setTipoOperacion("Alquiler");
+
+            //Si la fecha de inicio es igual a la del contrato, el contrato se pone en estado activo
+            if (sf.format(contrato.getFechaContrato()).equals(sf.format(contrato.getFechaInicio()))) {
+                contrato.setEstado(EnumEstadoContrato.ACTIVO);
+            } else {
+                contrato.setEstado(EnumEstadoContrato.PENDIENTE);
+            }
+            contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
 
             contrato.setInmueble(inmueble);
             contrato.setAgente(agente);
@@ -157,19 +168,18 @@ public class AlquilerControlador {
                 response.put("data", "No se encontro contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            actualizarDatos(contratoDB, contrato);
-            response.put("data", contratoService.guardar(contrato));
+
+            contratoDB.setFechaInicio(contrato.getFechaInicio());
+            contratoDB.setFechaFin(contrato.getFechaFin());
+            contratoDB.setCliente(contrato.getCliente());
+            contratoDB.setInmueble(contrato.getInmueble());
+
+            response.put("data", contratoService.guardar(contratoDB));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private List<Contrato> listarAlquiler() {
-        return contratoService.listar().stream()
-                .filter(contrato -> "alquiler".equals(contrato.getTipoOperacion().toLowerCase()))
-                .collect(Collectors.toList());
     }
 
     private void procesarAlquiler(Contrato contrato, Pago pago, Inmueble inmueble) {
@@ -228,19 +238,6 @@ public class AlquilerControlador {
         }
 
         contrato.setFechaFin(Date.from(fechaUltimoPago.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    }
-
-    private void actualizarDatos(Contrato viejo, Contrato nuevo) {
-        viejo.setTipoOperacion(nuevo.getTipoOperacion());
-        viejo.setCantCuota(nuevo.getCantCuota());
-        viejo.setFechaContrato(nuevo.getFechaContrato());
-        viejo.setFechaFin(nuevo.getFechaFin());
-        viejo.setFechaInicio(nuevo.getFechaInicio());
-        viejo.setAgente(nuevo.getAgente());
-        viejo.setCliente(nuevo.getCliente());
-        viejo.setInmueble(nuevo.getInmueble());
-        viejo.setImporte(nuevo.getImporte());
-        viejo.setTipoCliente(nuevo.getTipoCliente());
     }
 
 }

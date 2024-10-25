@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  *
@@ -42,9 +41,9 @@ public class Inmueble implements Serializable {
 
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     //@JsonBackReference(value = "propietario-inmuebles")
+    @JsonIgnoreProperties({"inmuebles"})
     @ManyToOne
     @JoinColumn(name = "id_propietario")
-    @JsonIgnoreProperties("inmuebles")
     private Cliente propietario;
 
     @Column(name = "tipo_inmueble")
@@ -54,7 +53,7 @@ public class Inmueble implements Serializable {
     @Column(name = "direccion")
     private String direccion;
 
-    @Column(name = "descripcion")
+    @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
     @Column(name = "tipo_operacion")
@@ -104,7 +103,7 @@ public class Inmueble implements Serializable {
     private Boolean isVidriera;
     private Boolean isVenta;
 
-    @JsonManagedReference(value = "inmueble-contratos")
+    //@JsonManagedReference(value = "inmueble-contratos")
     @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 

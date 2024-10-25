@@ -63,13 +63,32 @@ public class ClienteControlador {
         }
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Map<String, Object>> obtenerCliente(@PathVariable Integer id) {
+        try {
+            response = new HashMap<>();
+            Cliente cliente = cliService.obtener(id).orElse(null);
+            if (cliente == null) {
+                response.put("data", "No se encontro el cliente");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            response.put("data", cliente);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      *
      * @param cliente
      * @return
      */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> nuevoCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<Map<String, Object>> nuevoCliente(@RequestBody Cliente cliente
+    ) {
         try {
             Cliente clienteBD = cliService.guardar(cliente);
             response = new HashMap<>();
@@ -82,7 +101,8 @@ public class ClienteControlador {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id
+    ) {
         try {
             response = new HashMap<>();
             Cliente clienteBD = cliService.obtener(id).orElse(null);
@@ -100,7 +120,8 @@ public class ClienteControlador {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Cliente cliente, @PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Cliente cliente, @PathVariable Integer id
+    ) {
         try {
             response = new HashMap<>();
             Cliente clienteBD = cliService.obtener(id).orElse(null);

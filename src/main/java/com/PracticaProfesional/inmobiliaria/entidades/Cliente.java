@@ -5,14 +5,15 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
-import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +23,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -59,7 +59,7 @@ public class Cliente implements Serializable {
     @Column(name = "telefono")
     private String telefono;
 
-    @Column(name = "dni", nullable = true, unique = true)
+    @Column(name = "dni", nullable = false, unique = true)
     private String dni;
 
     @Temporal(TemporalType.DATE)
@@ -73,6 +73,7 @@ public class Cliente implements Serializable {
     private Boolean estado;
 
     //@JsonManagedReference(value = "propietario-inmuebles")
+    @JsonIgnoreProperties({"contratos"})
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "propietario", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Inmueble> inmuebles;
 
@@ -80,7 +81,8 @@ public class Cliente implements Serializable {
     @Enumerated(EnumType.STRING)
     private EnumTipoCliente tipoCliente;
 
-    @JsonManagedReference(value = "cliente-contratos")
+    //@JsonIgnoreProperties({"cliente"})
+    //@JsonManagedReference(value = "cliente-contratos")
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 

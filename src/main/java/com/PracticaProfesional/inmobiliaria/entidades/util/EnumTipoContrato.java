@@ -8,6 +8,6 @@ package com.PracticaProfesional.inmobiliaria.entidades.util;
  *
  * @author Exequiel
  */
-public enum EnumTipoCliente {
-    INQUILINO, COMPRADOR, PROPIETARIO
+public enum EnumTipoContrato {
+    ALQUILER, VENTA
 }

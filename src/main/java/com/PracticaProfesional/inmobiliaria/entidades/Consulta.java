@@ -5,7 +5,6 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.json.bind.annotation.JsonbAnnotation;
 import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.*;
