@@ -18,8 +18,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,6 +61,22 @@ public class TransaccionControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("{id}")
+    public ResponseEntity<Map<String, Object>> obtenerAlquiler(@PathVariable Integer id){
+        try {
+            response =new HashMap<>();
+            Transaccion transaccionDB = tranService.obtener(id).orElse(null);
+            if(transaccionDB==null){
+                response.put("data", "no se encontro transaccion");
+                return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+            }
+            response.put("data",transaccionDB);
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("data",e.getMessage());
+            return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> nuevaTransaccion(@RequestBody Transaccion transaccion) {
@@ -86,7 +100,8 @@ public class TransaccionControlador {
 
     
     @PostMapping("contrato/{idContrato}")
-    public ResponseEntity<Map<String, Object>> nuevaTransaccionContrato(@PathVariable Integer idContrato, @RequestBody Transaccion transaccion) {
+    public ResponseEntity<Map<String, Object>> nuevaTransaccionContrato(@PathVariable Integer idContrato,
+            @RequestBody Transaccion transaccion) {
         try {
             response = new HashMap<>();
             Usuario usuario = usuarioService.obtener(transaccion.getAgente().getId()).orElse(null);
@@ -158,7 +173,8 @@ public class TransaccionControlador {
                 response.put("data", "No se encontro transaccion");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            actualizarDatos(transaccionDB, transaccion);
+            transaccionDB.setDescripcion(transaccion.getDescripcion());
+            
             response.put("data", tranService.guardar(transaccion));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -175,14 +191,5 @@ public class TransaccionControlador {
         transaccion.setDescripcion(transaccion.getDescripcion());
         transaccion.setImporte(transaccion.getImporte());
         transaccion.setTipoTransaccion(transaccion.getTipoTransaccion());
-    }
-
-    private void actualizarDatos(Transaccion viejo, Transaccion nuevo) {
-        viejo.setDescripcion(nuevo.getDescripcion());
-        viejo.setFechaTransaccion(nuevo.getFechaTransaccion());
-        viejo.setAgente(nuevo.getAgente());
-        viejo.setImporte(nuevo.getImporte());
-        viejo.setTipoOperacion(nuevo.getTipoOperacion());
-        viejo.setTipoTransaccion(nuevo.getTipoTransaccion());
     }
 }

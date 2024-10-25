@@ -6,6 +6,7 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -73,6 +74,7 @@ public class Cliente implements Serializable {
     private Boolean estado;
 
     //@JsonManagedReference(value = "propietario-inmuebles")
+    @JsonIgnoreProperties({"contratos"})
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "propietario", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Inmueble> inmuebles;
 

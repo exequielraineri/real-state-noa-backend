@@ -50,14 +50,12 @@ public class AlquilerControlador {
     @Autowired
     private ContratoServicios contratoService;
     @Autowired
-    private PagosServicios pagoService;
-
-    @Autowired
     private ClienteServicios clienteService;
     @Autowired
     private UsuarioServicios usuarioService;
     @Autowired
     private InmuebleServicios inmuebleService;
+
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> inicioAlquiler() {
@@ -115,13 +113,15 @@ public class AlquilerControlador {
             contrato.setEstado("Emitido");
             contrato.setTipoCliente("Inquilino");
             contrato.setTipoOperacion("Alquiler");
-
             contrato.setInmueble(inmueble);
             contrato.setAgente(agente);
             contrato.setCliente(cliente);
 
             Contrato contratoDB = contratoService.guardar(contrato);
             response.put("data", contratoDB);
+
+           
+
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
             response.put("error", "Error al procesar el Alquiler");
@@ -151,96 +151,44 @@ public class AlquilerControlador {
     @PutMapping("{id}")
     public ResponseEntity<Map<String, Object>> modificar(@RequestBody Contrato contrato, @PathVariable Integer id) {
         try {
+
             response = new HashMap<>();
             Contrato contratoDB = contratoService.obtener(id).orElse(null);
             if (contratoDB == null) {
                 response.put("data", "No se encontro contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            actualizarDatos(contratoDB, contrato);
-            response.put("data", contratoService.guardar(contrato));
+            contratoDB.setFechaInicio(contrato.getFechaInicio());
+            contratoDB.setFechaFin(contrato.getFechaFin());
+            contratoDB.setInmueble(contrato.getInmueble());
+            contratoDB.setCliente(contrato.getCliente());
+
+            if (contratoDB.getFechaInicio() == null) {
+                response.put("data", "Error fecha inicio null");
+                return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+            }
+
+            if (contratoDB.getFechaFin() == null) {
+                response.put("data", "Error fecha fin null");
+                return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+            }
+
+            if (contratoDB.getInmueble() == null) {
+                response.put("data", "Error inmueble null");
+                return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+            }
+
+            if (contratoDB.getCliente() == null) {
+                response.put("data", "Error cliente null");
+                return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+            }
+
+            response.put("data", contratoService.guardar(contratoDB));
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    private List<Contrato> listarAlquiler() {
-        return contratoService.listar().stream()
-                .filter(contrato -> "alquiler".equals(contrato.getTipoOperacion().toLowerCase()))
-                .collect(Collectors.toList());
-    }
-
-    private void procesarAlquiler(Contrato contrato, Pago pago, Inmueble inmueble) {
-        contrato.setImporte(inmueble.getPrecioAlquiler());
-        String metodoPago = pago.getMetodoPago();
-
-        if ("efectivo".equals(metodoPago)) {
-            procesarPagoEfectivo(pago, contrato);
-        } else if ("cuotas".equals(metodoPago)) {
-            int numeroCuotas = pago.getNumCuota();
-            procesarPagoCuotas(contrato, pago, inmueble, numeroCuotas);
-        }
-    }
-
-    private void procesarPagoEfectivo(Pago pago, Contrato contrato) {
-        pago.setMetodoPago("efectivo");
-        pago.setFechaPago(new Date());
-        pago.setEstado("Pagado");
-        pago.setContrato(contrato);
-        pagoService.guardar(pago);
-        List<Pago> pagos = new ArrayList<>();
-        pagos.add(pago);
-        contrato.setPagos(pagos);
-    }
-
-    private void procesarPagoCuotas(Contrato contrato, Pago pago, Inmueble inmueble, int numeroCuotas) {
-        BigDecimal montoTotal = inmueble.getPrecioAlquiler();
-        BigDecimal montoCuota = montoTotal.divide(BigDecimal.valueOf(numeroCuotas), RoundingMode.HALF_UP);
-        LocalDate fechaInicio = contrato.getFechaInicio().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate fechaUltimoPago = fechaInicio;
-
-        for (int i = 1; i <= numeroCuotas; i++) {
-            Pago pagoCuota = new Pago();
-            pagoCuota.setMetodoPago(pago.getMetodoPago());
-            pagoCuota.setNumCuota(i);
-            pagoCuota.setEstado("Pendiente");
-            pagoCuota.setContrato(contrato);
-
-            fechaUltimoPago = fechaInicio.plusMonths(i - 1);
-            LocalDate fechaPagoCuota = fechaUltimoPago.withDayOfMonth(1);
-            pagoCuota.setFechaPago(Date.from(fechaPagoCuota.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-
-            Date fechaPagoEfectiva = pago.getFechaPago();
-
-            LocalDate fechaLimite = fechaUltimoPago.withDayOfMonth(10);
-            LocalDate fechaEfectivaPago = fechaPagoEfectiva.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-            if (fechaEfectivaPago.isAfter(fechaLimite)) {
-                BigDecimal recargo = montoCuota.multiply(BigDecimal.valueOf(0.10));
-                montoCuota = montoCuota.add(recargo);
-            }
-
-            pagoCuota.setMonto(montoCuota);
-
-            pagoService.guardar(pagoCuota);
-        }
-
-        contrato.setFechaFin(Date.from(fechaUltimoPago.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-    }
-
-    private void actualizarDatos(Contrato viejo, Contrato nuevo) {
-        viejo.setTipoOperacion(nuevo.getTipoOperacion());
-        viejo.setCantCuota(nuevo.getCantCuota());
-        viejo.setFechaContrato(nuevo.getFechaContrato());
-        viejo.setFechaFin(nuevo.getFechaFin());
-        viejo.setFechaInicio(nuevo.getFechaInicio());
-        viejo.setAgente(nuevo.getAgente());
-        viejo.setCliente(nuevo.getCliente());
-        viejo.setInmueble(nuevo.getInmueble());
-        viejo.setImporte(nuevo.getImporte());
-        viejo.setTipoCliente(nuevo.getTipoCliente());
-    }
-
 }

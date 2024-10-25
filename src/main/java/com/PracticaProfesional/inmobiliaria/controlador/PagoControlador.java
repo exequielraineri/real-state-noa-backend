@@ -4,15 +4,14 @@
  */
 package com.PracticaProfesional.inmobiliaria.controlador;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
-import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
+import com.PracticaProfesional.inmobiliaria.entidades.Pago;
+import com.PracticaProfesional.inmobiliaria.servicios.PagosServicios;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,79 +20,60 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controlador de clientes
  *
  * @author Sofia
  */
 @CrossOrigin("*")
 @RestController
-@RequestMapping("clientes")
-public class ClienteControlador {
+@RequestMapping("pagos")
+public class PagoControlador {
 
-    Map<String, Object> response;
+    private Map<String, Object> response;
 
     @Autowired
-    ClienteServicios cliService;
+    private PagosServicios pagoService;
 
-    /**
-     *
-     * @param tipoCliente
-     * @return
-     */
     @GetMapping
-    public ResponseEntity<Map<String, Object>> listar(
-            @RequestParam(name = "tipoCliente", defaultValue = "") String tipoCliente) {
+    public ResponseEntity<Map<String, Object>> pagos() {
         try {
             response = new HashMap<>();
-
-            if (tipoCliente.isEmpty()) {
-                response.put("data", cliService.listar());
-            } else {
-                response.put("data", cliService.listarPorTipoCliente(tipoCliente));
-            }
+            response.put("data", pagoService.listar());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            response.put("tipoCliente", tipoCliente);
-            response.put("error", e.getMessage());
+            response.put("data", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Map<String, Object>> obtenerInmueble(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> obtenerPagos(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            Cliente cliente = cliService.obtener(id).orElse(null);
-            if (cliente == null) {
-                response.put("data", "No se encontro cliente");
+            Pago pagoDB = pagoService.obtener(id).orElse(null);
+            if (pagoDB == null) {
+                response.put("data", "no se encontro pago");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            response.put("data", cliente);
+            response.put("data", pagoDB);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            response.put("error", e.getMessage());
+            response.put("data", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    /**
-     *
-     * @param cliente
-     * @return
-     */
+
     @PostMapping
-    public ResponseEntity<Map<String, Object>> nuevoCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<Map<String, Object>> nuevoPago(@RequestBody Pago pago) {
         try {
-            Cliente clienteBD = cliService.guardar(cliente);
             response = new HashMap<>();
-            response.put("data", clienteBD);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            response.put("error", e.getMessage());
+            response.put("data", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -102,13 +82,13 @@ public class ClienteControlador {
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            Cliente clienteBD = cliService.obtener(id).orElse(null);
-            if (clienteBD == null) {
-                response.put("data", "No se encontro cliente");
+            Pago pago = pagoService.obtener(id).orElse(null);
+            if (pago == null) {
+                response.put("data", "No se Encontro pago");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            cliService.eliminar(clienteBD.getId());
-            response.put("data", "Se elimino el cliente id: " + id);
+            pagoService.eliminar(pago.getId());
+            response.put("data", "Se elimino pago id " + id);
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             response.put("error", e.getMessage());
@@ -117,29 +97,22 @@ public class ClienteControlador {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Cliente cliente, @PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Pago pago, @PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            Cliente clienteBD = cliService.obtener(id).orElse(null);
-            if (clienteBD == null) {
-                response.put("data", "No se encontro Cliente");
+            Pago pagoDB = pagoService.obtener(id).orElse(null);
+            if (pagoDB == null) {
+                response.put("data", "No se encontro pago");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            actualizarDatos(clienteBD, cliente);
-            response.put("data", cliService.guardar(cliente));
+            pagoDB.setEstado(pago.getEstado());
+            pagoDB.setMetodoPago(pago.getMetodoPago());
+
+            response.put("data", pagoService.guardar(pagoDB));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    private void actualizarDatos(Cliente viejo, Cliente nuevo) {
-        viejo.setNombre(nuevo.getNombre());
-        viejo.setApellido(nuevo.getApellido());
-        viejo.setProvincia(nuevo.getProvincia());
-        viejo.setEstado(nuevo.getEstado());
-        viejo.setTelefono(nuevo.getTelefono());
-    }
-
 }
