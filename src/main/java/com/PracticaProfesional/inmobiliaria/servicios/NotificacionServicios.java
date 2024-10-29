@@ -24,12 +24,15 @@ public class NotificacionServicios implements NotificacionesInterface {
 
     @Override
     public Notificacion guardar(Notificacion notificacion) {
+        notificacion.setActivo(true);
         return repo.save(notificacion);
     }
 
     @Override
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Notificacion notificacion = obtener(id).get();
+        notificacion.setActivo(false);
+        repo.save(notificacion);
     }
 
     @Override

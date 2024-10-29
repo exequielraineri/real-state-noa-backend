@@ -7,13 +7,12 @@ package com.PracticaProfesional.inmobiliaria.controlador;
 import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Transaccion;
-import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.PagosServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.TransaccionServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
+import jakarta.validation.Valid;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,44 +33,22 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin("*")
 @RestController
-@RequestMapping("transacciones")
-public class TransaccionControlador {
+@RequestMapping("pagos")
+public class PagoControlador {
 
-    Map<String, Object> response;
-    @Autowired
-    private TransaccionServicios tranService;
-
-    @Autowired
-    private UsuarioServicios usuarioService;
-
-    @Autowired
-    private ContratoServicios contratoService;
+    private Map<String, Object> response;
 
     @Autowired
     private PagosServicios pagoService;
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> inicioAlquiler() {
-        try {
-            response = new HashMap<>();
-            response.put("data", tranService.listar());
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    @Autowired
+    private ContratoServicios contratoService;
 
-    @GetMapping("{id}")
-    public ResponseEntity<Map<String, Object>> obtenerAlquiler(@PathVariable Integer id) {
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> pagos() {
         try {
             response = new HashMap<>();
-            Transaccion transaccionDB = tranService.obtener(id).orElse(null);
-            if (transaccionDB == null) {
-                response.put("data", "no se encontro transaccion");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-            response.put("data", transaccionDB);
+            response.put("data", pagoService.listar());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("data", e.getMessage());
@@ -79,22 +56,58 @@ public class TransaccionControlador {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> nuevaTransaccion(@RequestBody Transaccion transaccion) {
+    @GetMapping("{id}")
+    public ResponseEntity<Map<String, Object>> obtenerPago(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            Usuario usuario = usuarioService.obtener(transaccion.getAgente().getId()).orElse(null);
-            if (usuario == null) {
-                response.put("data", "No se encontro el usuario");
+            Pago pagoDB = pagoService.obtener(id).orElse(null);
+            if (pagoDB == null) {
+                response.put("data", "no se encontro pago");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
+            response.put("data", pagoDB);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("data", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-            transaccion.setFechaTransaccion(new Date());
+    @PutMapping("/confirmar/{id}")
+    public ResponseEntity<Map<String, Object>> confirmarPago(@PathVariable(required = true) Integer id,
+            @RequestBody @Valid Pago pago) {
+        try {
+            response = new HashMap<>();
+            Pago pagoBD = pagoService.obtener(id).orElse(null);
+            if (pagoBD == null) {
+                response.put("data", "No se encontro el contrato");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            if (pagoBD.getEstado().equals("CONFIRMADO")) {
+                response.put("data", "El pago ya se encuentra realizado");
+                response.put("pago", pagoBD);
+                return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+            }
+
+            Date fechaActual = new Date();
+
+            //Genero una transaccion del pago confirmado
+            Transaccion transaccion = new Transaccion();
+            transaccion.setAgente(pagoBD.getContrato().getAgente());
+            transaccion.setFechaTransaccion(fechaActual);
             transaccion.setEstado(true);
-            transaccion.setAgente(usuario);
+            transaccion.setImporte(pagoBD.getMonto());
+            transaccion.setTipoOperacion(pagoBD.getContrato().getTipoContrato().name());
+            transaccion.setTipoTransaccion("INGRESO");
+            transaccion.setDescripcion(String.format("Registro de pago, contrato %d, inmueble %s", pagoBD.getContrato().getId(), pagoBD.getContrato().getInmueble().getTitulo()));
 
-            response.put("data", tranService.guardar(transaccion));
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            pagoBD.setMetodoPago(pago.getMetodoPago());
+            pagoBD.setFechaRegistro(fechaActual);
+            pagoBD.confirmarPago();
+            pagoBD.getContrato().getAgente().agregarTransaccion(transaccion);
+
+            response.put("data", pagoService.guardar(pagoBD));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("data", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -105,33 +118,14 @@ public class TransaccionControlador {
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            Transaccion transaccion = tranService.obtener(id).orElse(null);
-            if (transaccion == null) {
-                response.put("data", "No se Encontro Transaccion");
+            Pago pago = pagoService.obtener(id).orElse(null);
+            if (pago == null) {
+                response.put("data", "No se Encontro pago");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            tranService.eliminar(transaccion.getId());
-            response.put("data", "Se elimino transaccion id " + id);
+            pagoService.eliminar(pago.getId());
+            response.put("data", "Se elimino pago id " + id);
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Transaccion transaccion, @PathVariable Integer id) {
-        try {
-            response = new HashMap<>();
-            Transaccion transaccionDB = tranService.obtener(id).orElse(null);
-            if (transaccionDB == null) {
-                response.put("data", "No se encontro transaccion");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-            transaccionDB.setDescripcion(transaccion.getDescripcion());
-
-            response.put("data", tranService.guardar(transaccion));
-            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

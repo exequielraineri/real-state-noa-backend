@@ -33,4 +33,8 @@ public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer> {
     @Query("SELECT c FROM Cliente c WHERE c.tipoCliente=:tipo")
     List<Cliente> findByTipoCliente(EnumTipoCliente tipo);
 
+    @Override
+    @Query("SELECT c FROM Cliente c WHERE c.activo=true")
+    List<Cliente> findAll();
+
 }

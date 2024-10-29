@@ -5,24 +5,25 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Date;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
  * @author Sofia
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,21 +37,27 @@ public class Usuario implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "rol")
+    @NotNull(message = "El rol no puede estar vacio")
+    @Column(name = "rol", nullable = false)
     private String rol;
 
+    @NotNull(message = "El nombre no puede estar vacio")
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @NotNull(message = "El apellido no puede estar vacio")
     @Column(name = "apellido", nullable = false)
     private String apellido;
 
+    @NotNull(message = "El correo no puede estar vacio")
     @Column(name = "correo", unique = true, nullable = false)
     private String correo;
 
+    @NotNull(message = "Password no puede estar vacio")
     @Column(name = "password", nullable = false)
     private String password;
 
+    @NotNull(message = "La fecha de registro no puede estar vacio")
     @Column(name = "fecha_registro", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRegistro;
@@ -67,16 +74,35 @@ public class Usuario implements Serializable {
     @Column(name = "estado")
     private Boolean estado;
 
-    @JsonManagedReference(value = "agente-transacciones")
+    //@JsonManagedReference(value = "agente-transacciones")
+    @JsonIgnoreProperties({"agente"})
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Transaccion> transacciones = new ArrayList<>();
 
-    @JsonManagedReference(value = "agente-contratos")
+    //@JsonManagedReference(value = "agente-contratos")
+    @JsonIgnoreProperties({"agente"})
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
-    @JsonManagedReference(value = "agente-consultas")
+    //@JsonManagedReference(value = "agente-consultas")
+    @JsonIgnoreProperties({"agente"})
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 
+    public void agregarTransaccion(Transaccion transaccion) {
+        transacciones.add(transaccion);
+        transaccion.setAgente(this);
+    }
+
+    public void agregarContrato(Contrato contrato) {
+        contratos.add(contrato);
+        contrato.setAgente(this);
+    }
+
+    public void agregarConsulta(Consulta consulta) {
+        consultas.add(consulta);
+        consulta.setAgente(this);
+    }
+
+    private boolean activo;
 }

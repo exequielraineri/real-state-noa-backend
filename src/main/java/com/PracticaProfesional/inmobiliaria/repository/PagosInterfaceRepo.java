@@ -4,8 +4,11 @@
  */
 package com.PracticaProfesional.inmobiliaria.repository;
 
+import com.PracticaProfesional.inmobiliaria.entidades.Notificacion;
 import com.PracticaProfesional.inmobiliaria.entidades.Pago;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,5 +17,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PagosInterfaceRepo extends JpaRepository<Pago, Integer>{
+
+    @Override
+    @Query("SELECT p FROM Pago p WHERE p.activo=true")
+    public List<Pago> findAll();
     
 }

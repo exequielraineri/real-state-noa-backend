@@ -5,6 +5,8 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,13 +15,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.DecimalMin;
 
 /**
  *
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "pagos")
 @Getter
@@ -29,21 +30,18 @@ import jakarta.validation.constraints.DecimalMin;
 public class Pago implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    
+
     @Column(name = "fecha_pago")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaPago;
-    
+
     @Column(name = "metodo_pago")
     private String metodoPago;
-    
-    @Column(name = "num_cuota")
-    private Integer numCuota;
 
     @Column(name = "monto")
     private BigDecimal monto;
@@ -51,12 +49,23 @@ public class Pago implements Serializable {
     @Column(name = "interes")
     private BigDecimal interes;
 
-    @Column(name = "estado")
+    @Column(name = "estado", nullable = false)
     private String estado;
 
-    @JsonBackReference(value = "contrato-pagos")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaRegistro;
+
+    private boolean activo;
+    
+    //@JsonBackReference(value = "contrato-pagos")
+    @JsonIgnoreProperties({"pagos"})
     @ManyToOne
     @JoinColumn(name = "id_contrato")
     private Contrato contrato;
+
+    public void confirmarPago() {
+        this.estado = "CONFIRMADO";
+        this.contrato.actualizarSaldo();
+    }
 
 }

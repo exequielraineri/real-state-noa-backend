@@ -27,13 +27,15 @@ public class ClienteServicios implements ClienteInterface {
     @Override
     public Cliente guardar(Cliente cliente) {
         cliente.setFechaRegistro(new Date());
-        
+        cliente.setActivo(true);
         return repo.save(cliente);
     }
 
     @Override
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Cliente cliente = obtener(id).get();
+        cliente.setActivo(false);
+        repo.save(cliente);
     }
 
     @Override
@@ -45,22 +47,15 @@ public class ClienteServicios implements ClienteInterface {
     public List<Cliente> listar() {
         return repo.findAll();
     }
-    
+
     public List<Cliente> listarPorTipoCliente(String tipo) {
-        return repo.findByTipoCliente(EnumTipoCliente.valueOf(tipo));
+        return repo.findByTipoCliente(EnumTipoCliente.valueOf(tipo.toUpperCase()));
     }
 
     public List<Cliente> filtrarClientes(String nombre, String apellido, String provincia) {
         return repo.filtrarClientes(nombre, apellido, provincia);
     }
 
-    public Cliente buscarPorId(Integer id) {
-        Optional<Cliente> clienteOpt = repo.findById(id);
-        if (clienteOpt.isPresent()) {
-            return clienteOpt.get();
-        } else {
-            return null;  // O lanzar una excepción personalizada si el cliente no existe
-        }
-    }
+    
 
 }

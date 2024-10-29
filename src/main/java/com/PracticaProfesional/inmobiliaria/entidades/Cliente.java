@@ -5,11 +5,11 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +36,7 @@ import lombok.Setter;
  *
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -72,21 +73,40 @@ public class Cliente implements Serializable {
     @Column(name = "estado")
     private Boolean estado;
 
+    private boolean activo;
+
     //@JsonManagedReference(value = "propietario-inmuebles")
-    @JsonIgnoreProperties({"contratos"})
+    @JsonIgnoreProperties({"propietario"})
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "propietario", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Inmueble> inmuebles;
+    private List<Inmueble> inmuebles = new ArrayList<>();
 
     @Column(name = "tipo_cliente")
     @Enumerated(EnumType.STRING)
     private EnumTipoCliente tipoCliente;
 
-    //@JsonIgnoreProperties({"cliente"})
     //@JsonManagedReference(value = "cliente-contratos")
+    @JsonIgnoreProperties({"cliente"})
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
-    @JsonManagedReference(value = "cliente-consultas")
+    //@JsonManagedReference(value = "cliente-consultas")
+    @JsonIgnoreProperties({"cliente"})
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
+
+    public void agregarInmueble(Inmueble inmueble) {
+        inmuebles.add(inmueble);
+        inmueble.setPropietario(this);
+    }
+
+    public void agregarContrato(Contrato contrato) {
+        contratos.add(contrato);
+        contrato.setCliente(this);
+    }
+
+    public void agregarConsulta(Consulta consulta) {
+        consultas.add(consulta);
+        consulta.setCliente(this);
+    }
+
 }

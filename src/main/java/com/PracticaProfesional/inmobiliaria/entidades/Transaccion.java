@@ -5,6 +5,8 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,6 +20,7 @@ import lombok.Setter;
  *
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -51,7 +54,10 @@ public class Transaccion implements Serializable {
     @Column(name = "estado")
     private Boolean estado;
 
-    @JsonBackReference(value = "agente-transacciones")
+    private boolean activo;
+    
+    //@JsonBackReference(value = "agente-transacciones")
+    @JsonIgnoreProperties({"transacciones"})
     @ManyToOne
     @JoinColumn(name = "id_agente")
     private Usuario agente;

@@ -4,11 +4,11 @@
  */
 package com.PracticaProfesional.inmobiliaria;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
-import org.hibernate.type.descriptor.java.CalendarTimeJavaType;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -16,15 +16,28 @@ import org.hibernate.type.descriptor.java.CalendarTimeJavaType;
  */
 public class test {
 
-    public static void main(String[] args) {
-        Date fecha = new Date();
-        Date fecha2 = new Date();
-        fecha2.setHours(0);
+    public static void main(String[] args) throws ParseException {
+        /* SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
 
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        Date fechaInicio = new Date();
+        Date fechaFin = new Date("2024/10/28");
+        long tiempo_transcurrido = fechaFin.getTime() - fechaInicio.getTime();
 
-        System.out.println(fecha);
-        System.out.println(fecha2);
-        System.out.println("Resultado: " + sf.format(fecha).equals(sf.format(fecha2)));
+        TimeUnit unidad = TimeUnit.DAYS;
+        long dias = unidad.convert(tiempo_transcurrido, TimeUnit.MILLISECONDS);
+
+        System.out.println(fechaInicio + "\t\t" + fechaFin);
+
+        System.out.println(dias + " transcurridos");
+        System.out.println(fechaFin.getHours());
+         */
+        int cant = 4;
+        BigDecimal importe = new BigDecimal(100000000);
+        System.out.println("cant: " + cant);
+        cant++;
+        System.out.println("total: "+importe);
+        System.out.println("mensual "+importe.divide(BigDecimal.valueOf(4)));
+        System.out.println("cant: " + cant);
+
     }
 }

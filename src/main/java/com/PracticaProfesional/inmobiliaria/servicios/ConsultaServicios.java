@@ -24,12 +24,15 @@ public class ConsultaServicios implements ConsultaInterface {
 
     @Override
     public Consulta guardar(Consulta consulta) {
+        consulta.setActivo(true);
         return repo.save(consulta);
     }
 
     @Override
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Consulta consulta = obtener(id).get();
+        consulta.setActivo(false);
+        repo.save(consulta);
     }
 
     @Override

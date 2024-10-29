@@ -5,7 +5,9 @@
 package com.PracticaProfesional.inmobiliaria.repository;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Consulta;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Repository;
  * @author Sofia
  */
 @Repository
-public interface ConsultaInterfaceRepo extends JpaRepository<Consulta, Integer>{
-    
+public interface ConsultaInterfaceRepo extends JpaRepository<Consulta, Integer> {
+
+    @Override
+    @Query("SELECT c FROM Consulta c WHERE c.activo=true")
+    List<Consulta> findAll();
 }

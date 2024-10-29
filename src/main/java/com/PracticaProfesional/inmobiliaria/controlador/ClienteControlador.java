@@ -5,6 +5,7 @@
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import java.util.HashMap;
 import java.util.List;
@@ -90,8 +91,8 @@ public class ClienteControlador {
     public ResponseEntity<Map<String, Object>> nuevoCliente(@RequestBody Cliente cliente
     ) {
         try {
-            Cliente clienteBD = cliService.guardar(cliente);
             response = new HashMap<>();
+            Cliente clienteBD = cliService.guardar(cliente);
             response.put("data", clienteBD);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -101,8 +102,7 @@ public class ClienteControlador {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id
-    ) {
+    public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
             Cliente clienteBD = cliService.obtener(id).orElse(null);

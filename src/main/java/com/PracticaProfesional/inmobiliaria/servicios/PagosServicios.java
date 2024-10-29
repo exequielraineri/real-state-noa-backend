@@ -25,13 +25,16 @@ public class PagosServicios implements PagosInterface {
 
     @Override
     @Transactional
-    public Pago guardar(Pago pagos) {
-        return repo.save(pagos);
+    public Pago guardar(Pago pago) {
+        pago.setActivo(true);
+        return repo.save(pago);
     }
 
     @Override
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Pago pago = obtener(id).get();
+        pago.setActivo(false);
+        repo.save(pago);
     }
 
     @Override

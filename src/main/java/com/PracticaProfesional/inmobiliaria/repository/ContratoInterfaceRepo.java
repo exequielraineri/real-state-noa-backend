@@ -5,7 +5,9 @@
 package com.PracticaProfesional.inmobiliaria.repository;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,4 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ContratoInterfaceRepo extends JpaRepository<Contrato, Integer> {
 
+    @Override
+    @Query("SELECT c FROM Contrato c WHERE c.activo=true")
+    List<Contrato> findAll();
 }

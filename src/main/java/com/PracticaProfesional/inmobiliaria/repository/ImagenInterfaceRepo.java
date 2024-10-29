@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @author Sofia
  */
 @Repository
-public interface ImagenInterfaceRepo extends JpaRepository<Imagen, Integer>{
-    
+public interface ImagenInterfaceRepo extends JpaRepository<Imagen, Integer> {
+
 }

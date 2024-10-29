@@ -29,6 +29,7 @@ public class ImagenServicios implements ImagenInterface {
 
     @Override
     public void eliminar(Integer id) {
+        System.out.println("Entro en eliminar");
         repo.deleteById(id);
     }
 

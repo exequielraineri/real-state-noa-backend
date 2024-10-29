@@ -24,25 +24,24 @@ public class ContratoServicios implements ContratoInterface {
     private ContratoInterfaceRepo repo;
 
     @Override
-    @Transactional
     public Contrato guardar(Contrato contrato) {
+        contrato.setActivo(true);
         return repo.save(contrato);
     }
 
     @Override
-    @Transactional
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Contrato contrato = obtener(id).get();
+        contrato.setActivo(false);
+        repo.save(contrato);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Contrato> obtener(Integer id) {
         return repo.findById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Contrato> listar() {
         return repo.findAll();
     }

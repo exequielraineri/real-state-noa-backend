@@ -1,11 +1,14 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,6 +16,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,9 +25,10 @@ import lombok.Setter;
  *
  *
  */
-@JsonInclude(Include.NON_NULL)
 @Getter
 @Setter
+@Data
+@JsonInclude(Include.NON_NULL)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -39,10 +44,11 @@ public class Inmueble implements Serializable {
     @Column(name = "titulo", nullable = false)
     private String titulo;
 
+    private boolean activo;
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     //@JsonBackReference(value = "propietario-inmuebles")
-    @JsonIgnoreProperties({"inmuebles"})
-    @ManyToOne
+    @JsonIgnoreProperties( value = {"inmuebles"}, allowSetters = true)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_propietario")
     private Cliente propietario;
 
@@ -76,7 +82,8 @@ public class Inmueble implements Serializable {
     private Date fechaRegistro;
 
     @Column(name = "estado")
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private EnumEstadoInmueble estado;
 
     @Column(name = "fecha_publicacion")
     @Temporal(TemporalType.DATE)
@@ -97,21 +104,24 @@ public class Inmueble implements Serializable {
     @Column(name = "hectareas")
     private Float hectareas;
 
-    private Boolean isRiego;
-    private Boolean isAccesoRuta;
+    private boolean riego;
+    private boolean accesoRuta;
     private Integer banios;
-    private Boolean isVidriera;
-    private Boolean isVenta;
+    private boolean vidrieraCalle;
+    private boolean venta;
 
     //@JsonManagedReference(value = "inmueble-contratos")
+    @JsonIgnoreProperties(value = {"inmueble"}, allowSetters = true)
     @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
-    @JsonManagedReference(value = "inmueble-imagenes")
-    @OneToMany(mappedBy = "inmueble", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    //@JsonManagedReference(value = "inmueble-imagenes")
+    @JsonIgnoreProperties(value = {"inmueble"}, allowSetters = true)
+    @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Imagen> imagenes = new ArrayList<>();
 
-    @JsonManagedReference(value = "inmueble-consultas")
+    //@JsonManagedReference(value = "inmueble-consultas")
+    @JsonIgnoreProperties(value = {"inmueble"}, allowSetters = true)
     @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 

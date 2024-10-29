@@ -5,6 +5,8 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.*;
@@ -17,6 +19,7 @@ import lombok.Setter;
  *
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "notificacion")
 @Getter
@@ -38,7 +41,10 @@ public class Notificacion implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fechaRegistro;
 
-    @JsonBackReference(value = "contrato-notificaciones")
+    private boolean activo;
+    
+    //@JsonBackReference(value = "contrato-notificaciones")
+    @JsonIgnoreProperties({"notificaciones"})
     @ManyToOne
     @JoinColumn(name = "id_contrato")
     private Contrato contrato;

@@ -4,7 +4,9 @@
  */
 package com.PracticaProfesional.inmobiliaria.servicios;
 
+import com.PracticaProfesional.inmobiliaria.entidades.Imagen;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
 import com.PracticaProfesional.inmobiliaria.interfaz.InmuebleInterface;
 import com.PracticaProfesional.inmobiliaria.repository.InmuebleInterfaceRepo;
@@ -27,12 +29,15 @@ public class InmuebleServicios implements InmuebleInterface {
     
     @Override
     public Inmueble guardar(Inmueble inmueble) {
+        inmueble.setActivo(true);
         return repo.save(inmueble);
     }
     
     @Override
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Inmueble inmueble = obtener(id).get();
+        inmueble.setActivo(false);
+        repo.save(inmueble);
     }
     
     @Override
@@ -45,8 +50,12 @@ public class InmuebleServicios implements InmuebleInterface {
         return repo.findAll(Sort.by(Sort.Direction.DESC, "fechaRegistro"));
     }
     
-    public List<Inmueble> listarInmuebles(String tipoinmueble, String direccion, String estado) {
-        return repo.filtrarInmuebles(EnumTipoInmuebles.valueOf(tipoinmueble), direccion, estado);
+    public List<Inmueble> listar(String tipoInmueble, String direccion, String estado) {
+        
+        return repo.filtrarInmuebles(
+                tipoInmueble == null ? null : EnumTipoInmuebles.valueOf(tipoInmueble),
+                direccion == null ? null : direccion,
+                estado == null ? null : EnumEstadoInmueble.valueOf(estado));
     }
     
 }

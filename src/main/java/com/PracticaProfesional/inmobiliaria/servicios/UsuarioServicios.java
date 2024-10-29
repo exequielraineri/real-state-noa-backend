@@ -26,12 +26,15 @@ public class UsuarioServicios implements UsuarioInterface {
     @Override
     public Usuario guardar(Usuario usuario) {
         usuario.setFechaRegistro(new Date());
+        usuario.setActivo(true);
         return repo.save(usuario);
     }
 
     @Override
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Usuario usuario = obtener(id).get();
+        usuario.setActivo(false);
+        repo.save(usuario);
     }
 
     @Override

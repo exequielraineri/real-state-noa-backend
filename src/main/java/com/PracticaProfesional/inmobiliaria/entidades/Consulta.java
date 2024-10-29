@@ -5,6 +5,8 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.Date;
 import jakarta.persistence.*;
@@ -17,6 +19,7 @@ import lombok.Setter;
  *
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -30,32 +33,36 @@ public class Consulta implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    
+
     @Column(name = "mensaje")
     private String mensaje;
-    
+
     @Column(name = "fecha_registro")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRegistro;
-    
+
     @Column(name = "fecha_respuesta")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRespuesta;
-    
+
     @Column(name = "estado")
     private String estado;
-    
-    @JsonBackReference(value = "cliente-consultas")
+
+    private boolean activo;
+    //@JsonBackReference(value = "cliente-consultas")
+    @JsonIgnoreProperties({"consultas"})
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    @JsonBackReference(value = "inmueble-consultas")
+    //@JsonBackReference(value = "inmueble-consultas")
+    @JsonIgnoreProperties({"consultas"})
     @ManyToOne
     @JoinColumn(name = "id_inmueble")
     private Inmueble inmueble;
 
-    @JsonBackReference(value = "agente-consultas")
+    //@JsonBackReference(value = "agente-consultas")
+    @JsonIgnoreProperties({"consultas"})
     @ManyToOne
     @JoinColumn(name = "id_agente")
     private Usuario agente;

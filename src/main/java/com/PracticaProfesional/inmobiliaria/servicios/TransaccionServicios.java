@@ -24,12 +24,15 @@ public class TransaccionServicios implements TransaccionInterface {
 
     @Override
     public Transaccion guardar(Transaccion transaccion) {
+        transaccion.setActivo(true);
         return repo.save(transaccion);
     }
 
     @Override
     public void eliminar(Integer id) {
-        repo.deleteById(id);
+        Transaccion transaccion = obtener(id).get();
+        transaccion.setActivo(false);
+        repo.save(transaccion);
     }
 
     @Override
