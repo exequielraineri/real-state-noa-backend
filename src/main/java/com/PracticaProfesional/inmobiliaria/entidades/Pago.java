@@ -4,7 +4,6 @@
  */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
@@ -56,7 +55,7 @@ public class Pago implements Serializable {
     private Date fechaRegistro;
 
     private boolean activo;
-    
+
     //@JsonBackReference(value = "contrato-pagos")
     @JsonIgnoreProperties(value = {"pagos"}, allowSetters = true)
     @ManyToOne

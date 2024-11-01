@@ -5,27 +5,22 @@
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
-import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
+import com.PracticaProfesional.inmobiliaria.entidades.Transaccion;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.PagosServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import javax.swing.text.html.HTML;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,15 +41,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin("*")
 @RestController
-@RequestMapping("ventas")
-public class VentaControlador {
+@RequestMapping("contratos")
+public class ContratoControlador {
 
     Map<String, Object> response;
 
     @Autowired
     private ContratoServicios contratoService;
-    @Autowired
-    private PagosServicios pagoService;
     @Autowired
     private ClienteServicios clienteService;
     @Autowired
@@ -62,10 +55,8 @@ public class VentaControlador {
     @Autowired
     private InmuebleServicios inmuebleService;
 
-    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-
     @GetMapping
-    public ResponseEntity<Map<String, Object>> venta() {
+    public ResponseEntity<Map<String, Object>> contrato() {
         try {
             response = new HashMap<>();
             response.put("data", contratoService.listar());
@@ -77,7 +68,7 @@ public class VentaControlador {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Map<String, Object>> obtenerInmueble(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> obtenerContratos(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
             Contrato contrato = contratoService.obtener(id).orElse(null);
@@ -94,13 +85,12 @@ public class VentaControlador {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> nuevaVenta(@RequestBody Contrato contrato) {
+    public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato) {
         try {
             response = new HashMap<>();
-
+            Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
             Cliente cliente = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
             Usuario agente = usuarioService.obtener(contrato.getAgente().getId()).orElse(null);
-            Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
 
             if (inmueble == null) {
                 response.put("data", "No se encontro el inmueble");
@@ -115,27 +105,25 @@ public class VentaControlador {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
             contrato.setFechaContrato(new Date());
-            //Si la fecha de inicio es igual a la del contrato, el contrato se pone en estado activo
-            if (sf.format(contrato.getFechaContrato()).equals(sf.format(contrato.getFechaInicio()))) {
-                contrato.setEstado(EnumEstadoContrato.ACTIVO);
-            } else {
-                contrato.setEstado(EnumEstadoContrato.PENDIENTE);
-            }
-            contrato.setTipoContrato(EnumTipoContrato.VENTA);
             contrato.setInmueble(inmueble);
             contrato.setAgente(agente);
             contrato.setCliente(cliente);
 
-            if (contrato.getInmueble() == null) {
-                Contrato contratoDB = contratoService.guardar(contrato);
-                response.put("data", contratoDB);
-                return new ResponseEntity<>(response, HttpStatus.CREATED);
+            if (contrato.getTipoContrato().equals(EnumTipoContrato.VENTA)) {
+                contrato.setTipoContrato(EnumTipoContrato.VENTA);
+                contrato.generarPagoVentas();
             } else {
-                response.put("data", "inmueble no disponible");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
+                inmueble.setEstado(EnumEstadoInmueble.ALQUILADO);
+                contrato.generarPagos();
             }
+
+            contrato.setEstado(EnumEstadoContrato.PENDIENTE);
+            response.put("data", contratoService.guardar(contrato));
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
         } catch (NumberFormatException e) {
-            response.put("error", "Error al procesar la venta");
+            response.put("error", "Error al procesar la transaccion");
             response.put("mensaje", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -161,84 +149,55 @@ public class VentaControlador {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Contrato contrato, @PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Contrato contrato,
+            @PathVariable Integer id,
+            @RequestParam(required = false) String metodoPago) {
         try {
             response = new HashMap<>();
-            Contrato contratoDB = contratoService.obtener(id).orElse(null);
-            if (contratoDB == null) {
+            Contrato contratoBD = contratoService.obtener(id).orElse(null);
+
+            if (contratoBD == null) {
                 response.put("data", "No se encontro contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            contratoDB.setInmueble(contrato.getInmueble());
-            contratoDB.setCliente(contrato.getCliente());
 
-            response.put("data", contratoService.guardar(contratoDB));
+            Cliente clienteBD = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
+            if (clienteBD == null) {
+                response.put("data", "No se encontro cliente");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            if (contratoBD.getTipoContrato() == EnumTipoContrato.VENTA) {
+                contratoBD.generarPagoVentas();
+            } else {
+                if (contratoBD.getFechaInicio() == null) {
+                    response.put("data", "Error fecha inicio null");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                }
+
+                if (contratoBD.getFechaFin() == null) {
+                    response.put("data", "Error fecha fin null");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                }
+
+                if (contratoBD.getInmueble() == null) {
+                    response.put("data", "Error inmueble null");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                }
+
+                contratoBD.generarPagos();
+                contratoBD.setFechaInicio(contrato.getFechaInicio());
+                contratoBD.setFechaFin(contrato.getFechaFin());
+
+            }
+            contratoBD.setInmueble(contrato.getInmueble());
+            contratoBD.setCliente(clienteBD);
+            response.put("data", contratoService.guardar(contratoBD));
             return new ResponseEntity<>(response, HttpStatus.OK);
-
         } catch (Exception e) {
+            response.put("contrato", contrato);
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    /*
-    private void inicializarContrato(Contrato contrato, Cliente cliente, Usuario usuario, Inmueble inmueble) {
-        contrato.setCliente(cliente);
-        contrato.setAgente(usuario);
-        contrato.setInmueble(inmueble);
-        contrato.setImporte(inmueble.getPrecioVenta());
-        contrato.setTipoContrato(EnumTipoContrato.VENTA);
-        contrato.setFechaContrato(new Date());
-    }
-
-    private void procesarVenta(Contrato contrato, Pago pago, Inmueble inmueble) {
-        contrato.setImporte(inmueble.getPrecioVenta());
-        String metodoPago = pago.getMetodoPago();
-
-        if ("efectivo".equals(metodoPago)) {
-            procesarPagoEfectivo(pago, contrato);
-        } else if ("cuotas".equals(metodoPago)) {
-            int numeroCuotas = pago.getNumCuota();
-            procesarPagoCuotas(contrato, pago, inmueble, numeroCuotas);
-        }
-    }
-
-    private void procesarPagoEfectivo(Pago pago, Contrato contrato) {
-        pago.setMetodoPago("efectivo");
-        pago.setFechaPago(new Date());
-        pago.setEstado("Pagado");
-        pago.setContrato(contrato);
-        pagoService.guardar(pago);
-        List<Pago> pagos = new ArrayList<>();
-        pagos.add(pago);
-        contrato.setPagos(pagos);
-    }
-
-    private void procesarPagoCuotas(Contrato contrato, Pago pago, Inmueble inmueble, int numeroCuotas) {
-        BigDecimal montoTotal = inmueble.getPrecioVenta();
-        BigDecimal montoCuota = montoTotal.divide(BigDecimal.valueOf(numeroCuotas), RoundingMode.HALF_UP);
-
-        for (int i = 1; i <= numeroCuotas; i++) {
-            Pago pagoCuota = new Pago();
-            pagoCuota.setMetodoPago(pago.getMetodoPago());
-            pagoCuota.setFechaPago(new Date());
-            pagoCuota.setNumCuota(i);
-            pagoCuota.setMonto(montoCuota);
-            pagoCuota.setEstado("Pendiente");
-            pagoCuota.setContrato(contrato);
-            pagoService.guardar(pagoCuota);
-        }
-    }
-
-    private void actualizarDatos(Contrato viejo, Contrato nuevo) {
-        viejo.setTipoContrato(nuevo.getTipoContrato());
-        viejo.setFechaContrato(nuevo.getFechaContrato());
-        viejo.setFechaFin(nuevo.getFechaFin());
-        viejo.setFechaInicio(nuevo.getFechaInicio());
-        viejo.setAgente(nuevo.getAgente());
-        viejo.setCliente(nuevo.getCliente());
-        viejo.setInmueble(nuevo.getInmueble());
-        viejo.setImporte(nuevo.getImporte());
-    }
-     */
-
 }

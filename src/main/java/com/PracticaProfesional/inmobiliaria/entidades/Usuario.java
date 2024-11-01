@@ -6,7 +6,6 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -53,6 +52,12 @@ public class Usuario implements Serializable {
     @Column(name = "correo", unique = true, nullable = false)
     private String correo;
 
+    @Column(nullable = false, unique = true)
+    private String dni;
+
+    @Column(unique = true)
+    private String telefono;
+
     @NotNull(message = "Password no puede estar vacio")
     @Column(name = "password", nullable = false)
     private String password;
@@ -65,10 +70,10 @@ public class Usuario implements Serializable {
     @Column(name = "provincia")
     private String provincia;
 
-    @Column(name = "comision_venta")
+    @Column(name = "comision_venta", nullable = false)
     private BigDecimal comisionVenta;
 
-    @Column(name = "comision_alquiler")
+    @Column(name = "comision_alquiler", nullable = false)
     private BigDecimal comisionAlquiler;
 
     @Column(name = "estado")

@@ -4,7 +4,6 @@
  */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
@@ -55,9 +54,9 @@ public class Transaccion implements Serializable {
     private Boolean estado;
 
     private boolean activo;
-    
+
     //@JsonBackReference(value = "agente-transacciones")
-    @JsonIgnoreProperties(value = {"transacciones"},allowSetters = true)
+    @JsonIgnoreProperties(value = {"transacciones"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_agente")
     private Usuario agente;

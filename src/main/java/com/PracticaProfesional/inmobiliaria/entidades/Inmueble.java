@@ -2,13 +2,9 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -47,7 +43,7 @@ public class Inmueble implements Serializable {
     private boolean activo;
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     //@JsonBackReference(value = "propietario-inmuebles")
-    @JsonIgnoreProperties( value = {"inmuebles"}, allowSetters = true)
+    @JsonIgnoreProperties(value = {"inmuebles"}, allowSetters = true)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_propietario")
     private Cliente propietario;

@@ -5,16 +5,12 @@
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
-import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Imagen;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
-import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ImagenServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -55,24 +50,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("inmuebles")
 public class InmuebleControlador {
-    
+
     private Map<String, Object> response;
-    
+
     @Autowired
     private InmuebleServicios inmuebleServicio;
     @Autowired
     private ClienteServicios clienteServicio;
     @Autowired
-    private UsuarioServicios usuarioServicio;
-    
-    @Autowired
     private ImagenServicios imagenService;
-    
-    @Autowired
-    private ContratoServicios contratoService;
-    
+
     private final String RUTA_IMAGENES = System.getProperty("user.dir") + "/imagenes/";
-    
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(name = "tipoInmueble", required = false) String tipoInmueble,
@@ -81,7 +70,7 @@ public class InmuebleControlador {
     ) {
         try {
             response = new HashMap<>();
-            
+
             response.put("data", inmuebleServicio.listar(tipoInmueble, direccion, estado));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -89,7 +78,7 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> guardar(
             @Valid @RequestBody Inmueble inmueble) {
@@ -100,21 +89,20 @@ public class InmuebleControlador {
                 response.put("data", "Propietario no encontrado");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             inmueble.setFechaRegistro(new Date());
-            //inmueble.setPropietario(propietario);
             inmueble.setEstado(EnumEstadoInmueble.MANTENIMIENTO);
             propietario.agregarInmueble(inmueble);
-            
+
             response.put("data", inmuebleServicio.guardar(inmueble));
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-            
+
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping(value = "subir-imagen/{idInmueble}", consumes = {"multipart/form-data"})
     private ResponseEntity<Map<String, Object>> subirImagenes(
             @PathVariable(name = "idInmueble") Integer id,
@@ -129,23 +117,23 @@ public class InmuebleControlador {
                 response.put("data", "No se encontro el inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             if (!Files.exists(directorioPath)) {
                 Files.createDirectories(directorioPath);
             }
-            
+
             for (Imagen imagene : inmueble.getImagenes()) {
                 imagenService.eliminar(imagene.getId());
                 Files.deleteIfExists(directorioPath.resolve(imagene.getNombre()));
             }
-            
+
             inmueble.getImagenes().clear();
             for (MultipartFile image : imagenes) {
                 String nombreImagen = sf.format(fechaRegistro) + "_" + image.getOriginalFilename();
                 Path rutaImagen = directorioPath.resolve(nombreImagen);
-                
+
                 Files.write(rutaImagen, image.getBytes());
-                
+
                 Imagen imagen = new Imagen();
                 imagen.setActivo(true);
                 imagen.setNombre(sf.format(fechaRegistro) + "_" + image.getOriginalFilename());
@@ -153,13 +141,13 @@ public class InmuebleControlador {
             }
             inmueble = inmuebleServicio.guardar(inmueble);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-            
+
         } catch (IOException e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @DeleteMapping("{id}")
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
@@ -177,19 +165,19 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PutMapping("{id}")
     public ResponseEntity<Map<String, Object>> modificar(@RequestBody Inmueble inmueble,
             @PathVariable(required = true) Integer id) {
         try {
             response = new HashMap<>();
-            
+
             Inmueble inmuebleBD = inmuebleServicio.obtener(id).orElse(null);
             if (inmuebleBD == null) {
                 response.put("data", "no se encontro Inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             if (inmuebleBD.isVenta()) {
                 inmuebleBD.setPrecioVenta(inmueble.getPrecioVenta());
             } else {
@@ -207,19 +195,19 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("imagen/{id}")
     @ResponseBody
     public ResponseEntity<?> mostrarImagen(@PathVariable Integer id) {
         try {
             Imagen imagenBD = imagenService.obtener(id).orElse(null);
             if (imagenBD == null) {
-                
+
                 return new ResponseEntity<>("No se encontro la imagen", HttpStatus.NOT_FOUND);
             } else {
                 Path imagenPath = Paths.get(RUTA_IMAGENES).resolve(imagenBD.getNombre());
                 Resource resource = new UrlResource(imagenPath.toUri());
-                
+
                 if (resource.exists() || resource.isReadable()) {
                     String contentType;
                     contentType = Files.probeContentType(imagenPath);
@@ -240,12 +228,12 @@ public class InmuebleControlador {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("{id}")
     public ResponseEntity<Map<String, Object>> obtener(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
-            
+
             Inmueble inmueble = inmuebleServicio.obtener(id).orElse(null);
             if (inmueble == null) {
                 response.put("data", "No se encontro el inmueble");
@@ -275,7 +263,7 @@ public class InmuebleControlador {
                 response.put("data", "El inmueble no se encontro");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             inmueble.setFechaPublicacion(new Date());
             inmueble.setEstado(EnumEstadoInmueble.DISPONIBLE);
             response.put("data", inmuebleServicio.guardar(inmueble));
@@ -285,5 +273,5 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
 }

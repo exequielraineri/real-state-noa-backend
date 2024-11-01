@@ -4,12 +4,8 @@
  */
 package com.PracticaProfesional.inmobiliaria.controlador;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
-import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Transaccion;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
-import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.PagosServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.TransaccionServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
 import java.util.Date;
@@ -43,12 +39,6 @@ public class TransaccionControlador {
 
     @Autowired
     private UsuarioServicios usuarioService;
-
-    @Autowired
-    private ContratoServicios contratoService;
-
-    @Autowired
-    private PagosServicios pagoService;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> inicioAlquiler() {
@@ -84,6 +74,7 @@ public class TransaccionControlador {
         try {
             response = new HashMap<>();
             Usuario usuario = usuarioService.obtener(transaccion.getAgente().getId()).orElse(null);
+            
             if (usuario == null) {
                 response.put("data", "No se encontro el usuario");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -92,6 +83,7 @@ public class TransaccionControlador {
             transaccion.setFechaTransaccion(new Date());
             transaccion.setEstado(true);
             transaccion.setAgente(usuario);
+           
 
             response.put("data", tranService.guardar(transaccion));
             return new ResponseEntity<>(response, HttpStatus.CREATED);
