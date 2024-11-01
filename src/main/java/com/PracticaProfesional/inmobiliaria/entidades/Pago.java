@@ -58,13 +58,13 @@ public class Pago implements Serializable {
     private boolean activo;
     
     //@JsonBackReference(value = "contrato-pagos")
-    @JsonIgnoreProperties({"pagos"})
+    @JsonIgnoreProperties(value = {"pagos"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_contrato")
     private Contrato contrato;
 
     public void confirmarPago() {
-        this.estado = "CONFIRMADO";
+        this.estado = "PAGADO";
         this.contrato.actualizarSaldo();
     }
 

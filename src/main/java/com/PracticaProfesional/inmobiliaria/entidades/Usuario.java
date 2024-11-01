@@ -75,17 +75,17 @@ public class Usuario implements Serializable {
     private Boolean estado;
 
     //@JsonManagedReference(value = "agente-transacciones")
-    @JsonIgnoreProperties({"agente"})
+    @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Transaccion> transacciones = new ArrayList<>();
 
     //@JsonManagedReference(value = "agente-contratos")
-    @JsonIgnoreProperties({"agente"})
+    @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
     //@JsonManagedReference(value = "agente-consultas")
-    @JsonIgnoreProperties({"agente"})
+    @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 

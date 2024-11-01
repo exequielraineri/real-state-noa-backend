@@ -35,7 +35,7 @@ public class Imagen implements Serializable {
     private String nombre;
 
     //@JsonBackReference(value = "inmueble-imagenes")
-    @JsonIgnoreProperties({"imagenes"})
+    @JsonIgnoreProperties(value = {"imagenes"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_inmueble")
     private Inmueble inmueble;

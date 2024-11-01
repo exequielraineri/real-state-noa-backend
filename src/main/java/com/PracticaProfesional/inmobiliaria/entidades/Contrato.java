@@ -165,7 +165,7 @@ public class Contrato implements Serializable {
 
     public BigDecimal getSaldoRestante() {
         Optional<BigDecimal> totalPagado = pagos.stream()
-                .filter((pago) -> pago.getEstado().equals("CONFIRMADO"))
+                .filter((pago) -> pago.getEstado().equals("PAGADO"))
                 .map((pago) -> pago.getMonto())
                 .reduce(BigDecimal::add);
 

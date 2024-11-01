@@ -57,7 +57,7 @@ public class Transaccion implements Serializable {
     private boolean activo;
     
     //@JsonBackReference(value = "agente-transacciones")
-    @JsonIgnoreProperties({"transacciones"})
+    @JsonIgnoreProperties(value = {"transacciones"},allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_agente")
     private Usuario agente;

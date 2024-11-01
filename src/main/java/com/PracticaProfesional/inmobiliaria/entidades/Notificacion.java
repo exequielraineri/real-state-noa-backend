@@ -44,7 +44,7 @@ public class Notificacion implements Serializable {
     private boolean activo;
     
     //@JsonBackReference(value = "contrato-notificaciones")
-    @JsonIgnoreProperties({"notificaciones"})
+    @JsonIgnoreProperties(value = {"notificaciones"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_contrato")
     private Contrato contrato;

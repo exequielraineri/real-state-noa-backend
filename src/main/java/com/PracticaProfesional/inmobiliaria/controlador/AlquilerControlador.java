@@ -49,9 +49,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin("*")
 @RestController
-@RequestMapping("alquiler")
+@RequestMapping("contratos")
 public class AlquilerControlador {
-    
+
     private Map<String, Object> response;
     @Autowired
     private ContratoServicios contratoService;
@@ -61,9 +61,9 @@ public class AlquilerControlador {
     private UsuarioServicios usuarioService;
     @Autowired
     private InmuebleServicios inmuebleService;
-    
+
     SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-    
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> inicioAlquiler() {
         try {
@@ -76,7 +76,7 @@ public class AlquilerControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("{id}")
     public ResponseEntity<Map<String, Object>> obtenerInmueble(@PathVariable Integer id) {
         try {
@@ -93,16 +93,16 @@ public class AlquilerControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> nuevoAlquiler(@RequestBody Contrato contrato) {
         try {
             response = new HashMap<>();
-            
+
             Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
             Cliente cliente = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
             Usuario agente = usuarioService.obtener(contrato.getAgente().getId()).orElse(null);
-            
+
             if (inmueble == null) {
                 response.put("data", "No se encontro el inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -115,20 +115,20 @@ public class AlquilerControlador {
                 response.put("data", "No se encontro el agente");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             contrato.setFechaContrato(new Date());
-            
+
             contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
 
             //seteamos el estado del inmueble a alquilado
             inmueble.setEstado(EnumEstadoInmueble.ALQUILADO);
-            
+
             contrato.setInmueble(inmueble);
-            
+
             agente.agregarContrato(contrato);
-            
+
             contrato.setCliente(cliente);
-            
+
             contrato.setEstado(EnumEstadoContrato.PENDIENTE);
             contrato.generarPagos();
             response.put("data", contratoService.guardar(contrato));
@@ -143,7 +143,7 @@ public class AlquilerControlador {
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
-    
+
     @DeleteMapping("{id}")
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
@@ -161,11 +161,11 @@ public class AlquilerControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PutMapping("{id}")
     public ResponseEntity<Map<String, Object>> modificar(@RequestBody Contrato contrato, @PathVariable Integer id) {
         try {
-            
+
             response = new HashMap<>();
             Contrato contratoDB = contratoService.obtener(id).orElse(null);
             Cliente clienteBD = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
@@ -173,22 +173,22 @@ public class AlquilerControlador {
                 response.put("data", "No se encontro contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             if (contratoDB.getFechaInicio() == null) {
                 response.put("data", "Error fecha inicio null");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             if (contratoDB.getFechaFin() == null) {
                 response.put("data", "Error fecha fin null");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             if (contratoDB.getInmueble() == null) {
                 response.put("data", "Error inmueble null");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            
+
             contratoDB.setCliente(clienteBD);
             contratoDB.setFechaInicio(contrato.getFechaInicio());
             contratoDB.setFechaFin(contrato.getFechaFin());
@@ -202,5 +202,5 @@ public class AlquilerControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
 }
