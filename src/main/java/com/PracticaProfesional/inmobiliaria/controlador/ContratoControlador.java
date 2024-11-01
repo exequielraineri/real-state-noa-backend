@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +50,6 @@ public class ContratoControlador {
     @Autowired
     private InmuebleServicios inmuebleService;
 
-    //SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
     @GetMapping
     public ResponseEntity<Map<String, Object>> contrato() {
         try {
@@ -82,13 +80,13 @@ public class ContratoControlador {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato){
+
+    public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato) {
         try {
             response = new HashMap<>();
-
+            Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
             Cliente cliente = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
             Usuario agente = usuarioService.obtener(contrato.getAgente().getId()).orElse(null);
-            Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
 
             if (inmueble == null) {
                 response.put("data", "No se encontro el inmueble");
@@ -102,11 +100,13 @@ public class ContratoControlador {
                 response.put("data", "No se encontro el agente");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-
             contrato.setFechaContrato(new Date());
-
+            contrato.setInmueble(inmueble);
+            contrato.setAgente(agente);
+            contrato.setCliente(cliente);
             if (contrato.getTipoContrato() == EnumTipoContrato.VENTA) {
                 contrato.setTipoContrato(EnumTipoContrato.VENTA);
+                inmueble.setEstado(EnumEstadoInmueble.VENDIDO);
                 contrato.generarPagoVentas();
             } else {
                 contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
@@ -114,10 +114,7 @@ public class ContratoControlador {
                 contrato.generarPagos();
             }
 
-            contrato.setInmueble(inmueble);
-            contrato.setAgente(agente);
-            contrato.setCliente(cliente);
-
+            contrato.setEstado(EnumEstadoContrato.PENDIENTE);
             response.put("data", contratoService.guardar(contrato));
             return new ResponseEntity<>(response, HttpStatus.CREATED);
 
@@ -147,53 +144,4 @@ public class ContratoControlador {
         }
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<Map<String, Object>> modificar(@RequestBody Contrato contrato,
-            @PathVariable Integer id){
-        try {
-            response = new HashMap<>();
-            Contrato contratoBD = contratoService.obtener(id).orElse(null);
-            Cliente clienteBD = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
-
-            if (contratoBD == null) {
-                response.put("data", "No se encontro contrato");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-             if (clienteBD== null) {
-                response.put("data", "No se encontro cliente");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-            if (contratoBD.getTipoContrato() == EnumTipoContrato.VENTA) {
-                contratoBD.generarPagoVentas();
-            } else {
-                if (contratoBD.getFechaInicio() == null) {
-                    response.put("data", "Error fecha inicio null");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-                }
-
-                if (contratoBD.getFechaFin() == null) {
-                    response.put("data", "Error fecha fin null");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-                }
-
-                if (contratoBD.getInmueble() == null) {
-                    response.put("data", "Error inmueble null");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-                }
-
-                contratoBD.generarPagos();
-                contratoBD.setFechaInicio(contrato.getFechaInicio());
-                contratoBD.setFechaFin(contrato.getFechaFin());
-
-            }
-            contratoBD.setInmueble(contrato.getInmueble());
-            contratoBD.setCliente(clienteBD);
-            response.put("data", contratoService.guardar(contratoBD));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.put("contrato", contrato);
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }

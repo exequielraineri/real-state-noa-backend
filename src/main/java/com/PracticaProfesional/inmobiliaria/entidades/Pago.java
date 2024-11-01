@@ -4,12 +4,14 @@
  */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import jakarta.persistence.*;
+import java.math.RoundingMode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,18 +57,28 @@ public class Pago implements Serializable {
     private Date fechaRegistro;
 
     private boolean activo;
-    
+
     //@JsonBackReference(value = "contrato-pagos")
-    @JsonIgnoreProperties({"pagos"})
+    @JsonIgnoreProperties(value = {"pagos"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_contrato")
     private Contrato contrato;
 
     public void confirmarPago() {
-        this.estado = "CONFIRMADO";
+        this.estado = "PAGADO";
         this.contrato.actualizarSaldo();
-        
+        calcularComision();
     }
-    
-    
+
+    private void calcularComision() {
+        BigDecimal gananciasPorPagos = BigDecimal.ZERO;
+        contrato.getAgente();
+        if (contrato.getTipoContrato().equals(EnumTipoContrato.VENTA)) {
+            gananciasPorPagos = getMonto().multiply(contrato.getAgente().getComisionVenta().divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP));
+        } else {
+            gananciasPorPagos = getMonto().multiply(contrato.getAgente().getComisionAlquiler().divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP));
+        }
+        getContrato().getAgente().setTotalGanacias(getContrato().getAgente().getTotalGanacias().add(gananciasPorPagos));
+    }
+
 }

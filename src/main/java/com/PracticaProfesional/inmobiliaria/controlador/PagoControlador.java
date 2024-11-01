@@ -37,7 +37,6 @@ public class PagoControlador {
     @Autowired
     private PagosServicios pagoService;
 
-
     @GetMapping
     public ResponseEntity<Map<String, Object>> pagos() {
         try {
@@ -77,7 +76,7 @@ public class PagoControlador {
                 response.put("data", "No se encontro el contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            if (pagoBD.getEstado().equals("CONFIRMADO")) {
+            if (pagoBD.getEstado().equals("PAGADO")) {
                 response.put("data", "El pago ya se encuentra realizado");
                 response.put("pago", pagoBD);
                 return new ResponseEntity<>(response, HttpStatus.CONFLICT);

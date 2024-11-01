@@ -41,7 +41,7 @@ public class TransaccionControlador {
     private UsuarioServicios usuarioService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> inicioAlquiler() {
+    public ResponseEntity<Map<String, Object>> inicioTransaccion() {
         try {
             response = new HashMap<>();
             response.put("data", tranService.listar());
@@ -53,7 +53,7 @@ public class TransaccionControlador {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Map<String, Object>> obtenerAlquiler(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> obtenerTransaccion(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
             Transaccion transaccionDB = tranService.obtener(id).orElse(null);

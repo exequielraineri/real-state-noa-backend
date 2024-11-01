@@ -6,6 +6,7 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumFrecuenciaPago;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -139,7 +140,7 @@ public class Contrato implements Serializable {
             } else {
                 this.importe = BigDecimal.ZERO;
             }
-        }else{
+        } else {
             if (inmueble != null && inmueble.getPrecioVenta() != null) {
                 this.importe = inmueble.getPrecioVenta().multiply(BigDecimal.valueOf(getDias()));
             } else {
@@ -159,10 +160,19 @@ public class Contrato implements Serializable {
 
     public void actualizarSaldo() {
         Date fechaActual = new Date();
-        if (getSaldoRestante().doubleValue() <= 0 && (fechaFin.after(fechaActual) || fechaFin.equals(fechaActual))) {
-            this.estado = EnumEstadoContrato.FINALIZADO;
-        } else if (getSaldoRestante().doubleValue() > 0 && (fechaInicio.after(fechaActual) || fechaInicio.equals(fechaActual))) {
-            this.estado = EnumEstadoContrato.ACTIVO;
+        if (getTipoContrato().equals(EnumTipoContrato.ALQUILER)) {
+            if (getSaldoRestante().doubleValue() <= 0 && (fechaFin.after(fechaActual) || fechaFin.equals(fechaActual))) {
+                this.estado = EnumEstadoContrato.FINALIZADO;
+            } else if (getSaldoRestante().doubleValue() > 0 && (fechaInicio.after(fechaActual) || fechaInicio.equals(fechaActual))) {
+                this.estado = EnumEstadoContrato.ACTIVO;
+            }
+        } else {
+            if (getSaldoRestante().doubleValue() <= 0) {
+                this.estado = EnumEstadoContrato.FINALIZADO;
+            } else {
+                this.estado = EnumEstadoContrato.ACTIVO;
+
+            }
         }
     }
 
@@ -207,7 +217,6 @@ public class Contrato implements Serializable {
         Calendar fechaPago = Calendar.getInstance();
         fechaPago.setTime(fechaContrato);
 
-       
         Pago pagoInicial = new Pago();
         pagoInicial.setFechaPago(fechaPago.getTime());
 

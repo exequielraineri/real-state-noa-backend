@@ -52,6 +52,12 @@ public class Usuario implements Serializable {
     @Column(name = "correo", unique = true, nullable = false)
     private String correo;
 
+    @Column(nullable = false, unique = true)
+    private String dni;
+
+    @Column(unique = true)
+    private String telefono;
+
     @NotNull(message = "Password no puede estar vacio")
     @Column(name = "password", nullable = false)
     private String password;
@@ -64,27 +70,27 @@ public class Usuario implements Serializable {
     @Column(name = "provincia")
     private String provincia;
 
-    @Column(name = "comision_venta")
+    @Column(name = "comision_venta", nullable = false)
     private BigDecimal comisionVenta;
 
-    @Column(name = "comision_alquiler")
+    @Column(name = "comision_alquiler", nullable = false)
     private BigDecimal comisionAlquiler;
 
     @Column(name = "estado")
     private Boolean estado;
 
     //@JsonManagedReference(value = "agente-transacciones")
-    @JsonIgnoreProperties({"agente"})
+    @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Transaccion> transacciones = new ArrayList<>();
 
     //@JsonManagedReference(value = "agente-contratos")
-    @JsonIgnoreProperties({"agente"})
+    @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
     //@JsonManagedReference(value = "agente-consultas")
-    @JsonIgnoreProperties({"agente"})
+    @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 
@@ -104,7 +110,7 @@ public class Usuario implements Serializable {
     }
 
     private boolean activo;
-    
-    
-   
+
+    private BigDecimal totalGanacias = BigDecimal.ZERO;
+
 }

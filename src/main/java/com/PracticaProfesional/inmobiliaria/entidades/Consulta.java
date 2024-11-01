@@ -55,13 +55,13 @@ public class Consulta implements Serializable {
     private Cliente cliente;
 
     //@JsonBackReference(value = "inmueble-consultas")
-    @JsonIgnoreProperties({"consultas"})
+    @JsonIgnoreProperties(value = {"consultas"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_inmueble")
     private Inmueble inmueble;
 
     //@JsonBackReference(value = "agente-consultas")
-    @JsonIgnoreProperties({"consultas"})
+    @JsonIgnoreProperties(value = {"consultas"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_agente")
     private Usuario agente;

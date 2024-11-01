@@ -10,6 +10,7 @@ import com.PracticaProfesional.inmobiliaria.repository.TransaccionInterfaceRepo;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,7 +43,8 @@ public class TransaccionServicios implements TransaccionInterface {
 
     @Override
     public List<Transaccion> listar() {
-        return repo.findAll();
+        Sort sort = Sort.by("fechaTransaccion").descending();
+        return repo.findAll(sort);
     }
 
 }

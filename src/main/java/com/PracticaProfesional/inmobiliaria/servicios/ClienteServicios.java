@@ -51,11 +51,4 @@ public class ClienteServicios implements ClienteInterface {
     public List<Cliente> listarPorTipoCliente(String tipo) {
         return repo.findByTipoCliente(EnumTipoCliente.valueOf(tipo.toUpperCase()));
     }
-
-    public List<Cliente> filtrarClientes(String nombre, String apellido, String provincia) {
-        return repo.filtrarClientes(nombre, apellido, provincia);
-    }
-
-    
-
 }

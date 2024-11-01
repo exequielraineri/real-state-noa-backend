@@ -73,7 +73,7 @@ public class Cliente implements Serializable {
     private boolean activo;
 
     //@JsonManagedReference(value = "propietario-inmuebles")
-    @JsonIgnoreProperties({"propietario"})
+    @JsonIgnoreProperties(value = {"propietario"}, allowSetters = true)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "propietario", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Inmueble> inmuebles = new ArrayList<>();
 
@@ -82,12 +82,12 @@ public class Cliente implements Serializable {
     private EnumTipoCliente tipoCliente;
 
     //@JsonManagedReference(value = "cliente-contratos")
-    @JsonIgnoreProperties({"cliente"})
+    @JsonIgnoreProperties(value = {"cliente"}, allowSetters = true)
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
     //@JsonManagedReference(value = "cliente-consultas")
-    @JsonIgnoreProperties({"cliente"})
+    @JsonIgnoreProperties(value = {"cliente"}, allowSetters = true)
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
 

@@ -43,7 +43,7 @@ public class Inmueble implements Serializable {
     private boolean activo;
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     //@JsonBackReference(value = "propietario-inmuebles")
-    @JsonIgnoreProperties( value = {"inmuebles"}, allowSetters = true)
+    @JsonIgnoreProperties(value = {"inmuebles"}, allowSetters = true)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_propietario")
     private Cliente propietario;
