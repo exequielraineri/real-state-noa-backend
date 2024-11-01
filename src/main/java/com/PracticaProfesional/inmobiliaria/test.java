@@ -5,6 +5,7 @@
 package com.PracticaProfesional.inmobiliaria;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,12 +33,14 @@ public class test {
         System.out.println(fechaFin.getHours());
          */
         int cant = 4;
-        BigDecimal importe = new BigDecimal(100000000);
+        BigDecimal importe = new BigDecimal(350);
         System.out.println("cant: " + cant);
         cant++;
         System.out.println("total: "+importe);
         System.out.println("mensual "+importe.divide(BigDecimal.valueOf(4)));
         System.out.println("cant: " + cant);
+        
+        System.out.println("porcentaje "+importe.multiply(BigDecimal.valueOf(0.60).setScale(2,RoundingMode.HALF_UP)));
 
     }
 }

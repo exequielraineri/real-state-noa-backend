@@ -6,7 +6,6 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;

@@ -5,11 +5,8 @@
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

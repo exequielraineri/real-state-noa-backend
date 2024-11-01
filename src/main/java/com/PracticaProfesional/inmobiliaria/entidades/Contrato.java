@@ -7,25 +7,18 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumFrecuenciaPago;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -139,11 +132,21 @@ public class Contrato implements Serializable {
     }
 
     private void calcularImporte() {
-        if (inmueble != null && inmueble.getPrecioAlquiler() != null) {
-            this.importe = inmueble.getPrecioAlquiler().multiply(BigDecimal.valueOf(getDias()));
-        } else {
-            this.importe = BigDecimal.ZERO;
+        if (tipoContrato == EnumTipoContrato.ALQUILER) {
+
+            if (inmueble != null && inmueble.getPrecioAlquiler() != null) {
+                this.importe = inmueble.getPrecioAlquiler().multiply(BigDecimal.valueOf(getDias()));
+            } else {
+                this.importe = BigDecimal.ZERO;
+            }
+        }else{
+            if (inmueble != null && inmueble.getPrecioVenta() != null) {
+                this.importe = inmueble.getPrecioVenta().multiply(BigDecimal.valueOf(getDias()));
+            } else {
+                this.importe = BigDecimal.ZERO;
+            }
         }
+
     }
 
     public int getDias() {
@@ -165,7 +168,7 @@ public class Contrato implements Serializable {
 
     public BigDecimal getSaldoRestante() {
         Optional<BigDecimal> totalPagado = pagos.stream()
-                .filter((pago) -> pago.getEstado().equals("CONFIRMADO"))
+                .filter((pago) -> pago.getEstado().equals("PAGADO"))
                 .map((pago) -> pago.getMonto())
                 .reduce(BigDecimal::add);
 
@@ -196,6 +199,41 @@ public class Contrato implements Serializable {
 
         for (Pago pago : pagos) {
             pago.setMonto(getImporte().divide(BigDecimal.valueOf(cantPagos), RoundingMode.HALF_UP));
+        }
+    }
+
+    //entrega del 60% y el resto en tres cuotas con el mismo valor
+    public void generarPagoVentas(String metodoPago) {
+        Calendar fechaPago = Calendar.getInstance();
+        fechaPago.setTime(fechaContrato);
+
+        setEstado(EnumEstadoContrato.ACTIVO);
+        Pago pagoInicial = new Pago();
+        pagoInicial.setEstado("PENDIENTE");
+        pagoInicial.setFechaPago(fechaPago.getTime());
+
+        // saco el 60% del precio
+        calcularImporte();
+        BigDecimal montoInicial = getImporte().multiply(BigDecimal.valueOf(0.60)).setScale(2, RoundingMode.HALF_UP);
+        pagoInicial.setMonto(montoInicial);
+        pagoInicial.setMetodoPago(metodoPago);
+        pagoInicial.setFechaRegistro(new Date());
+        pagoInicial.setEstado("PAGADO");
+        agregarPago(pagoInicial);
+        fechaPago.add(Calendar.MONTH, 1);
+
+        // El 40% en 3 cuotas iguales
+        BigDecimal montoRestante = getImporte().multiply(BigDecimal.valueOf(0.40)).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal montoPorCuota = montoRestante.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
+
+        for (int i = 0; i < 3; i++) {
+            Pago cuota = new Pago();
+            cuota.setEstado("PENDIENTE");
+            cuota.setFechaPago(fechaPago.getTime());
+            cuota.setMonto(montoPorCuota);
+
+            agregarPago(cuota);
+            fechaPago.add(Calendar.MONTH, 1);
         }
     }
 

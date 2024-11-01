@@ -5,16 +5,12 @@
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
-import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Imagen;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
-import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ImagenServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
-import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -63,13 +58,9 @@ public class InmuebleControlador {
     @Autowired
     private ClienteServicios clienteServicio;
     @Autowired
-    private UsuarioServicios usuarioServicio;
-    
-    @Autowired
     private ImagenServicios imagenService;
     
-    @Autowired
-    private ContratoServicios contratoService;
+
     
     private final String RUTA_IMAGENES = System.getProperty("user.dir") + "/imagenes/";
     
@@ -102,7 +93,6 @@ public class InmuebleControlador {
             }
             
             inmueble.setFechaRegistro(new Date());
-            //inmueble.setPropietario(propietario);
             inmueble.setEstado(EnumEstadoInmueble.MANTENIMIENTO);
             propietario.agregarInmueble(inmueble);
             
