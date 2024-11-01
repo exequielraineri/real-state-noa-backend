@@ -126,5 +126,6 @@ public class Inmueble implements Serializable {
         imagenes.add(imagen);
         imagen.setInmueble(this);
     }
+    
 
 }

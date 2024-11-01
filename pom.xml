@@ -67,12 +67,6 @@
             <version>10.0.0</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.25.3</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 
     <build>

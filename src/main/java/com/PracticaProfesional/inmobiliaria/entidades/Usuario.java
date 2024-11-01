@@ -104,4 +104,7 @@ public class Usuario implements Serializable {
     }
 
     private boolean activo;
+    
+    
+   
 }

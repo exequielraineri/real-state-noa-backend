@@ -7,7 +7,6 @@ package com.PracticaProfesional.inmobiliaria.controlador;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
-import com.PracticaProfesional.inmobiliaria.entidades.Transaccion;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
@@ -16,11 +15,9 @@ import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +29,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -86,8 +82,7 @@ public class ContratoControlador {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato,
-            @RequestParam(required = false) String metodoPago) {
+    public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato){
         try {
             response = new HashMap<>();
 
@@ -112,11 +107,10 @@ public class ContratoControlador {
 
             if (contrato.getTipoContrato() == EnumTipoContrato.VENTA) {
                 contrato.setTipoContrato(EnumTipoContrato.VENTA);
-                contrato.generarPagoVentas(metodoPago);
+                contrato.generarPagoVentas();
             } else {
                 contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
                 inmueble.setEstado(EnumEstadoInmueble.ALQUILADO);
-                contrato.setEstado(EnumEstadoContrato.PENDIENTE);
                 contrato.generarPagos();
             }
 
@@ -155,43 +149,46 @@ public class ContratoControlador {
 
     @PutMapping("{id}")
     public ResponseEntity<Map<String, Object>> modificar(@RequestBody Contrato contrato,
-            @PathVariable Integer id,
-            @RequestParam(required = false) String metodoPago) {
+            @PathVariable Integer id){
         try {
             response = new HashMap<>();
-            Contrato contratoDB = contratoService.obtener(id).orElse(null);
+            Contrato contratoBD = contratoService.obtener(id).orElse(null);
             Cliente clienteBD = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
 
-            if (contratoDB == null) {
+            if (contratoBD == null) {
                 response.put("data", "No se encontro contrato");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            if (contratoDB.getTipoContrato() == EnumTipoContrato.VENTA) {
-                contratoDB.generarPagoVentas(metodoPago);
+             if (clienteBD== null) {
+                response.put("data", "No se encontro cliente");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            if (contratoBD.getTipoContrato() == EnumTipoContrato.VENTA) {
+                contratoBD.generarPagoVentas();
             } else {
-                if (contratoDB.getFechaInicio() == null) {
+                if (contratoBD.getFechaInicio() == null) {
                     response.put("data", "Error fecha inicio null");
                     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                 }
 
-                if (contratoDB.getFechaFin() == null) {
+                if (contratoBD.getFechaFin() == null) {
                     response.put("data", "Error fecha fin null");
                     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                 }
 
-                if (contratoDB.getInmueble() == null) {
+                if (contratoBD.getInmueble() == null) {
                     response.put("data", "Error inmueble null");
                     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                 }
 
-                contratoDB.generarPagos();
-                contratoDB.setFechaInicio(contrato.getFechaInicio());
-                contratoDB.setFechaFin(contrato.getFechaFin());
+                contratoBD.generarPagos();
+                contratoBD.setFechaInicio(contrato.getFechaInicio());
+                contratoBD.setFechaFin(contrato.getFechaFin());
 
             }
-            contratoDB.setInmueble(contrato.getInmueble());
-            contratoDB.setCliente(clienteBD);
-            response.put("data", contratoService.guardar(contratoDB));
+            contratoBD.setInmueble(contrato.getInmueble());
+            contratoBD.setCliente(clienteBD);
+            response.put("data", contratoService.guardar(contratoBD));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("contrato", contrato);

@@ -65,6 +65,8 @@ public class Pago implements Serializable {
     public void confirmarPago() {
         this.estado = "CONFIRMADO";
         this.contrato.actualizarSaldo();
+        
     }
-
+    
+    
 }

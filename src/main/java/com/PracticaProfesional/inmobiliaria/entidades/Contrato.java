@@ -203,22 +203,19 @@ public class Contrato implements Serializable {
     }
 
     //entrega del 60% y el resto en tres cuotas con el mismo valor
-    public void generarPagoVentas(String metodoPago) {
+    public void generarPagoVentas() {
         Calendar fechaPago = Calendar.getInstance();
         fechaPago.setTime(fechaContrato);
 
-        setEstado(EnumEstadoContrato.ACTIVO);
+       
         Pago pagoInicial = new Pago();
-        pagoInicial.setEstado("PENDIENTE");
         pagoInicial.setFechaPago(fechaPago.getTime());
 
         // saco el 60% del precio
         calcularImporte();
         BigDecimal montoInicial = getImporte().multiply(BigDecimal.valueOf(0.60)).setScale(2, RoundingMode.HALF_UP);
         pagoInicial.setMonto(montoInicial);
-        pagoInicial.setMetodoPago(metodoPago);
-        pagoInicial.setFechaRegistro(new Date());
-        pagoInicial.setEstado("PAGADO");
+        pagoInicial.setEstado("PENDIENTE");
         agregarPago(pagoInicial);
         fechaPago.add(Calendar.MONTH, 1);
 
