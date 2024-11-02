@@ -71,14 +71,23 @@ public class Pago implements Serializable {
     }
 
     private void calcularComision() {
-        BigDecimal gananciasPorPagos = BigDecimal.ZERO;
-        contrato.getAgente();
+        BigDecimal gananciasPorPagos;
+        Usuario agente = contrato.getAgente();
+
         if (contrato.getTipoContrato().equals(EnumTipoContrato.VENTA)) {
-            gananciasPorPagos = getMonto().multiply(contrato.getAgente().getComisionVenta().divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP));
+            if (agente.getComisionVenta().compareTo(BigDecimal.ZERO) > 0) {
+                gananciasPorPagos = getMonto().multiply(agente.getComisionVenta().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+            } else {
+                gananciasPorPagos = BigDecimal.ZERO;
+            }
         } else {
-            gananciasPorPagos = getMonto().multiply(contrato.getAgente().getComisionAlquiler().divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP));
+            if (agente.getComisionAlquiler().compareTo(BigDecimal.ZERO) > 0) {
+                gananciasPorPagos = getMonto().multiply(agente.getComisionAlquiler().divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+            } else {
+                gananciasPorPagos = BigDecimal.ZERO;
+            }
         }
-        getContrato().getAgente().setTotalGanacias(getContrato().getAgente().getTotalGanacias().add(gananciasPorPagos));
+        agente.setTotalGanancias(agente.getTotalGanancias().add(gananciasPorPagos));
     }
 
 }

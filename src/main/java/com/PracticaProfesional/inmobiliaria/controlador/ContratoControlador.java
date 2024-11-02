@@ -10,6 +10,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumFrecuenciaPago;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
@@ -80,7 +81,6 @@ public class ContratoControlador {
     }
 
     @PostMapping
-
     public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato) {
         try {
             response = new HashMap<>();
@@ -107,7 +107,9 @@ public class ContratoControlador {
             if (contrato.getTipoContrato() == EnumTipoContrato.VENTA) {
                 contrato.setTipoContrato(EnumTipoContrato.VENTA);
                 inmueble.setEstado(EnumEstadoInmueble.VENDIDO);
-                contrato.generarPagoVentas();
+
+                contrato.generarPagosVentas();
+
             } else {
                 contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
                 inmueble.setEstado(EnumEstadoInmueble.ALQUILADO);

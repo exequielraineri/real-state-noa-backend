@@ -213,10 +213,9 @@ public class Contrato implements Serializable {
     }
 
     //entrega del 60% y el resto en tres cuotas con el mismo valor
-    public void generarPagoVentas() {
+    private void generarPagoVentasCoutas() {
         Calendar fechaPago = Calendar.getInstance();
         fechaPago.setTime(fechaContrato);
-
         Pago pagoInicial = new Pago();
         pagoInicial.setFechaPago(fechaPago.getTime());
 
@@ -240,6 +239,19 @@ public class Contrato implements Serializable {
 
             agregarPago(cuota);
             fechaPago.add(Calendar.MONTH, 1);
+        }
+    }
+
+    public void generarPagosVentas() {
+        pagos.clear();
+        Calendar fechaPago = Calendar.getInstance();
+        fechaPago.setTime(fechaContrato);
+
+        calcularImporte();
+        if (this.frecuenciaPago == EnumFrecuenciaPago.UNICO_PAGO) {
+            generarPagoUnico(fechaPago);
+        } else {
+            generarPagoVentasCoutas();
         }
     }
 

@@ -111,6 +111,6 @@ public class Usuario implements Serializable {
 
     private boolean activo;
 
-    private BigDecimal totalGanacias = BigDecimal.ZERO;
+    private BigDecimal totalGanancias = BigDecimal.ZERO;
 
 }
