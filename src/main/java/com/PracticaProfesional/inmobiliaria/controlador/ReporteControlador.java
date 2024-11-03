@@ -99,17 +99,17 @@ public class ReporteControlador {
             }
             impuestosTotales = impuestosInmobiliarios.add(impuestosMunicipales);
 
-            inmueble.put("Casas", cantidadCasas);
-            inmueble.put("Departamentos", cantidadDeptos);
-            inmueble.put("Oficinas", cantidadOficinas);
-            inmueble.put("Campo", cantidadCampos);
-            inmueble.put("impuestos inmobiliarios", impuestosInmobiliarios);
-            inmueble.put("inmpuestos Municipales", impuestosMunicipales);
-            inmueble.put("impuestos totales", impuestosTotales);
-            inmueble.put("entrada de Ventas", entradaVenta);
-            inmueble.put("entrada de Alquiler", entradaAlquiler);
-            inmueble.put("cantidad de inmueble", cantidadInmuebles);
-            response.put("Inmuebles", inmueble);
+            inmueble.put("casas", cantidadCasas);
+            inmueble.put("departamentos", cantidadDeptos);
+            inmueble.put("oficinas", cantidadOficinas);
+            inmueble.put("campo", cantidadCampos);
+            inmueble.put("impuestosInmobiliarios", impuestosInmobiliarios);
+            inmueble.put("inmpuestosMunicipales", impuestosMunicipales);
+            inmueble.put("impuestosTotales", impuestosTotales);
+            inmueble.put("ingresosVentas", entradaVenta);
+            inmueble.put("ingresosAlquiler", entradaAlquiler);
+            inmueble.put("cantidadInmueble", cantidadInmuebles);
+            response.put("inmuebles", inmueble);
 
             for (Transaccion transaccionFiltro : transacciones) {
                 if (transaccionFiltro.getTipoTransaccion().equals("INGRESO")) {
@@ -117,8 +117,8 @@ public class ReporteControlador {
                     ingresoTotales = ingresoTotales.add(transaccionFiltro.getImporte());
                 }
             }
-            transaccion.put("Cantidad de ingreso", cantidadIngresos);
-            transaccion.put("ingresos Totales", ingresoTotales);
+            transaccion.put("cantidadTransaccion", cantidadIngresos);
+            transaccion.put("transaccionesTotales", ingresoTotales);
             response.put("transacciones", transaccion);
 
             for (Cliente clienteFiltro : clientes) {
@@ -132,9 +132,9 @@ public class ReporteControlador {
 
                 }
             }
-            cliente.put("cantidad de Propietarios", cantidadPropietario);
-            cliente.put("cantidad de Inquilinos", cantidadInquilino);
-            cliente.put("cantidad de Comprador", cantidadComprador);
+            cliente.put("cantidadPropietarios", cantidadPropietario);
+            cliente.put("cantidadInquilinos", cantidadInquilino);
+            cliente.put("cantidadComprador", cantidadComprador);
             response.put("cliente", cliente);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
