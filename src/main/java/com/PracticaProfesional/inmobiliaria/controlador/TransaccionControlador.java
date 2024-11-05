@@ -83,6 +83,7 @@ public class TransaccionControlador {
             transaccion.setFechaTransaccion(new Date());
             transaccion.setEstado(true);
             transaccion.setAgente(usuario);
+            
            
 
             response.put("data", tranService.guardar(transaccion));

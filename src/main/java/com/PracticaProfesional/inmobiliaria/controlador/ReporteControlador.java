@@ -43,7 +43,7 @@ public class ReporteControlador {
     @Autowired
     private ContratoServicios contratoServicios;
 
-    Map<String, Object> response, inmueble, transaccion, cliente;
+    Map<String, Object> response, inmueble, transaccion, cliente, contrato;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> contrato() {
@@ -52,6 +52,7 @@ public class ReporteControlador {
             inmueble = new HashMap<>();
             transaccion = new HashMap<>();
             cliente = new HashMap<>();
+            contrato = new HashMap<>();
 
             long cantidadInmuebles = inmuebleServicios.cantidad();
 
@@ -70,19 +71,33 @@ public class ReporteControlador {
             int cantidadOficinas = 0;
             int cantidadCampos = 0;
             int cantidadIngresos = 0;
+            int cantidadEgresos = 0;
+            int cantidadContrato = 0;
+            int cantContratoVenta = 0;
+            int cantContratoAlquiler = 0;
 
             List<Contrato> contratos = contratoServicios.listar();
             List<Inmueble> inmuebles = inmuebleServicios.listar();
             List<Transaccion> transacciones = transaccionServicios.listar();
             List<Cliente> clientes = clienteServicios.listar();
 
-            for (Contrato contrato : contratos) {
-                if (contrato.getTipoContrato() == EnumTipoContrato.VENTA) {
-                    entradaVenta = entradaVenta.add(contrato.getImporte());
-                } else if (contrato.getTipoContrato() == EnumTipoContrato.ALQUILER) {
-                    entradaAlquiler = entradaAlquiler.add(contrato.getImporte());
+            for (Contrato contratoFiltro : contratos) {
+                if (contratoFiltro.getTipoContrato() == EnumTipoContrato.VENTA) {
+                    entradaVenta = entradaVenta.add(contratoFiltro.getImporte());
+                    cantContratoVenta++;
+                } else if (contratoFiltro.getTipoContrato() == EnumTipoContrato.ALQUILER) {
+                    entradaAlquiler = entradaAlquiler.add(contratoFiltro.getImporte());
+                    cantContratoAlquiler++;
                 }
+
+                cantidadContrato++;
             }
+            contrato.put("cantidadContratos", cantidadContrato);
+            contrato.put("contratosVentas", cantContratoVenta);
+            contrato.put("contratosAlquiler", cantContratoAlquiler);
+            contrato.put("ingresosVentas", entradaVenta);
+            contrato.put("ingresosAlquiler", entradaAlquiler);
+            response.put("contratos", contrato);
             for (Inmueble inmuebleFiltro : inmuebles) {
                 impuestosInmobiliarios = impuestosInmobiliarios.add(inmuebleFiltro.getImpInmobiliarios());
                 impuestosMunicipales = impuestosMunicipales.add(inmuebleFiltro.getImpMunicipales());
@@ -106,8 +121,6 @@ public class ReporteControlador {
             inmueble.put("impuestosInmobiliarios", impuestosInmobiliarios);
             inmueble.put("inmpuestosMunicipales", impuestosMunicipales);
             inmueble.put("impuestosTotales", impuestosTotales);
-            inmueble.put("ingresosVentas", entradaVenta);
-            inmueble.put("ingresosAlquiler", entradaAlquiler);
             inmueble.put("cantidadInmueble", cantidadInmuebles);
             response.put("inmuebles", inmueble);
 
@@ -115,9 +128,13 @@ public class ReporteControlador {
                 if (transaccionFiltro.getTipoTransaccion().equals("INGRESO")) {
                     cantidadIngresos++;
                     ingresoTotales = ingresoTotales.add(transaccionFiltro.getImporte());
+                } else {
+                    cantidadEgresos++;
                 }
+               
             }
-            transaccion.put("cantidadTransaccion", cantidadIngresos);
+            transaccion.put("cantidadIngresos", cantidadIngresos);
+            transaccion.put("cantidadEgresos", cantidadEgresos);
             transaccion.put("transaccionesTotales", ingresoTotales);
             response.put("transacciones", transaccion);
 
@@ -135,7 +152,7 @@ public class ReporteControlador {
             cliente.put("cantidadPropietarios", cantidadPropietario);
             cliente.put("cantidadInquilinos", cantidadInquilino);
             cliente.put("cantidadComprador", cantidadComprador);
-            response.put("cliente", cliente);
+            response.put("clientes", cliente);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

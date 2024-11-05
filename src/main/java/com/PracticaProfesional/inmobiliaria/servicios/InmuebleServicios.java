@@ -50,6 +50,7 @@ public class InmuebleServicios implements InmuebleInterface {
         return repo.findAll(Sort.by(Sort.Direction.DESC, "fechaRegistro"));
     }
 
+  
     public Long cantidad() {
         return repo.count();
     }
