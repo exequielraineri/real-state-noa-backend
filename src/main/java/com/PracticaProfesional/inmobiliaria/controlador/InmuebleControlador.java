@@ -233,7 +233,7 @@ public class InmuebleControlador {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            inmueble.setFechaPublicacion(new Date());
+
             inmueble.setEstado(EnumEstadoInmueble.DISPONIBLE);
             response.put("data", inmuebleServicio.guardar(inmueble));
             return new ResponseEntity<>(response, HttpStatus.OK);
