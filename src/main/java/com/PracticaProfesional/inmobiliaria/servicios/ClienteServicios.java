@@ -4,9 +4,11 @@ import com.PracticaProfesional.inmobiliaria.repository.ClienteInterfaceRepo;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.interfaz.ClienteInterface;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,4 +53,24 @@ public class ClienteServicios implements ClienteInterface {
     public List<Cliente> listarPorTipoCliente(String tipo) {
         return repo.findByTipoCliente(EnumTipoCliente.valueOf(tipo.toUpperCase()));
     }
+
+    public List<Cliente> listarPorFiltros(String provincia, String estado, String tipoCliente) {
+        return repo.findAll((root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (tipoCliente != null && !tipoCliente.isEmpty()) {
+                predicates.add((Predicate) criteriaBuilder.equal(root.get("tipoCliente"), EnumTipoCliente.valueOf(tipoCliente.toUpperCase())));
+            }
+
+            if (estado != null && !estado.isEmpty()) {
+                predicates.add((Predicate) criteriaBuilder.like(root.get("estado"), "%" + estado + "%"));
+            }
+
+            if (provincia != null && !provincia.isEmpty()) {
+                predicates.add((Predicate) criteriaBuilder.like(root.get("provincia"), "%" + provincia + "%"));
+            }
+            return criteriaBuilder.and((jakarta.persistence.criteria.Predicate[]) predicates.toArray(new Predicate[0]));
+        });
+    }
+
 }
