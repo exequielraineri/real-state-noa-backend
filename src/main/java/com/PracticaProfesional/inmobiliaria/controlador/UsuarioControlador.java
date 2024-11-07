@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -36,10 +37,12 @@ public class UsuarioControlador {
     UsuarioServicios userService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> cargaUsuario() {
+    public ResponseEntity<Map<String, Object>> listar(
+            @RequestParam(required = false, name = "provincia") String provincia,
+            @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo) {
         try {
             response = new HashMap<>();
-            response.put(("data"), userService.listar());
+            response.put(("data"), userService.listarFiltrado(provincia, activo));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());

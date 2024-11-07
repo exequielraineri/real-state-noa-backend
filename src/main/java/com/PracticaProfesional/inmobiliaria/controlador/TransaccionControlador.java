@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -41,10 +42,16 @@ public class TransaccionControlador {
     private UsuarioServicios usuarioService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> inicioTransaccion() {
+    public ResponseEntity<Map<String, Object>> listar(
+            @RequestParam(required = false, name = "estado", defaultValue = "true") boolean estado,
+            @RequestParam(required = false, name = "fechaDesde") Date fechaDesde,
+            @RequestParam(required = false, name = "fechaHasta") Date fechaHasta,
+            @RequestParam(required = false, name = "tipoTransaccion") String TipoTransaccion,
+            @RequestParam(required = false, name = "tipoOperacion") String TipoOperacion
+    ) {
         try {
             response = new HashMap<>();
-            response.put("data", tranService.listar());
+            response.put("data", tranService.listarFiltrado(estado, fechaDesde, fechaHasta, TipoOperacion, TipoTransaccion));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
@@ -74,7 +81,7 @@ public class TransaccionControlador {
         try {
             response = new HashMap<>();
             Usuario usuario = usuarioService.obtener(transaccion.getAgente().getId()).orElse(null);
-            
+
             if (usuario == null) {
                 response.put("data", "No se encontro el usuario");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -83,8 +90,6 @@ public class TransaccionControlador {
             transaccion.setFechaTransaccion(new Date());
             transaccion.setEstado(true);
             transaccion.setAgente(usuario);
-            
-           
 
             response.put("data", tranService.guardar(transaccion));
             return new ResponseEntity<>(response, HttpStatus.CREATED);

@@ -71,7 +71,6 @@ public class InmuebleControlador {
     ) {
         try {
             response = new HashMap<>();
-
             response.put("data", inmuebleServicio.listar(tipoInmueble, direccion, estado));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

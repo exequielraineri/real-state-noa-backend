@@ -7,6 +7,7 @@ package com.PracticaProfesional.inmobiliaria.servicios;
 import com.PracticaProfesional.inmobiliaria.entidades.Transaccion;
 import com.PracticaProfesional.inmobiliaria.interfaz.TransaccionInterface;
 import com.PracticaProfesional.inmobiliaria.repository.TransaccionInterfaceRepo;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,10 @@ public class TransaccionServicios implements TransaccionInterface {
     public List<Transaccion> listar() {
         Sort sort = Sort.by("fechaTransaccion").descending();
         return repo.findAll(sort);
+    }
+
+    public List<Transaccion> listarFiltrado(boolean estado, Date fechaDesde, Date fechaHasta, String TipoOperacion, String TipoTransaccion) {
+        return repo.listarFiltrado(estado, fechaDesde, fechaHasta, TipoTransaccion, TipoOperacion);
     }
 
 }

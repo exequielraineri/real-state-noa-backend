@@ -33,4 +33,7 @@ public interface UsuarioInterfaceRepo extends JpaRepository<Usuario, Integer> {
     @Query("SELECT u FROM Usuario u WHERE u.activo=true")
     public List<Usuario> findAll();
 
+    @Query("SELECT u FROM Usuario u WHERE (:provincia IS NULL OR u.provincia LIKE %:provincia%) AND u.activo=:activo")
+    public List<Usuario> listarFiltrado(String provincia, boolean activo);
+
 }

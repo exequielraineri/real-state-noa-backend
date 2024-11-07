@@ -55,4 +55,8 @@ public class UsuarioServicios implements UsuarioInterface {
         return repo.findByCorreoAndPassword(correo, password);
     }
 
+    public List<Usuario> listarFiltrado(String provincia, boolean activo) {
+        return repo.listarFiltrado(provincia, activo);
+    }
+
 }

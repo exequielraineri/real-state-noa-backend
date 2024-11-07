@@ -77,9 +77,6 @@ public class Usuario implements Serializable {
     @Column(name = "comision_alquiler", nullable = false)
     private BigDecimal comisionAlquiler;
 
-    @Column(name = "estado")
-    private Boolean estado;
-
     //@JsonManagedReference(value = "agente-transacciones")
     @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
