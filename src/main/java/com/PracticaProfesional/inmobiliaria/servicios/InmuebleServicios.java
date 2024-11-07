@@ -63,21 +63,6 @@ public class InmuebleServicios implements InmuebleInterface {
                 estado == null ? null : EnumEstadoInmueble.valueOf(estado));
     }
 
-    public List<Inmueble> listarPorFiltros(String tipoInmueble, String provincia, String estado) {
-        return repo.findAll((root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (tipoInmueble != null && !tipoInmueble.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("tipoInmueble"), EnumTipoInmuebles.valueOf(tipoInmueble.toUpperCase())));
-            }
-            if (estado != null && !estado.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("estado"), EnumEstadoInmueble.valueOf(estado.toUpperCase())));
-            }
-            if (provincia != null && !provincia.isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("provincia"), "%" + provincia + "%"));
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        });
-    }
+    
 
 }

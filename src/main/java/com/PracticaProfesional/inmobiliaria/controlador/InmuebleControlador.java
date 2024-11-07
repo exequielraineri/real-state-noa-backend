@@ -131,22 +131,7 @@ public class InmuebleControlador {
         }
     }
 
-    @GetMapping("filtrar")
-    public ResponseEntity<Map<String, Object>> filtrar(
-            @RequestParam(name = "tipoInmueble", required = false) String tipoInmuebles,
-            @RequestParam(name = "direccion", required = false) String direccion,
-            @RequestParam(name = "estado", required = false) String estado) {
-        try {
-            response = new HashMap<>();
-            List<Inmueble> inmuebleFiltrado = inmuebleServicio.listarPorFiltros(tipoInmuebles, direccion, estado);
-            response.put("data", inmuebleFiltrado);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+   
     @PostMapping
     public ResponseEntity<Map<String, Object>> guardar(
             @Valid @RequestBody Inmueble inmueble) {
