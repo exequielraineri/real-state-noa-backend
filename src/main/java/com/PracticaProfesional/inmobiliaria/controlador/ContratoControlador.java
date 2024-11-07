@@ -59,6 +59,8 @@ public class ContratoControlador {
             @RequestParam(required = false, name = "fechaHasta") Date fechaHasta
     ) {
         try {
+            System.out.println(fechaDesde);
+            System.out.println(fechaHasta);
             response = new HashMap<>();
             response.put("data", contratoService.listarFiltrados(estado, fechaDesde, fechaHasta));
             return new ResponseEntity<>(response, HttpStatus.OK);

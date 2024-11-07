@@ -23,6 +23,6 @@ public interface ContratoInterfaceRepo extends JpaRepository<Contrato, Integer> 
     @Query("SELECT c FROM Contrato c WHERE c.activo=true")
     List<Contrato> findAll();
 
-    @Query("SELECT c FROM Contrato c WHERE (:estado IS NULL OR c.estado=:estado) AND ((:fechaDesde IS NULL AND :fechaHasta IS NULL) OR c.fechaContrato BETWEEN :fechaDesde AND :fechaHasta)")
+    @Query("SELECT c FROM Contrato c WHERE (:estado IS NULL OR c.estado=:estado) AND ((:fechaDesde IS NULL OR :fechaHasta IS NULL) OR c.fechaContrato BETWEEN :fechaDesde AND :fechaHasta)")
     public List<Contrato> filtrarContratos(EnumEstadoContrato estado, Date fechaDesde, Date fechaHasta);
 }
