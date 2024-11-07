@@ -5,6 +5,7 @@
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import java.util.HashMap;
 import java.util.List;
@@ -41,19 +42,18 @@ public class ClienteControlador {
     /**
      *
      * @param tipoCliente
+     * @param provincia
+     * @param estado
      * @return
      */
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
-            @RequestParam(name = "tipoCliente", defaultValue = "") String tipoCliente) {
+            @RequestParam(name = "tipoCliente", required = false) EnumTipoCliente tipoCliente,
+            @RequestParam(name = "provincia", required = false) String provincia,
+            @RequestParam(name = "estado", required = false,defaultValue = "true") boolean estado) {
         try {
-            response = new HashMap<>();
-
-            if (tipoCliente.isEmpty()) {
-                response.put("data", cliService.listar());
-            } else {
-                response.put("data", cliService.listarPorTipoCliente(tipoCliente));
-            }
+            response = new HashMap<>();            
+            response.put("data", cliService.listarPorFiltros(tipoCliente, provincia, estado));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("tipoCliente", tipoCliente);
@@ -73,30 +73,6 @@ public class ClienteControlador {
             }
 
             response.put("data", cliente);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("filtrar")
-    public ResponseEntity<Map<String, Object>> filtrar(
-            @RequestParam(name = "tipoCliente", required = false) String tipoCliente,
-            @RequestParam(name = "provincia", required = false) String provincia,
-            @RequestParam(name = "estado", required = false) String estado) {
-        try {
-            response = new HashMap<>();
-            System.out.println("Filtrando clientes con tipoCliente: " + tipoCliente + ", provincia: " + provincia + ", estado: " + estado);
-
-            List<Cliente> clienteFiltrado = cliService.listarPorFiltros(provincia, estado, tipoCliente);
-
-            if (clienteFiltrado.isEmpty()) {
-                response.put("message", "No se encontraron clientes con esos filtros");
-            } else {
-                response.put("data", clienteFiltrado);
-            }
-
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
@@ -164,7 +140,6 @@ public class ClienteControlador {
         viejo.setNombre(nuevo.getNombre());
         viejo.setApellido(nuevo.getApellido());
         viejo.setProvincia(nuevo.getProvincia());
-        viejo.setEstado(nuevo.getEstado());
         viejo.setTelefono(nuevo.getTelefono());
     }
 

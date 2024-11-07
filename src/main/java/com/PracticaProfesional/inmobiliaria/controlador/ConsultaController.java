@@ -12,7 +12,6 @@ import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ConsultaServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
-import jakarta.faces.annotation.RequestMap;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

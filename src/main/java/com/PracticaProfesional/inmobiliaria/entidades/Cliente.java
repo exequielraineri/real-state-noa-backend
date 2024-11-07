@@ -68,9 +68,6 @@ public class Cliente implements Serializable {
     @Column(name = "provincia")
     private String provincia;
 
-    @Column(name = "estado")
-    private Boolean estado;
-
     private boolean activo;
 
     //@JsonManagedReference(value = "propietario-inmuebles")

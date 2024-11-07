@@ -9,9 +9,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -19,24 +17,17 @@ import org.springframework.stereotype.Repository;
  * @author Sofia
  */
 @Repository
-public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer>, JpaSpecificationExecutor<Cliente>  {
+public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer> {
 
     @Query("SELECT c FROM Cliente c WHERE "
             + "(:provincia IS NULL OR c.provincia LIKE %:provincia%) AND "
-            + "(:estado IS NULL OR c.estado = :estado) AND "
+            + "(:estado IS NULL OR c.activo = :estado) AND "
             + "(:tipoCliente IS NULL OR c.tipoCliente = :tipoCliente)")
     List<Cliente> filtrarClientes(
-            @Param("provincia") String provincia,
-            @Param("estado") String estado,
-            @Param("tipoCliente") EnumTipoCliente tipoCliente);
+            String provincia,
+            boolean estado,
+            EnumTipoCliente tipoCliente);
 
     public Optional<Cliente> findById(Integer id);
-
-    @Query("SELECT c FROM Cliente c WHERE c.tipoCliente=:tipo")
-    List<Cliente> findByTipoCliente(EnumTipoCliente tipo);
-
-    @Override
-    @Query("SELECT c FROM Cliente c WHERE c.activo=true")
-    List<Cliente> findAll();
 
 }
