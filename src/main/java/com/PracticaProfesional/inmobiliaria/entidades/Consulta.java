@@ -49,7 +49,7 @@ public class Consulta implements Serializable {
 
     private boolean activo;
     //@JsonBackReference(value = "cliente-consultas")
-    @JsonIgnoreProperties({"consultas"})
+    @JsonIgnoreProperties(value = {""}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;

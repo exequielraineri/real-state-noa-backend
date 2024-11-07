@@ -190,6 +190,7 @@ public class Contrato implements Serializable {
         pago.setEstado("PENDIENTE");
         pago.setFechaPago(fechaPago.getTime());
         pago.setMonto(getImporte());
+        pago.setActivo(true);
         agregarPago(pago);
     }
 
@@ -199,6 +200,7 @@ public class Contrato implements Serializable {
             cantPagos++;
             Pago pago = new Pago();
             pago.setEstado("PENDIENTE");
+            pago.setActivo(true);
             pago.setFechaPago(fechaPago.getTime());
 
             agregarPago(pago);

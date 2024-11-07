@@ -2,6 +2,7 @@ package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -43,7 +44,7 @@ public class Inmueble implements Serializable {
     private boolean activo;
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     //@JsonBackReference(value = "propietario-inmuebles")
-    @JsonIgnoreProperties(value = {"inmuebles"}, allowSetters = true)
+    @JsonIgnoreProperties(value = {"inmuebles","consultas"}, allowSetters = true)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_propietario")
     private Cliente propietario;
@@ -117,6 +118,7 @@ public class Inmueble implements Serializable {
     private List<Imagen> imagenes = new ArrayList<>();
 
     //@JsonManagedReference(value = "inmueble-consultas")
+    @JsonIgnore
     @JsonIgnoreProperties(value = {"inmueble"}, allowSetters = true)
     @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();
@@ -126,6 +128,5 @@ public class Inmueble implements Serializable {
         imagenes.add(imagen);
         imagen.setInmueble(this);
     }
-    
 
 }

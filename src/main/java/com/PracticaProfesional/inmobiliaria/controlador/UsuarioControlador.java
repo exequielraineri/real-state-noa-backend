@@ -47,6 +47,18 @@ public class UsuarioControlador {
         }
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Map<String, Object>> obtener(@PathVariable Integer id) {
+        try {
+            response = new HashMap<>();
+            response.put(("data"), userService.obtener(id));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> crearUsuario(@RequestBody Usuario usuario) {
         try {
