@@ -4,6 +4,7 @@
  */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
@@ -90,6 +91,7 @@ public class Usuario implements Serializable {
     private List<Contrato> contratos = new ArrayList<>();
 
     //@JsonManagedReference(value = "agente-consultas")
+    @JsonIgnore
     @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Consulta> consultas = new ArrayList<>();

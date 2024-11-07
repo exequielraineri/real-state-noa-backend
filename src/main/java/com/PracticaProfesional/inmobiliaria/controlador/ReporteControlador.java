@@ -133,16 +133,20 @@ public class ReporteControlador {
                 } else {
                     egresosTotales = egresosTotales.add(transaccionFiltro.getImporte());
                 }
-            } 
+            }
+
             transaccion.put("ingresos", ingresoTotales);
             transaccion.put("egresos", egresosTotales);
+            transaccion.put("transaccionesTotales", ingresoTotales);
+
             response.put("transacciones", transaccion);
 
             for (Cliente clienteFiltro : clientes) {
                 switch (clienteFiltro.getTipoCliente()) {
-                    case COMPRADOR:
+                    case COMPRADOR: {
                         cantidadComprador++;
                         break;
+                    }
                     case INQUILINO:
                         cantidadInquilino++;
                         break;

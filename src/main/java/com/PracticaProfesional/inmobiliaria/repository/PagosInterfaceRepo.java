@@ -18,8 +18,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PagosInterfaceRepo extends JpaRepository<Pago, Integer>{
 
-    @Override
-    @Query("SELECT p FROM Pago p WHERE p.activo=true")
-    public List<Pago> findAll();
+    //@Override
+    //@Query("SELECT p FROM Pago p")
+    //public List<Pago> findAll();
     
 }

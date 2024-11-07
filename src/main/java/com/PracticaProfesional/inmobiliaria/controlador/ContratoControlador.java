@@ -53,10 +53,14 @@ public class ContratoControlador {
     private InmuebleServicios inmuebleService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> contrato() {
+    public ResponseEntity<Map<String, Object>> listar(
+            @RequestParam(required = false, name = "estado") EnumEstadoContrato estado,
+            @RequestParam(required = false, name = "fechaDesde") Date fechaDesde,
+            @RequestParam(required = false, name = "fechaHasta") Date fechaHasta
+    ) {
         try {
             response = new HashMap<>();
-            response.put("data", contratoService.listar());
+            response.put("data", contratoService.listarFiltrados(estado, fechaDesde, fechaHasta));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());

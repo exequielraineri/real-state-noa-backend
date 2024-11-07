@@ -46,8 +46,9 @@ public class UsuarioControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("{id}")
-    public ResponseEntity<Map<String, Object>> obtner(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> obtener(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
             response.put(("data"), userService.obtener(id));
