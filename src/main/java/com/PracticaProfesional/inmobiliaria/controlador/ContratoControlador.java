@@ -55,13 +55,14 @@ public class ContratoControlador {
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(required = false, name = "estado") EnumEstadoContrato estado,
             @RequestParam(required = false, name = "fechaDesde") Date fechaDesde,
-            @RequestParam(required = false, name = "fechaHasta") Date fechaHasta
+            @RequestParam(required = false, name = "fechaHasta") Date fechaHasta,
+            @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo
     ) {
         try {
             System.out.println(fechaDesde);
             System.out.println(fechaHasta);
             response = new HashMap<>();
-            response.put("data", contratoService.listarFiltrados(estado, fechaDesde, fechaHasta));
+            response.put("data", contratoService.listarFiltrados(activo, estado, fechaDesde, fechaHasta));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());

@@ -129,7 +129,6 @@ public class InmuebleControlador {
         }
     }
 
-   
     @PostMapping
     public ResponseEntity<Map<String, Object>> guardar(
             @Valid @RequestBody Inmueble inmueble) {
@@ -216,7 +215,6 @@ public class InmuebleControlador {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-
             inmueble.setEstado(EnumEstadoInmueble.DISPONIBLE);
             response.put("data", inmuebleServicio.guardar(inmueble));
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -235,6 +233,12 @@ public class InmuebleControlador {
                 response.put("data", "No se encontro Inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
+
+            if (!inmu.getEstado().equals(EnumEstadoInmueble.ALQUILADO)) {
+                response.put("data", "El inmueble se encuentra alquilado");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
             inmuebleServicio.eliminar(inmu.getId());
             response.put("data", "Se elimino el inmueble id " + id);
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);

@@ -23,7 +23,7 @@ public interface PagosInterfaceRepo extends JpaRepository<Pago, Integer>{
     //public List<Pago> findAll();
     @Query("SELECT p FROM Pago p WHERE "
             + "(:estado IS NULL OR p.estado = :estado) AND "
-            + "(:fechaDesde IS NULL OR :fechaHasta IS NULL) OR p.fechaRegistro BETWEEN :fechaDesde AND :fechaHasta")
+            + "((:fechaDesde IS NULL OR :fechaHasta IS NULL) OR p.fechaPago BETWEEN :fechaDesde AND :fechaHasta) ORDER BY p.fechaRegistro DESC")
     public List<Pago> listarFiltro(Date fechaDesde, Date fechaHasta, String estado);
 
 }
