@@ -20,7 +20,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;

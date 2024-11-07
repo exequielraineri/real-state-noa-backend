@@ -119,23 +119,4 @@ public class UsuarioControlador {
         viejo.setComisionVenta(nuevo.getComisionVenta());
         viejo.setFechaRegistro(nuevo.getFechaRegistro());
     }
-//
-//    @GetMapping("/filtrar")
-//    public String filtrarUsuario(
-//            @RequestParam(required = false) String rol,
-//            @RequestParam(required = false) String provincia,
-//            Model model) {
-//
-//        // Filtrar la lista de clientes según los parámetros de búsqueda
-//        List<Usuario> usuarioFiltrados = userService.filtrarUsuario(rol, provincia);
-//        model.addAttribute("usuario", new Usuario());
-//        // Añadir los filtros actuales al modelo para mantener el valor en los inputs
-//        model.addAttribute("rolFiltro", rol);
-//        model.addAttribute("provinciaFiltro", provincia);
-//
-//        // Enviar la lista filtrada a la vista
-//        model.addAttribute("listado_usuario", usuarioFiltrados);
-//        return "users";
-//    }
-
 }
