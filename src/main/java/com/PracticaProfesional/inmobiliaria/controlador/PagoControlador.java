@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -38,10 +39,13 @@ public class PagoControlador {
     private PagosServicios pagoService;
 
     @GetMapping
-    public ResponseEntity<Map<String, Object>> pagos() {
+    public ResponseEntity<Map<String, Object>> pagos(
+            @RequestParam(name = "fechaDesde", required = false) Date fechaDesde,
+            @RequestParam(name = "fechaHasta", required = false) Date fechaHasta,
+            @RequestParam(name = "estado", required = false) String estado) {
         try {
             response = new HashMap<>();
-            response.put("data", pagoService.listar());
+            response.put("data", pagoService.listarFiltro(fechaDesde, fechaHasta, estado));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("data", e.getMessage());
