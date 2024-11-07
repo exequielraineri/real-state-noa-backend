@@ -13,12 +13,13 @@ import java.util.Optional;
  * @author Sofia
  */
 public interface ClienteInterface {
-    public Cliente guardar (Cliente cliente);
-    
-    public void eliminar (Integer id);
-    
+
+    public Cliente guardar(Cliente cliente);
+
+    public void eliminar(Integer id);
+
     public Optional<Cliente> obtener(Integer id);
-    
+
     public List<Cliente> listar();
-    
+
 }

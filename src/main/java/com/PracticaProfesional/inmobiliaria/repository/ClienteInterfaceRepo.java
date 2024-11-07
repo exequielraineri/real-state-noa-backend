@@ -9,6 +9,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -18,15 +19,16 @@ import org.springframework.stereotype.Repository;
  * @author Sofia
  */
 @Repository
-public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer> {
+public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer>, JpaSpecificationExecutor<Cliente>  {
 
     @Query("SELECT c FROM Cliente c WHERE "
-            + "(:nombre IS NULL OR c.nombre LIKE %:nombre%) AND "
-            + "(:apellido IS NULL OR c.apellido LIKE %:apellido%) AND "
-            + "(:provincia IS NULL OR c.provincia LIKE %:provincia%)")
-    List<Cliente> filtrarClientes(@Param("nombre") String nombre,
-            @Param("apellido") String apellido,
-            @Param("provincia") String provincia);
+            + "(:provincia IS NULL OR c.provincia LIKE %:provincia%) AND "
+            + "(:estado IS NULL OR c.estado = :estado) AND "
+            + "(:tipoCliente IS NULL OR c.tipoCliente = :tipoCliente)")
+    List<Cliente> filtrarClientes(
+            @Param("provincia") String provincia,
+            @Param("estado") String estado,
+            @Param("tipoCliente") EnumTipoCliente tipoCliente);
 
     public Optional<Cliente> findById(Integer id);
 

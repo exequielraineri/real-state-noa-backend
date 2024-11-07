@@ -10,12 +10,13 @@ import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
 import com.PracticaProfesional.inmobiliaria.interfaz.InmuebleInterface;
 import com.PracticaProfesional.inmobiliaria.repository.InmuebleInterfaceRepo;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import jakarta.persistence.criteria.Predicate;
+import java.util.ArrayList;
 
 /**
  *
@@ -50,7 +51,6 @@ public class InmuebleServicios implements InmuebleInterface {
         return repo.findAll(Sort.by(Sort.Direction.DESC, "fechaRegistro"));
     }
 
-  
     public Long cantidad() {
         return repo.count();
     }
@@ -61,6 +61,23 @@ public class InmuebleServicios implements InmuebleInterface {
                 tipoInmueble == null ? null : EnumTipoInmuebles.valueOf(tipoInmueble),
                 direccion == null ? null : direccion,
                 estado == null ? null : EnumEstadoInmueble.valueOf(estado));
+    }
+
+    public List<Inmueble> listarPorFiltros(String tipoInmueble, String provincia, String estado) {
+        return repo.findAll((root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (tipoInmueble != null && !tipoInmueble.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("tipoInmueble"), EnumTipoInmuebles.valueOf(tipoInmueble.toUpperCase())));
+            }
+            if (estado != null && !estado.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("estado"), EnumEstadoInmueble.valueOf(estado.toUpperCase())));
+            }
+            if (provincia != null && !provincia.isEmpty()) {
+                predicates.add(criteriaBuilder.like(root.get("provincia"), "%" + provincia + "%"));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
     }
 
 }

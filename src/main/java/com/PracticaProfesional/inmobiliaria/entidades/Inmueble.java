@@ -82,9 +82,6 @@ public class Inmueble implements Serializable {
     @Enumerated(EnumType.STRING)
     private EnumEstadoInmueble estado;
 
-    @Column(name = "fecha_publicacion")
-    @Temporal(TemporalType.DATE)
-    private Date fechaPublicacion;
 
     @Column(name = "mts2")
     private BigDecimal mts2;

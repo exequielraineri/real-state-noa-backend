@@ -60,8 +60,9 @@ public class ReporteControlador {
             BigDecimal entradaAlquiler = BigDecimal.ZERO;
             BigDecimal impuestosInmobiliarios = BigDecimal.ZERO;
             BigDecimal impuestosMunicipales = BigDecimal.ZERO;
-            BigDecimal impuestosTotales;
+            BigDecimal impuestosTotales = BigDecimal.ZERO;
             BigDecimal ingresoTotales = BigDecimal.ZERO;
+            BigDecimal egresosTotales = BigDecimal.ZERO;
 
             int cantidadPropietario = 0;
             int cantidadInquilino = 0;
@@ -70,8 +71,6 @@ public class ReporteControlador {
             int cantidadDeptos = 0;
             int cantidadOficinas = 0;
             int cantidadCampos = 0;
-            int cantidadIngresos = 0;
-            int cantidadEgresos = 0;
             int cantidadContrato = 0;
             int cantContratoVenta = 0;
             int cantContratoAlquiler = 0;
@@ -104,12 +103,16 @@ public class ReporteControlador {
                 switch (inmuebleFiltro.getTipoInmueble()) {
                     case CASA:
                         cantidadCasas++;
+                        break;
                     case DEPARTAMENTO:
                         cantidadDeptos++;
+                        break;
                     case OFICINA:
                         cantidadOficinas++;
+                        break;
                     case CAMPO:
                         cantidadCampos++;
+                        break;
                 }
             }
             impuestosTotales = impuestosInmobiliarios.add(impuestosMunicipales);
@@ -126,16 +129,16 @@ public class ReporteControlador {
 
             for (Transaccion transaccionFiltro : transacciones) {
                 if (transaccionFiltro.getTipoTransaccion().equals("INGRESO")) {
-                    cantidadIngresos++;
                     ingresoTotales = ingresoTotales.add(transaccionFiltro.getImporte());
                 } else {
-                    cantidadEgresos++;
+                    egresosTotales = egresosTotales.add(transaccionFiltro.getImporte());
                 }
-
             }
-            transaccion.put("cantidadIngresos", cantidadIngresos);
-            transaccion.put("cantidadEgresos", cantidadEgresos);
+
+            transaccion.put("ingresos", ingresoTotales);
+            transaccion.put("egresos", egresosTotales);
             transaccion.put("transaccionesTotales", ingresoTotales);
+
             response.put("transacciones", transaccion);
 
             for (Cliente clienteFiltro : clientes) {
@@ -146,9 +149,10 @@ public class ReporteControlador {
                     }
                     case INQUILINO:
                         cantidadInquilino++;
+                        break;
                     case PROPIETARIO:
                         cantidadPropietario++;
-
+                        break;
                 }
             }
             cliente.put("cantidadPropietarios", cantidadPropietario);

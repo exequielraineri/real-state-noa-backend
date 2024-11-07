@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,73 @@ public class InmuebleControlador {
             response = new HashMap<>();
 
             response.put("data", inmuebleServicio.listar(tipoInmueble, direccion, estado));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("imagen/{id}")
+    @ResponseBody
+    public ResponseEntity<?> mostrarImagen(@PathVariable Integer id) {
+        try {
+            Imagen imagenBD = imagenService.obtener(id).orElse(null);
+            if (imagenBD == null) {
+
+                return new ResponseEntity<>("No se encontro la imagen", HttpStatus.NOT_FOUND);
+            } else {
+                Path imagenPath = Paths.get(RUTA_IMAGENES).resolve(imagenBD.getNombre());
+                Resource resource = new UrlResource(imagenPath.toUri());
+
+                if (resource.exists() || resource.isReadable()) {
+                    String contentType;
+                    contentType = Files.probeContentType(imagenPath);
+                    if (contentType == null) {
+                        contentType = "application/octet-stream";
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.parseMediaType(contentType))
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                            .body(resource);
+                } else {
+                    throw new RuntimeException("No se puede leer el archivo: " + id);
+                }
+            }
+        } catch (RuntimeException | MalformedURLException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IOException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Map<String, Object>> obtener(@PathVariable Integer id) {
+        try {
+            response = new HashMap<>();
+
+            Inmueble inmueble = inmuebleServicio.obtener(id).orElse(null);
+            if (inmueble == null) {
+                response.put("data", "No se encontro el inmueble");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+            response.put("data", inmueble);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("filtrar")
+    public ResponseEntity<Map<String, Object>> filtrar(
+            @RequestParam(name = "tipoInmueble", required = false) String tipoInmuebles,
+            @RequestParam(name = "direccion", required = false) String direccion,
+            @RequestParam(name = "estado", required = false) String estado) {
+        try {
+            response = new HashMap<>();
+            List<Inmueble> inmuebleFiltrado = inmuebleServicio.listarPorFiltros(tipoInmuebles, direccion, estado);
+            response.put("data", inmuebleFiltrado);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
@@ -148,6 +216,33 @@ public class InmuebleControlador {
         }
     }
 
+    /**
+     * Metodo para dar de alta un inmueble y colocarle fecha de publicacion
+     *
+     * @param id id de inmueble
+     * @return
+     *
+     */
+    @PostMapping("/publicar/{id}")
+    public ResponseEntity<Map<String, Object>> publicarInmueble(@PathVariable Integer id) {
+        try {
+            response = new HashMap<>();
+            Inmueble inmueble = inmuebleServicio.obtener(id).orElse(null);
+            if (inmueble == null) {
+                response.put("data", "El inmueble no se encontro");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+
+            inmueble.setEstado(EnumEstadoInmueble.DISPONIBLE);
+            response.put("data", inmuebleServicio.guardar(inmueble));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
@@ -191,84 +286,6 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             response.put("inmueble", inmuebleServicio.obtener(id).orElse(null));
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("imagen/{id}")
-    @ResponseBody
-    public ResponseEntity<?> mostrarImagen(@PathVariable Integer id) {
-        try {
-            Imagen imagenBD = imagenService.obtener(id).orElse(null);
-            if (imagenBD == null) {
-
-                return new ResponseEntity<>("No se encontro la imagen", HttpStatus.NOT_FOUND);
-            } else {
-                Path imagenPath = Paths.get(RUTA_IMAGENES).resolve(imagenBD.getNombre());
-                Resource resource = new UrlResource(imagenPath.toUri());
-
-                if (resource.exists() || resource.isReadable()) {
-                    String contentType;
-                    contentType = Files.probeContentType(imagenPath);
-                    if (contentType == null) {
-                        contentType = "application/octet-stream";
-                    }
-                    return ResponseEntity.ok()
-                            .contentType(MediaType.parseMediaType(contentType))
-                            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                            .body(resource);
-                } else {
-                    throw new RuntimeException("No se puede leer el archivo: " + id);
-                }
-            }
-        } catch (RuntimeException | MalformedURLException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (IOException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<Map<String, Object>> obtener(@PathVariable Integer id) {
-        try {
-            response = new HashMap<>();
-
-            Inmueble inmueble = inmuebleServicio.obtener(id).orElse(null);
-            if (inmueble == null) {
-                response.put("data", "No se encontro el inmueble");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-            response.put("data", inmueble);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Metodo para dar de alta un inmueble y colocarle fecha de publicacion
-     *
-     * @param id id de inmueble
-     * @return
-     *
-     */
-    @PostMapping("/publicar/{id}")
-    public ResponseEntity<Map<String, Object>> publicarInmueble(@PathVariable Integer id) {
-        try {
-            response = new HashMap<>();
-            Inmueble inmueble = inmuebleServicio.obtener(id).orElse(null);
-            if (inmueble == null) {
-                response.put("data", "El inmueble no se encontro");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-
-            inmueble.setFechaPublicacion(new Date());
-            inmueble.setEstado(EnumEstadoInmueble.DISPONIBLE);
-            response.put("data", inmuebleServicio.guardar(inmueble));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

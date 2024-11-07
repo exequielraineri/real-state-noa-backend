@@ -5,8 +5,10 @@
 package com.PracticaProfesional.inmobiliaria.servicios;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.interfaz.ContratoInterface;
 import com.PracticaProfesional.inmobiliaria.repository.ContratoInterfaceRepo;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +46,9 @@ public class ContratoServicios implements ContratoInterface {
     @Override
     public List<Contrato> listar() {
         return repo.findAll();
+    }
+
+    public List<Contrato> listarFiltrados(EnumEstadoContrato estado, Date fechaDesde, Date fechaHasta) {
+        return repo.filtrarContratos(estado, fechaDesde, fechaHasta);
     }
 }
