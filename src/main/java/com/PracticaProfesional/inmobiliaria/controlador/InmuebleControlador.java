@@ -50,18 +50,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("inmuebles")
 public class InmuebleControlador {
-
+    
     private Map<String, Object> response;
-
+    
     @Autowired
     private InmuebleServicios inmuebleServicio;
     @Autowired
     private ClienteServicios clienteServicio;
     @Autowired
     private ImagenServicios imagenService;
-
+    
     private final String RUTA_IMAGENES = System.getProperty("user.dir") + "/imagenes/";
-
+    
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(name = "tipoInmueble", required = false) String tipoInmueble,
@@ -77,19 +77,19 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @GetMapping("imagen/{id}")
     @ResponseBody
     public ResponseEntity<?> mostrarImagen(@PathVariable Integer id) {
         try {
             Imagen imagenBD = imagenService.obtener(id).orElse(null);
             if (imagenBD == null) {
-
+                
                 return new ResponseEntity<>("No se encontro la imagen", HttpStatus.NOT_FOUND);
             } else {
                 Path imagenPath = Paths.get(RUTA_IMAGENES).resolve(imagenBD.getNombre());
                 Resource resource = new UrlResource(imagenPath.toUri());
-
+                
                 if (resource.exists() || resource.isReadable()) {
                     String contentType;
                     contentType = Files.probeContentType(imagenPath);
@@ -110,12 +110,12 @@ public class InmuebleControlador {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @GetMapping("{id}")
     public ResponseEntity<Map<String, Object>> obtener(@PathVariable Integer id) {
         try {
             response = new HashMap<>();
-
+            
             Inmueble inmueble = inmuebleServicio.obtener(id).orElse(null);
             if (inmueble == null) {
                 response.put("data", "No se encontro el inmueble");
@@ -128,7 +128,7 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @PostMapping
     public ResponseEntity<Map<String, Object>> guardar(
             @Valid @RequestBody Inmueble inmueble) {
@@ -139,20 +139,20 @@ public class InmuebleControlador {
                 response.put("data", "Propietario no encontrado");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-
+            
             inmueble.setFechaRegistro(new Date());
             inmueble.setEstado(EnumEstadoInmueble.MANTENIMIENTO);
             propietario.agregarInmueble(inmueble);
-
+            
             response.put("data", inmuebleServicio.guardar(inmueble));
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-
+            
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @PostMapping(value = "subir-imagen/{idInmueble}", consumes = {"multipart/form-data"})
     private ResponseEntity<Map<String, Object>> subirImagenes(
             @PathVariable(name = "idInmueble") Integer id,
@@ -167,31 +167,32 @@ public class InmuebleControlador {
                 response.put("data", "No se encontro el inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-
+            
             if (!Files.exists(directorioPath)) {
                 Files.createDirectories(directorioPath);
             }
-
+            
             for (Imagen imagene : inmueble.getImagenes()) {
                 imagenService.eliminar(imagene.getId());
                 Files.deleteIfExists(directorioPath.resolve(imagene.getNombre()));
             }
-
+            
             inmueble.getImagenes().clear();
             for (MultipartFile image : imagenes) {
                 String nombreImagen = sf.format(fechaRegistro) + "_" + image.getOriginalFilename();
                 Path rutaImagen = directorioPath.resolve(nombreImagen);
-
+                
                 Files.write(rutaImagen, image.getBytes());
-
+                
                 Imagen imagen = new Imagen();
                 imagen.setActivo(true);
                 imagen.setNombre(sf.format(fechaRegistro) + "_" + image.getOriginalFilename());
                 inmueble.addImagen(imagen);
             }
             inmueble = inmuebleServicio.guardar(inmueble);
+            response.put("data", "imagenes subida");
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-
+            
         } catch (IOException e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -214,7 +215,7 @@ public class InmuebleControlador {
                 response.put("data", "El inmueble no se encontro");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-
+            
             inmueble.setEstado(EnumEstadoInmueble.DISPONIBLE);
             response.put("data", inmuebleServicio.guardar(inmueble));
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -223,7 +224,7 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @DeleteMapping("{id}")
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
@@ -233,12 +234,12 @@ public class InmuebleControlador {
                 response.put("data", "No se encontro Inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-
+            
             if (!inmu.getEstado().equals(EnumEstadoInmueble.ALQUILADO)) {
                 response.put("data", "El inmueble se encuentra alquilado");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-
+            
             inmuebleServicio.eliminar(inmu.getId());
             response.put("data", "Se elimino el inmueble id " + id);
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
@@ -247,26 +248,20 @@ public class InmuebleControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @PutMapping("{id}")
     public ResponseEntity<Map<String, Object>> modificar(@RequestBody Inmueble inmueble,
             @PathVariable(required = true) Integer id) {
         try {
             response = new HashMap<>();
-
+            
             Inmueble inmuebleBD = inmuebleServicio.obtener(id).orElse(null);
             if (inmuebleBD == null) {
                 response.put("data", "no se encontro Inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-
-            if (inmuebleBD.isVenta()) {
-                inmuebleBD.setPrecioVenta(inmueble.getPrecioVenta());
-            } else {
-                inmuebleBD.setPrecioAlquilerDia(inmueble.getPrecioAlquilerDia());
-                inmuebleBD.setPrecioAlquilerMes(inmueble.getPrecioAlquilerMes());
-            }
-            inmuebleBD.setTitulo(inmueble.getTitulo());
+            actualizar(inmuebleBD, inmueble);
+            
             response.put("data", inmuebleServicio.guardar(inmuebleBD));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HibernateException e) {
@@ -279,4 +274,30 @@ public class InmuebleControlador {
         }
     }
 
+    private void actualizar(Inmueble viejo, Inmueble nuevo) {
+        if (viejo.isVenta()) {
+            viejo.setPrecioVenta(nuevo.getPrecioVenta());
+        } else {
+            viejo.setPrecioAlquilerDia(nuevo.getPrecioAlquilerDia());
+            viejo.setPrecioAlquilerMes(nuevo.getPrecioAlquilerMes());
+        }
+        viejo.setTitulo(nuevo.getTitulo());
+        viejo.setEstado(nuevo.getEstado());
+        viejo.setCantAmbientes(nuevo.getCantAmbientes());
+        viejo.setDescripcion(nuevo.getDescripcion());
+        viejo.setDireccion(nuevo.getDireccion());
+        viejo.setExpensas(nuevo.getExpensas());
+        viejo.setHectareas(nuevo.getHectareas());
+        viejo.setBanios(nuevo.getBanios());
+        viejo.setAccesoRuta(nuevo.isAccesoRuta());
+        viejo.setImpInmobiliarios(nuevo.getImpInmobiliarios());
+        viejo.setImpMunicipales(nuevo.getImpMunicipales());
+        viejo.setMts2(nuevo.getMts2());
+        viejo.setPropietario(nuevo.getPropietario());
+        viejo.setVidrieraCalle(nuevo.isVidrieraCalle());
+        viejo.setVenta(nuevo.isVenta());
+        viejo.setTipoOperacion(nuevo.getTipoOperacion());
+        viejo.setTipoInmueble(nuevo.getTipoInmueble());
+        viejo.setRiego(nuevo.isRiego());
+    }
 }
