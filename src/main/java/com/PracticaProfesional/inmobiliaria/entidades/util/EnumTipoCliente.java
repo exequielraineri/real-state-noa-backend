@@ -9,5 +9,5 @@ package com.PracticaProfesional.inmobiliaria.entidades.util;
  * @author Exequiel
  */
 public enum EnumTipoCliente {
-    INQUILINO, COMPRADOR, PROPIETARIO
+    INQUILINO, COMPRADOR
 }

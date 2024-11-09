@@ -263,7 +263,8 @@ public class InmuebleControlador {
             if (inmuebleBD.isVenta()) {
                 inmuebleBD.setPrecioVenta(inmueble.getPrecioVenta());
             } else {
-                inmuebleBD.setPrecioAlquiler(inmueble.getPrecioAlquiler());
+                inmuebleBD.setPrecioAlquilerDia(inmueble.getPrecioAlquilerDia());
+                inmuebleBD.setPrecioAlquilerMes(inmueble.getPrecioAlquilerMes());
             }
             inmuebleBD.setTitulo(inmueble.getTitulo());
             response.put("data", inmuebleServicio.guardar(inmuebleBD));

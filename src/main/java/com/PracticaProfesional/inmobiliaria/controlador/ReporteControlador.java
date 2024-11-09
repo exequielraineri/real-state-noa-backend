@@ -80,6 +80,14 @@ public class ReporteControlador {
             List<Transaccion> transacciones = transaccionServicios.listar();
             List<Cliente> clientes = clienteServicios.listar();
 
+            for (Cliente clienteFiltro : clientes) {
+                if (!clienteFiltro.getInmuebles().isEmpty()) {
+                    cantidadPropietario++;
+                }
+            }
+            cliente.put("cantidadPropietario", cantidadPropietario);
+            response.put("cliente", cliente);
+            
             for (Contrato contratoFiltro : contratos) {
                 if (contratoFiltro.getTipoContrato() == EnumTipoContrato.VENTA) {
                     entradaVenta = entradaVenta.add(contratoFiltro.getImporte());
@@ -88,15 +96,27 @@ public class ReporteControlador {
                     entradaAlquiler = entradaAlquiler.add(contratoFiltro.getImporte());
                     cantContratoAlquiler++;
                 }
+                switch (contratoFiltro.getTipoCliente()) {
+                    case COMPRADOR: {
+                        cantidadComprador++;
+                        break;
+                    }
+                    case INQUILINO:
+                        cantidadInquilino++;
+                        break;
+                }
 
                 cantidadContrato++;
             }
+            contrato.put("cantidadInquilino", cantidadInquilino);
+            contrato.put("cantidadComprador", cantidadComprador);
             contrato.put("cantidadContratos", cantidadContrato);
             contrato.put("contratosVentas", cantContratoVenta);
             contrato.put("contratosAlquiler", cantContratoAlquiler);
             contrato.put("ingresosVentas", entradaVenta);
             contrato.put("ingresosAlquiler", entradaAlquiler);
             response.put("contratos", contrato);
+
             for (Inmueble inmuebleFiltro : inmuebles) {
                 impuestosInmobiliarios = impuestosInmobiliarios.add(inmuebleFiltro.getImpInmobiliarios());
                 impuestosMunicipales = impuestosMunicipales.add(inmuebleFiltro.getImpMunicipales());
@@ -141,29 +161,10 @@ public class ReporteControlador {
 
             response.put("transacciones", transaccion);
 
-            for (Cliente clienteFiltro : clientes) {
-                switch (clienteFiltro.getTipoCliente()) {
-                    case COMPRADOR: {
-                        cantidadComprador++;
-                        break;
-                    }
-                    case INQUILINO:
-                        cantidadInquilino++;
-                        break;
-                    case PROPIETARIO:
-                        cantidadPropietario++;
-                        break;
-                }
-            }
-            cliente.put("cantidadPropietarios", cantidadPropietario);
-            cliente.put("cantidadInquilinos", cantidadInquilino);
-            cliente.put("cantidadComprador", cantidadComprador);
-            response.put("clientes", cliente);
-
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }  
+    }
 }

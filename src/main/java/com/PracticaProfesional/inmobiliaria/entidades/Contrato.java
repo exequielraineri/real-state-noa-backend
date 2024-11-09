@@ -48,15 +48,15 @@ public class Contrato implements Serializable {
     private EnumTipoContrato tipoContrato;
 
     @Column(name = "fecha_contrato", nullable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaContrato;
 
     @Column(name = "fecha_inicio")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaInicio;
 
     @Column(name = "fecha_fin")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaFin;
 
     @Column(name = "importe", nullable = false)
@@ -69,7 +69,7 @@ public class Contrato implements Serializable {
     @Enumerated(EnumType.STRING)
     private EnumEstadoContrato estado;
 
-    @JsonIgnoreProperties(value = {"contratos"}, allowSetters = true)
+    @JsonIgnoreProperties(value = {"contratos", "inmuebles"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
@@ -79,6 +79,10 @@ public class Contrato implements Serializable {
     @JoinColumn(name = "id_inmueble")
     private Inmueble inmueble;
 
+    @Column(name = "tipo_cliente")
+    @Enumerated(EnumType.STRING)
+    private EnumTipoCliente tipoCliente;
+    
     //@JsonBackReference(value = "agente-contratos")
     @JsonIgnoreProperties(value = {"contratos"}, allowSetters = true)
     @ManyToOne
@@ -97,6 +101,8 @@ public class Contrato implements Serializable {
 
     //controlar las bajas logicas
     private boolean activo;
+    private BigDecimal entrega;
+    private int cuotas;
 
     public void agregarPago(Pago pago) {
         pagos.add(pago);
@@ -116,36 +122,19 @@ public class Contrato implements Serializable {
         pagos.clear();
         Calendar fechaPago = Calendar.getInstance();
         fechaPago.setTime(fechaInicio);
-
-        calcularImporte();
-
+        setearImporte();
         if (getDias() <= 30) {
             this.frecuenciaPago = EnumFrecuenciaPago.UNICO_PAGO;
+            //precio alquiler por dia
             generarPagoUnico(fechaPago);
         } else if (getDias() > 30 && frecuenciaPago == EnumFrecuenciaPago.UNICO_PAGO) {
+            //precio alquiler por mes 
             this.frecuenciaPago = EnumFrecuenciaPago.UNICO_PAGO;
             generarPagoUnico(fechaPago);
         } else {
+            //precio alquiler por mes
             this.frecuenciaPago = EnumFrecuenciaPago.MENSUAL;
             generarPagosMensuales(fechaPago);
-        }
-
-    }
-
-    private void calcularImporte() {
-        if (tipoContrato == EnumTipoContrato.ALQUILER) {
-
-            if (inmueble != null && inmueble.getPrecioAlquiler() != null) {
-                this.importe = inmueble.getPrecioAlquiler().multiply(BigDecimal.valueOf(getDias()));
-            } else {
-                this.importe = BigDecimal.ZERO;
-            }
-        } else {
-            if (inmueble != null && inmueble.getPrecioVenta() != null) {
-                this.importe = inmueble.getPrecioVenta().multiply(BigDecimal.valueOf(getDias()));
-            } else {
-                this.importe = BigDecimal.ZERO;
-            }
         }
 
     }
@@ -171,7 +160,6 @@ public class Contrato implements Serializable {
                 this.estado = EnumEstadoContrato.FINALIZADO;
             } else {
                 this.estado = EnumEstadoContrato.ACTIVO;
-
             }
         }
     }
@@ -214,31 +202,27 @@ public class Contrato implements Serializable {
         }
     }
 
-    //entrega del 60% y el resto en tres cuotas con el mismo valor
     private void generarPagoVentasCoutas() {
         Calendar fechaPago = Calendar.getInstance();
         fechaPago.setTime(fechaContrato);
         Pago pagoInicial = new Pago();
         pagoInicial.setFechaPago(fechaPago.getTime());
 
-        // saco el 60% del precio
-        calcularImporte();
-        BigDecimal montoInicial = getImporte().multiply(BigDecimal.valueOf(0.60)).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal porcentaje = getEntrega().divide(BigDecimal.valueOf(100));
+        BigDecimal montoInicial = getImporte().multiply(porcentaje).setScale(2, RoundingMode.HALF_UP);
         pagoInicial.setMonto(montoInicial);
         pagoInicial.setEstado("PENDIENTE");
         agregarPago(pagoInicial);
         fechaPago.add(Calendar.MONTH, 1);
 
-        // El 40% en 3 cuotas iguales
-        BigDecimal montoRestante = getImporte().multiply(BigDecimal.valueOf(0.40)).setScale(2, RoundingMode.HALF_UP);
-        BigDecimal montoPorCuota = montoRestante.divide(BigDecimal.valueOf(3), RoundingMode.HALF_UP);
+        BigDecimal montoRestante = getImporte().subtract(montoInicial);
+        BigDecimal montoPorCuota = montoRestante.divide(BigDecimal.valueOf(getCuotas()), RoundingMode.HALF_UP);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < getCuotas(); i++) {
             Pago cuota = new Pago();
             cuota.setEstado("PENDIENTE");
             cuota.setFechaPago(fechaPago.getTime());
             cuota.setMonto(montoPorCuota);
-
             agregarPago(cuota);
             fechaPago.add(Calendar.MONTH, 1);
         }
@@ -249,7 +233,7 @@ public class Contrato implements Serializable {
         Calendar fechaPago = Calendar.getInstance();
         fechaPago.setTime(fechaContrato);
 
-        calcularImporte();
+        setearImporte();
         if (this.frecuenciaPago == EnumFrecuenciaPago.UNICO_PAGO) {
             generarPagoUnico(fechaPago);
         } else {
@@ -257,4 +241,16 @@ public class Contrato implements Serializable {
         }
     }
 
+    public void setearImporte() {
+        if (getTipoContrato().equals(EnumTipoContrato.VENTA)) {
+            this.importe = getInmueble().getPrecioVenta();
+        } else {
+            if (getDias() < 30) {
+                this.importe = getInmueble().getPrecioAlquilerDia().multiply(BigDecimal.valueOf(getDias()));
+            } else {
+                double mes = getDias() / 30;
+                this.importe = getInmueble().getPrecioAlquilerMes().multiply(BigDecimal.valueOf(mes));
+            }
+        }
+    }
 }

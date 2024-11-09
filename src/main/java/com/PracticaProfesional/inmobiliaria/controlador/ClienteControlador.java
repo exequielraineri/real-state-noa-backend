@@ -8,7 +8,6 @@ import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

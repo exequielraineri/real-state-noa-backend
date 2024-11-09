@@ -10,6 +10,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
@@ -111,15 +112,15 @@ public class ContratoControlador {
             contrato.setInmueble(inmueble);
             contrato.setAgente(agente);
             contrato.setCliente(cliente);
-            if (contrato.getTipoContrato() == EnumTipoContrato.VENTA) {
+            if (contrato.getTipoContrato().equals(EnumTipoContrato.VENTA)) {
                 contrato.setTipoContrato(EnumTipoContrato.VENTA);
                 inmueble.setEstado(EnumEstadoInmueble.VENDIDO);
-
+                contrato.setTipoCliente(EnumTipoCliente.COMPRADOR);
                 contrato.generarPagosVentas();
-
             } else {
                 contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
                 inmueble.setEstado(EnumEstadoInmueble.ALQUILADO);
+                contrato.setTipoCliente(EnumTipoCliente.INQUILINO);
                 contrato.generarPagos();
             }
 

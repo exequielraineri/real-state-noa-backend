@@ -4,7 +4,6 @@
  */
 package com.PracticaProfesional.inmobiliaria.servicios;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Imagen;
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoInmuebles;
@@ -15,8 +14,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import jakarta.persistence.criteria.Predicate;
-import java.util.ArrayList;
 
 /**
  *

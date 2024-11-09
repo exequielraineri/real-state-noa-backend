@@ -44,7 +44,7 @@ public class Inmueble implements Serializable {
     private boolean activo;
     //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     //@JsonBackReference(value = "propietario-inmuebles")
-    @JsonIgnoreProperties(value = {"inmuebles","consultas"}, allowSetters = true)
+    @JsonIgnoreProperties(value = {"inmuebles", "consultas","contratos"}, allowSetters = true)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_propietario")
     private Cliente propietario;
@@ -65,8 +65,11 @@ public class Inmueble implements Serializable {
     @Column(name = "precio_venta")
     private BigDecimal precioVenta;
 
-    @Column(name = "precio_alquiler")
-    private BigDecimal precioAlquiler;
+    @Column(name = "precio_alquiler_dia")
+    private BigDecimal precioAlquilerDia;
+
+    @Column(name = "precio_alquiler_mes")
+    private BigDecimal precioAlquilerMes;
 
     @Column(name = "imp_municipales")
     private BigDecimal impMunicipales;
@@ -81,7 +84,6 @@ public class Inmueble implements Serializable {
     @Column(name = "estado")
     @Enumerated(EnumType.STRING)
     private EnumEstadoInmueble estado;
-
 
     @Column(name = "mts2")
     private BigDecimal mts2;
