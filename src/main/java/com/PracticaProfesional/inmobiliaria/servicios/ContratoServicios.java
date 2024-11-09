@@ -48,7 +48,7 @@ public class ContratoServicios implements ContratoInterface {
         return repo.findAll();
     }
 
-    public List<Contrato> listarFiltrados(boolean activo,EnumEstadoContrato estado, Date fechaDesde, Date fechaHasta) {
-        return repo.filtrarContratos(activo,estado, fechaDesde, fechaHasta);
+    public List<Contrato> listarFiltrados(boolean activo, EnumEstadoContrato estado, Date fechaDesde, Date fechaHasta, Integer cliente) {
+        return repo.filtrarContratos(activo,estado, fechaDesde, fechaHasta,cliente);
     }
 }

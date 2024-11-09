@@ -234,7 +234,7 @@ public class InmuebleControlador {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            if (!inmu.getEstado().equals(EnumEstadoInmueble.ALQUILADO)) {
+            if (inmu.getEstado().equals(EnumEstadoInmueble.ALQUILADO)) {
                 response.put("data", "El inmueble se encuentra alquilado");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
