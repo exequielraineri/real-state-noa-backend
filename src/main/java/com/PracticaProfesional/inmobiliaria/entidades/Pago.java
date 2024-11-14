@@ -38,7 +38,7 @@ public class Pago implements Serializable {
     private Integer id;
 
     @Column(name = "fecha_pago")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaPago;
 
     @Column(name = "metodo_pago")
@@ -53,7 +53,7 @@ public class Pago implements Serializable {
     @Column(name = "estado", nullable = false)
     private String estado;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaRegistro;
 
     private boolean activo;

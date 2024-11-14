@@ -190,6 +190,7 @@ public class InmuebleControlador {
                 inmueble.addImagen(imagen);
             }
             inmueble = inmuebleServicio.guardar(inmueble);
+            response.put("data", "imagenes subida");
             return new ResponseEntity<>(response, HttpStatus.CREATED);
 
         } catch (IOException e) {
@@ -234,7 +235,7 @@ public class InmuebleControlador {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            if (inmu.getEstado().equals(EnumEstadoInmueble.ALQUILADO)) {
+            if (!inmu.getEstado().equals(EnumEstadoInmueble.ALQUILADO)) {
                 response.put("data", "El inmueble se encuentra alquilado");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
@@ -259,13 +260,8 @@ public class InmuebleControlador {
                 response.put("data", "no se encontro Inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
+            actualizar(inmuebleBD, inmueble);
 
-            if (inmuebleBD.isVenta()) {
-                inmuebleBD.setPrecioVenta(inmueble.getPrecioVenta());
-            } else {
-                inmuebleBD.setPrecioAlquiler(inmueble.getPrecioAlquiler());
-            }
-            inmuebleBD.setTitulo(inmueble.getTitulo());
             response.put("data", inmuebleServicio.guardar(inmuebleBD));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (HibernateException e) {
@@ -278,4 +274,30 @@ public class InmuebleControlador {
         }
     }
 
+    private void actualizar(Inmueble viejo, Inmueble nuevo) {
+        if (viejo.isVenta()) {
+            viejo.setPrecioVenta(nuevo.getPrecioVenta());
+        } else {
+            viejo.setPrecioAlquilerDia(nuevo.getPrecioAlquilerDia());
+            viejo.setPrecioAlquilerMes(nuevo.getPrecioAlquilerMes());
+        }
+        viejo.setTitulo(nuevo.getTitulo());
+        viejo.setEstado(nuevo.getEstado());
+        viejo.setCantAmbientes(nuevo.getCantAmbientes());
+        viejo.setDescripcion(nuevo.getDescripcion());
+        viejo.setDireccion(nuevo.getDireccion());
+        viejo.setExpensas(nuevo.getExpensas());
+        viejo.setHectareas(nuevo.getHectareas());
+        viejo.setBanios(nuevo.getBanios());
+        viejo.setAccesoRuta(nuevo.isAccesoRuta());
+        viejo.setImpInmobiliarios(nuevo.getImpInmobiliarios());
+        viejo.setImpMunicipales(nuevo.getImpMunicipales());
+        viejo.setMts2(nuevo.getMts2());
+        //viejo.setPropietario(nuevo.getPropietario());
+        viejo.setVidrieraCalle(nuevo.isVidrieraCalle());
+        viejo.setVenta(nuevo.isVenta());
+        viejo.setTipoOperacion(nuevo.getTipoOperacion());
+        viejo.setTipoInmueble(nuevo.getTipoInmueble());
+        viejo.setRiego(nuevo.isRiego());
+    }
 }

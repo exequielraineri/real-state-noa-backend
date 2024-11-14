@@ -8,7 +8,6 @@ import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,15 +47,14 @@ public class ClienteControlador {
      */
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
-            @RequestParam(name = "tipoCliente", required = false) EnumTipoCliente tipoCliente,
+            @RequestParam(name = "nombre", required = false) String nombre,
             @RequestParam(name = "provincia", required = false) String provincia,
-            @RequestParam(name = "estado", required = false,defaultValue = "true") boolean estado) {
+            @RequestParam(name = "estado", required = false, defaultValue = "true") boolean estado) {
         try {
-            response = new HashMap<>();            
-            response.put("data", cliService.listarPorFiltros(tipoCliente, provincia, estado));
+            response = new HashMap<>();
+            response.put("data", cliService.listarPorFiltros(provincia, estado,nombre));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            response.put("tipoCliente", tipoCliente);
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -21,12 +21,9 @@ public interface ClienteInterfaceRepo extends JpaRepository<Cliente, Integer> {
 
     @Query("SELECT c FROM Cliente c WHERE "
             + "(:provincia IS NULL OR c.provincia LIKE %:provincia%) AND "
-            + "(:estado IS NULL OR c.activo = :estado) AND "
-            + "(:tipoCliente IS NULL OR c.tipoCliente = :tipoCliente)")
+            + "(:estado IS NULL OR c.activo = :estado) AND (:nombre IS NULL OR c.nombre LIKE %:nombre% OR c.apellido LIKE %:nombre%)")
     List<Cliente> filtrarClientes(
-            String provincia,
-            boolean estado,
-            EnumTipoCliente tipoCliente);
+            String provincia, boolean estado, String nombre);
 
     public Optional<Cliente> findById(Integer id);
 

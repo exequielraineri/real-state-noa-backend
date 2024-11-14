@@ -4,7 +4,6 @@
  */
 package com.PracticaProfesional.inmobiliaria.repository;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.Notificacion;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

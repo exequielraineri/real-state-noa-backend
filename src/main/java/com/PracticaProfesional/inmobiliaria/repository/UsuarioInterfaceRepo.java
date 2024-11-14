@@ -4,7 +4,6 @@
  */
 package com.PracticaProfesional.inmobiliaria.repository;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import java.util.List;
 import java.util.Optional;

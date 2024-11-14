@@ -4,7 +4,6 @@
  */
 package com.PracticaProfesional.inmobiliaria.dtos;
 
-import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

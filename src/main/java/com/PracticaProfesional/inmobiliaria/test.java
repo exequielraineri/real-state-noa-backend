@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @author Exequiel
  */
 public class test {
-    
+
     public static void main(String[] args) throws ParseException {
         /* SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
         Date fechaInicio = new Date();
@@ -39,5 +42,15 @@ public class test {
         System.out.println("porcentaje "+importe.multiply(BigDecimal.valueOf(0.60).setScale(2,RoundingMode.HALF_UP)));
         /*
          */
+
+        System.out.println("Local Date: "+LocalDateTime.now());
+        System.out.println("Fecha 1: " + new Date());
+        System.out.println("Fecha 2: " + new Date(System.currentTimeMillis()));
+        LocalDateTime fecha1=LocalDateTime.now();
+        LocalDateTime fecha2=LocalDateTime.of(2024, 11, 24, 0, 0);
+                
+        Duration duracion = Duration.between(fecha1, fecha2);
+        System.out.println("Dur: "+duracion.toDays());
+        System.out.println("Dur: "+duracion.toHours());
     }
 }

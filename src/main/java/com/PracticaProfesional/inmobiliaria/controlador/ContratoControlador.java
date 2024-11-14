@@ -10,6 +10,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoInmueble;
+import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
@@ -39,9 +40,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("contratos")
 public class ContratoControlador {
-
+    
     Map<String, Object> response;
-
+    
     @Autowired
     private ContratoServicios contratoService;
     @Autowired
@@ -50,27 +51,28 @@ public class ContratoControlador {
     private UsuarioServicios usuarioService;
     @Autowired
     private InmuebleServicios inmuebleService;
-
+    
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(required = false, name = "estado") EnumEstadoContrato estado,
             @RequestParam(required = false, name = "fechaDesde") Date fechaDesde,
             @RequestParam(required = false, name = "fechaHasta") Date fechaHasta,
             @RequestParam(required = false, name = "cliente") Integer cliente,
+            @RequestParam(required = false, name = "tipoContrato") EnumTipoContrato tipoContrato,
             @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo
     ) {
         try {
             System.out.println(fechaDesde);
             System.out.println(fechaHasta);
             response = new HashMap<>();
-            response.put("data", contratoService.listarFiltrados(activo, estado, fechaDesde, fechaHasta,cliente));
+            response.put("data", contratoService.listarFiltrados(activo, estado, fechaDesde, fechaHasta, cliente, tipoContrato));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @GetMapping("{id}")
     public ResponseEntity<Map<String, Object>> obtenerContratos(@PathVariable Integer id) {
         try {
@@ -87,7 +89,7 @@ public class ContratoControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @PostMapping
     public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato) {
         try {
@@ -95,7 +97,7 @@ public class ContratoControlador {
             Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
             Cliente cliente = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
             Usuario agente = usuarioService.obtener(contrato.getAgente().getId()).orElse(null);
-
+            
             if (inmueble == null) {
                 response.put("data", "No se encontro el inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -112,30 +114,30 @@ public class ContratoControlador {
             contrato.setInmueble(inmueble);
             contrato.setAgente(agente);
             contrato.setCliente(cliente);
-            if (contrato.getTipoContrato() == EnumTipoContrato.VENTA) {
+            if (contrato.getTipoContrato().equals(EnumTipoContrato.VENTA)) {
                 contrato.setTipoContrato(EnumTipoContrato.VENTA);
                 inmueble.setEstado(EnumEstadoInmueble.VENDIDO);
-
+                contrato.setTipoCliente(EnumTipoCliente.COMPRADOR);
                 contrato.generarPagosVentas();
-
             } else {
                 contrato.setTipoContrato(EnumTipoContrato.ALQUILER);
                 inmueble.setEstado(EnumEstadoInmueble.ALQUILADO);
+                contrato.setTipoCliente(EnumTipoCliente.INQUILINO);
                 contrato.generarPagos();
             }
-
+            
             contrato.setEstado(EnumEstadoContrato.PENDIENTE);
             response.put("data", contratoService.guardar(contrato));
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-
+            
         } catch (NumberFormatException e) {
             response.put("error", "Error al procesar la transaccion");
             response.put("mensaje", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
+        
     }
-
+    
     @DeleteMapping("{id}")
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
@@ -153,5 +155,5 @@ public class ContratoControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
 }

@@ -4,11 +4,9 @@ import com.PracticaProfesional.inmobiliaria.repository.ClienteInterfaceRepo;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.interfaz.ClienteInterface;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,8 +48,8 @@ public class ClienteServicios implements ClienteInterface {
         return repo.findAll();
     }
 
-    public List<Cliente> listarPorFiltros(EnumTipoCliente tipoCliente, String provincia, boolean estado) {
-        return repo.filtrarClientes(provincia, estado, tipoCliente);
+    public List<Cliente> listarPorFiltros(String provincia, boolean estado,String nombre) {
+        return repo.filtrarClientes(provincia, estado, nombre);
     }
 
 }
