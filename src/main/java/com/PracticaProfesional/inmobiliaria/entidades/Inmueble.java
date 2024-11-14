@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -79,7 +79,7 @@ public class Inmueble implements Serializable {
 
     @Column(name = "fecha_registro")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @Column(name = "estado")
     @Enumerated(EnumType.STRING)

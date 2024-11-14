@@ -12,17 +12,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import jakarta.persistence.*;
 import java.math.RoundingMode;
-import java.time.LocalDate;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,15 +48,15 @@ public class Contrato implements Serializable {
 
     @Column(name = "fecha_contrato", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaContrato;
+    private LocalDateTime fechaContrato;
 
     @Column(name = "fecha_inicio")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaInicio;
+    private LocalDateTime fechaInicio;
 
     @Column(name = "fecha_fin")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaFin;
+    private LocalDateTime fechaFin;
 
     @Column(name = "importe", nullable = false)
     private BigDecimal importe;
@@ -123,8 +119,7 @@ public class Contrato implements Serializable {
 
     public void generarPagos() {
         pagos.clear();
-        Calendar fechaPago = Calendar.getInstance();
-        fechaPago.setTime(fechaInicio);
+        LocalDateTime fechaPago = fechaInicio;
         setearImporte();
         if (getDias() <= 30) {
             this.frecuenciaPago = EnumFrecuenciaPago.UNICO_PAGO;
@@ -144,18 +139,17 @@ public class Contrato implements Serializable {
 
     public int getDias() {
         if (fechaInicio != null && fechaFin != null) {
-            long tiempoTranscurrido = fechaFin.getTime() - fechaInicio.getTime();
-            return (int) TimeUnit.DAYS.convert(tiempoTranscurrido, TimeUnit.MILLISECONDS);
+            return (int) Duration.between(fechaInicio, fechaFin).toDays();
         }
         return 1;
     }
 
     public void actualizarSaldo() {
-        Date fechaActual = new Date();
+        LocalDateTime fechaActual = LocalDateTime.now();
         if (getTipoContrato().equals(EnumTipoContrato.ALQUILER)) {
-            if (getSaldoRestante().doubleValue() <= 0 && (fechaFin.after(fechaActual) || fechaFin.equals(fechaActual))) {
+            if (getSaldoRestante().doubleValue() <= 0 && (fechaFin.isAfter(fechaActual) || fechaFin.equals(fechaActual))) {
                 this.estado = EnumEstadoContrato.FINALIZADO;
-            } else if (getSaldoRestante().doubleValue() > 0 && (fechaInicio.after(fechaActual) || fechaInicio.equals(fechaActual))) {
+            } else if (getSaldoRestante().doubleValue() > 0 && (fechaInicio.isAfter(fechaActual) || fechaInicio.equals(fechaActual))) {
                 this.estado = EnumEstadoContrato.ACTIVO;
             }
         } else {
@@ -172,77 +166,68 @@ public class Contrato implements Serializable {
                 .filter((pago) -> pago.getEstado().equals("PAGADO"))
                 .map((pago) -> pago.getMonto())
                 .reduce(BigDecimal::add);
-
         return importe.subtract(totalPagado.orElse(BigDecimal.ZERO));
     }
 
-    private void generarPagoUnico(Calendar fechaPago) {
+    private void generarPagoUnico(LocalDateTime fechaPago) {
         Pago pago = new Pago();
         pago.setEstado("PENDIENTE");
-        pago.setFechaPago(fechaPago.getTime());
+        pago.setFechaPago(fechaPago);
         pago.setMonto(getImporte());
         pago.setActivo(true);
         agregarPago(pago);
     }
 
-    private void generarPagosMensuales(Calendar fechaPago) {
+    private void generarPagosMensuales(LocalDateTime fechaPago) {
         int cantPagos = 0;
         Pago pago = new Pago();
-        pago.setFechaPago(new Date());
+        pago.setFechaPago(LocalDateTime.now());
         pago.setActivo(true);
         pago.setEstado("PENDIENTE");
         agregarPago(pago);
         cantPagos++;
-        while (fechaPago.getTime().before(fechaFin) || fechaPago.getTime().equals(fechaFin)) {
-
+        while (fechaPago.isBefore(fechaFin) || fechaPago.equals(fechaFin)) {
             pago = new Pago();
             pago.setEstado("PENDIENTE");
             pago.setActivo(true);
-            pago.setFechaPago(fechaPago.getTime());
-
+            pago.setFechaPago(fechaPago);
             agregarPago(pago);
-
-            fechaPago.add(Calendar.MONTH, 1);
+            fechaPago = fechaPago.plusMonths(1);
             cantPagos++;
         }
         cantPagos = cantPagos == 0 ? 1 : cantPagos;
-
         for (Pago pagoMonto : pagos) {
             pagoMonto.setMonto(getImporte().divide(BigDecimal.valueOf(cantPagos), RoundingMode.HALF_UP));
         }
     }
 
     private void generarPagoVentasCoutas() {
-        Calendar fechaPago = Calendar.getInstance();
-        fechaPago.setTime(fechaContrato);
+        LocalDateTime fechaPago;
+        fechaPago = fechaContrato;
         Pago pagoInicial = new Pago();
-        pagoInicial.setFechaPago(fechaPago.getTime());
-
+        pagoInicial.setFechaPago(fechaPago);
         BigDecimal porcentaje = getEntrega().divide(BigDecimal.valueOf(100));
         BigDecimal montoInicial = getImporte().multiply(porcentaje).setScale(2, RoundingMode.HALF_UP);
         pagoInicial.setMonto(montoInicial);
         pagoInicial.setEstado("PENDIENTE");
         agregarPago(pagoInicial);
-        fechaPago.add(Calendar.MONTH, 1);
-
+        fechaPago = fechaPago.minusMonths(1);
         BigDecimal montoRestante = getImporte().subtract(montoInicial);
         BigDecimal montoPorCuota = montoRestante.divide(BigDecimal.valueOf(getCuotas()), RoundingMode.HALF_UP);
-
         for (int i = 0; i < getCuotas(); i++) {
             Pago cuota = new Pago();
             cuota.setEstado("PENDIENTE");
-            cuota.setFechaPago(fechaPago.getTime());
+            cuota.setFechaPago(fechaPago);
             cuota.setMonto(montoPorCuota);
             agregarPago(cuota);
-            fechaPago.add(Calendar.MONTH, 1);
+            fechaPago = fechaPago.minusMonths(1);
         }
     }
 
     public void generarPagosVentas() {
         pagos.clear();
-        Calendar fechaPago = Calendar.getInstance();
-        fechaPago.setTime(fechaContrato);
-
+        LocalDateTime fechaPago;
+        fechaPago = fechaContrato;
         setearImporte();
         if (this.frecuenciaPago == EnumFrecuenciaPago.UNICO_PAGO) {
             generarPagoUnico(fechaPago);

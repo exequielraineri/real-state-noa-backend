@@ -8,7 +8,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.entidades.Transaccion;
 import com.PracticaProfesional.inmobiliaria.servicios.PagosServicios;
 import jakarta.validation.Valid;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +40,8 @@ public class PagoControlador {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> pagos(
-            @RequestParam(name = "fechaDesde", required = false) Date fechaDesde,
-            @RequestParam(name = "fechaHasta", required = false) Date fechaHasta,
+            @RequestParam(name = "fechaDesde", required = false) LocalDateTime fechaDesde,
+            @RequestParam(name = "fechaHasta", required = false) LocalDateTime fechaHasta,
             @RequestParam(name = "estado", required = false) String estado) {
         try {
             response = new HashMap<>();
@@ -86,7 +86,7 @@ public class PagoControlador {
                 return new ResponseEntity<>(response, HttpStatus.CONFLICT);
             }
 
-            Date fechaActual = new Date();
+            LocalDateTime fechaActual = LocalDateTime.now();
 
             //Genero una transaccion del pago confirmado
             Transaccion transaccion = new Transaccion();

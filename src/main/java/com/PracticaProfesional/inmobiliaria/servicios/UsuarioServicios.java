@@ -7,7 +7,7 @@ package com.PracticaProfesional.inmobiliaria.servicios;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.interfaz.UsuarioInterface;
 import com.PracticaProfesional.inmobiliaria.repository.UsuarioInterfaceRepo;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class UsuarioServicios implements UsuarioInterface {
 
     @Override
     public Usuario guardar(Usuario usuario) {
-        usuario.setFechaRegistro(new Date());
+        usuario.setFechaRegistro(LocalDateTime.now());
         usuario.setActivo(true);
         return repo.save(usuario);
     }

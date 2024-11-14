@@ -16,7 +16,7 @@ import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +55,8 @@ public class ContratoControlador {
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(required = false, name = "estado") EnumEstadoContrato estado,
-            @RequestParam(required = false, name = "fechaDesde") Date fechaDesde,
-            @RequestParam(required = false, name = "fechaHasta") Date fechaHasta,
+            @RequestParam(required = false, name = "fechaDesde") LocalDateTime fechaDesde,
+            @RequestParam(required = false, name = "fechaHasta") LocalDateTime fechaHasta,
             @RequestParam(required = false, name = "cliente") Integer cliente,
             @RequestParam(required = false, name = "tipoContrato") EnumTipoContrato tipoContrato,
             @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo
@@ -110,7 +110,7 @@ public class ContratoControlador {
                 response.put("data", "No se encontro el agente");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
-            contrato.setFechaContrato(new Date());
+            contrato.setFechaContrato(LocalDateTime.now());
             contrato.setInmueble(inmueble);
             contrato.setAgente(agente);
             contrato.setCliente(cliente);

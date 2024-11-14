@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.hibernate.HibernateException;
@@ -140,7 +140,7 @@ public class InmuebleControlador {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            inmueble.setFechaRegistro(new Date());
+            inmueble.setFechaRegistro(LocalDateTime.now());
             inmueble.setEstado(EnumEstadoInmueble.MANTENIMIENTO);
             propietario.agregarInmueble(inmueble);
 
@@ -157,7 +157,7 @@ public class InmuebleControlador {
     private ResponseEntity<Map<String, Object>> subirImagenes(
             @PathVariable(name = "idInmueble") Integer id,
             @RequestParam(name = "imagenes") MultipartFile[] imagenes) {
-        Date fechaRegistro = new Date();
+        LocalDateTime fechaRegistro = LocalDateTime.now();
         SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
         Path directorioPath = Paths.get(RUTA_IMAGENES);
         try {

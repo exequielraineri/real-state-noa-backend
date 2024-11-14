@@ -2,9 +2,8 @@ package com.PracticaProfesional.inmobiliaria.servicios;
 
 import com.PracticaProfesional.inmobiliaria.repository.ClienteInterfaceRepo;
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
-import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.interfaz.ClienteInterface;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class ClienteServicios implements ClienteInterface {
 
     @Override
     public Cliente guardar(Cliente cliente) {
-        cliente.setFechaRegistro(new Date());
+        cliente.setFechaRegistro(LocalDateTime.now());
         cliente.setActivo(true);
         return repo.save(cliente);
     }
