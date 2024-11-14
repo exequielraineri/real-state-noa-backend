@@ -3,6 +3,7 @@ package com.PracticaProfesional.inmobiliaria;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import org.springframework.boot.CommandLineRunner;
@@ -26,7 +27,7 @@ public class InmobiliariaApplication {
                 usuarioADMIN.setRol("ADMIN");
                 usuarioADMIN.setNombre("ADMIN");
                 usuarioADMIN.setApellido("ADMIN");
-                usuarioADMIN.setFechaRegistro(new Date());
+                usuarioADMIN.setFechaRegistro(LocalDateTime.now());
                 usuarioADMIN.setPassword("admin");
                 usuarioADMIN.setCorreo("admin@admin.com");
                 usuarioADMIN.setDni("0");

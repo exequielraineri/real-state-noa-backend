@@ -5,7 +5,7 @@
 package com.PracticaProfesional.inmobiliaria.repository;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Pago;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +24,6 @@ public interface PagosInterfaceRepo extends JpaRepository<Pago, Integer>{
     @Query("SELECT p FROM Pago p WHERE "
             + "(:estado IS NULL OR p.estado = :estado) AND "
             + "((:fechaDesde IS NULL OR :fechaHasta IS NULL) OR p.fechaPago BETWEEN :fechaDesde AND :fechaHasta) ORDER BY p.fechaRegistro DESC")
-    public List<Pago> listarFiltro(Date fechaDesde, Date fechaHasta, String estado);
+    public List<Pago> listarFiltro(LocalDateTime fechaDesde, LocalDateTime fechaHasta, String estado);
 
 }

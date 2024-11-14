@@ -9,7 +9,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import com.PracticaProfesional.inmobiliaria.interfaz.ContratoInterface;
 import com.PracticaProfesional.inmobiliaria.repository.ContratoInterfaceRepo;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class ContratoServicios implements ContratoInterface {
         return repo.findAll();
     }
 
-    public List<Contrato> listarFiltrados(boolean activo, EnumEstadoContrato estado, Date fechaDesde, Date fechaHasta, Integer cliente, EnumTipoContrato tipoContrato) {
+    public List<Contrato> listarFiltrados(boolean activo, EnumEstadoContrato estado, LocalDateTime fechaDesde, LocalDateTime fechaHasta, Integer cliente, EnumTipoContrato tipoContrato) {
         return repo.filtrarContratos(activo, estado, fechaDesde, fechaHasta, cliente, tipoContrato);
     }
 }

@@ -5,7 +5,6 @@
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
-import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoCliente;
 import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class ClienteControlador {
 
     /**
      *
-     * @param tipoCliente
+     * @param nombre
      * @param provincia
      * @param estado
      * @return

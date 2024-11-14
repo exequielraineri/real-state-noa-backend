@@ -9,9 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -66,7 +66,7 @@ public class Usuario implements Serializable {
     @NotNull(message = "La fecha de registro no puede estar vacio")
     @Column(name = "fecha_registro", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @Column(name = "provincia")
     private String provincia;

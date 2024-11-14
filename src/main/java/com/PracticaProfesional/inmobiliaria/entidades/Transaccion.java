@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +48,7 @@ public class Transaccion implements Serializable {
 
     @Column(name = "fecha_transaccion")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaTransaccion;
+    private LocalDateTime fechaTransaccion;
 
     @Column(name = "estado")
     private Boolean estado;

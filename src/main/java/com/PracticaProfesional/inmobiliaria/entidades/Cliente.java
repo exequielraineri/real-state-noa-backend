@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,6 +21,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,7 +60,7 @@ public class Cliente implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_registro")
-    private Date fechaRegistro;
+    private LocalDateTime fechaRegistro;
 
     @Column(name = "provincia")
     private String provincia;

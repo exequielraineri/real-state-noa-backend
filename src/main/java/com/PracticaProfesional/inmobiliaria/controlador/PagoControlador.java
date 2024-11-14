@@ -14,16 +14,23 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
 import jakarta.validation.Valid;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,8 +61,8 @@ public class PagoControlador {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> pagos(
-            @RequestParam(name = "fechaDesde", required = false) Date fechaDesde,
-            @RequestParam(name = "fechaHasta", required = false) Date fechaHasta,
+            @RequestParam(name = "fechaDesde", required = false) LocalDateTime fechaDesde,
+            @RequestParam(name = "fechaHasta", required = false) LocalDateTime fechaHasta,
             @RequestParam(name = "estado", required = false) String estado) {
         try {
             response = new HashMap<>();
@@ -100,7 +107,7 @@ public class PagoControlador {
                 return new ResponseEntity<>(response, HttpStatus.CONFLICT);
             }
 
-            Date fechaActual = new Date();
+            LocalDateTime fechaActual = LocalDateTime.now();
 
             //Genero una transaccion del pago confirmado
             Transaccion transaccion = new Transaccion();
@@ -174,11 +181,11 @@ public class PagoControlador {
             encabezado.setAlignment(encabezado.ALIGN_CENTER);
             document.add(encabezado);
 
-            Paragraph fechaPago = new Paragraph(sf.format(new Date()), fontCuerpo);
+            Paragraph fechaPago = new Paragraph(pagoBD.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")), fontCuerpo);
             fechaPago.setAlignment(fechaPago.ALIGN_CENTER);
             document.add(fechaPago);
 
-            Paragraph nroPago = new Paragraph("ID: "+pagoBD.getId().toString(), fontCuerpo);
+            Paragraph nroPago = new Paragraph("ID: " + pagoBD.getId().toString(), fontCuerpo);
             nroPago.setAlignment(nroPago.ALIGN_LEFT);
             document.add(nroPago);
 
@@ -211,6 +218,27 @@ public class PagoControlador {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
     }
 
+    @GetMapping("/ticket/{idPago}")
+    public ResponseEntity<InputStreamResource> downloadPDF(@PathVariable Integer idPago) throws FileNotFoundException {
+        Pago pago = pagoService.obtener(idPago).orElse(null);
+        if (pago == null) {
+            return ResponseEntity.notFound().build();
+        }
+        String fileName = "ticket-pago-" + pago.getId() + ".pdf";
+        String filePath = RUTA_PDF + File.separator + fileName; // Ruta en tu servidor
+
+        File directory = new File(filePath);
+        if (!directory.exists()) {
+            generarTicketPago(pago);
+        }
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + fileName + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(fileInputStream));
+    }
 }

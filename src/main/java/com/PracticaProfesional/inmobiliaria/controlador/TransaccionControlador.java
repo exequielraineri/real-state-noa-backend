@@ -8,7 +8,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Transaccion;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.TransaccionServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +44,8 @@ public class TransaccionControlador {
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(required = false, name = "estado", defaultValue = "true") boolean estado,
-            @RequestParam(required = false, name = "fechaDesde") Date fechaDesde,
-            @RequestParam(required = false, name = "fechaHasta") Date fechaHasta,
+            @RequestParam(required = false, name = "fechaDesde") LocalDateTime fechaDesde,
+            @RequestParam(required = false, name = "fechaHasta") LocalDateTime fechaHasta,
             @RequestParam(required = false, name = "tipoTransaccion") String TipoTransaccion,
             @RequestParam(required = false, name = "tipoOperacion") String TipoOperacion
     ) {
@@ -87,7 +87,7 @@ public class TransaccionControlador {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            transaccion.setFechaTransaccion(new Date());
+            transaccion.setFechaTransaccion(LocalDateTime.now());
             transaccion.setEstado(true);
             transaccion.setAgente(usuario);
 

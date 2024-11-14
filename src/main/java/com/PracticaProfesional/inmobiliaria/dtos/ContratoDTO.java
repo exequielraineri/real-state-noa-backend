@@ -8,7 +8,7 @@ import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -29,9 +29,9 @@ public class ContratoDTO {
     private Integer id;
     private EnumTipoContrato tipoOperacion;
     private String tipoCliente;
-    private Date fechaContrato;
-    private Date fechaInicio;
-    private Date fechaFin;
+    private LocalDateTime fechaContrato;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFin;
     private BigDecimal importe;
     private EnumEstadoContrato estado;
     

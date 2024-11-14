@@ -7,7 +7,7 @@ package com.PracticaProfesional.inmobiliaria.servicios;
 import com.PracticaProfesional.inmobiliaria.entidades.Pago;
 import com.PracticaProfesional.inmobiliaria.interfaz.PagosInterface;
 import com.PracticaProfesional.inmobiliaria.repository.PagosInterfaceRepo;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class PagosServicios implements PagosInterface {
         return repo.findAll(sort);
     }
 
-    public List<Pago> listarFiltro(Date fechaDesde, Date fechaHasta, String estado){
+    public List<Pago> listarFiltro(LocalDateTime fechaDesde, LocalDateTime fechaHasta, String estado){
         return repo.listarFiltro(fechaDesde, fechaHasta, estado);
     }
 

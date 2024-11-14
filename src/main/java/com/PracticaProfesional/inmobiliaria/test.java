@@ -4,18 +4,8 @@
  */
 package com.PracticaProfesional.inmobiliaria;
 
-import com.PracticaProfesional.inmobiliaria.entidades.Contrato;
-import com.PracticaProfesional.inmobiliaria.entidades.util.EnumTipoContrato;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
+import java.text.ParseException;
 /**
  *
  * @author Exequiel
@@ -40,8 +30,8 @@ public class test {
         System.out.println("mensual "+importe.divide(BigDecimal.valueOf(4)));
         System.out.println("cant: " + cant);
         System.out.println("porcentaje "+importe.multiply(BigDecimal.valueOf(0.60).setScale(2,RoundingMode.HALF_UP)));
-        /*
-         */
+        
+         
 
         System.out.println("Local Date: "+LocalDateTime.now());
         System.out.println("Fecha 1: " + new Date());
@@ -51,6 +41,6 @@ public class test {
                 
         Duration duracion = Duration.between(fecha1, fecha2);
         System.out.println("Dur: "+duracion.toDays());
-        System.out.println("Dur: "+duracion.toHours());
+        System.out.println("Dur: "+duracion.toHours());*/
     }
 }

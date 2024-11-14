@@ -9,9 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 import jakarta.persistence.*;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,8 +38,8 @@ public class Pago implements Serializable {
     private Integer id;
 
     @Column(name = "fecha_pago")
-    @Temporal(TemporalType.DATE)
-    private Date fechaPago;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaPago;
 
     @Column(name = "metodo_pago")
     private String metodoPago;
@@ -53,8 +53,8 @@ public class Pago implements Serializable {
     @Column(name = "estado", nullable = false)
     private String estado;
 
-    @Temporal(TemporalType.DATE)
-    private Date fechaRegistro;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime fechaRegistro;
 
     private boolean activo;
 
