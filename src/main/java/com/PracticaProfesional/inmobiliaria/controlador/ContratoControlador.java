@@ -79,7 +79,6 @@ public class ContratoControlador {
                 fechaHasta = LocalDate.parse(fechaHastaStr, formatter).atTime(23, 59, 59);
             }
 
-            // Llamar al servicio con los filtros
             response.put("data", contratoService.listarFiltrados(activo, estado, fechaDesde, fechaHasta, cliente, tipoContrato));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
