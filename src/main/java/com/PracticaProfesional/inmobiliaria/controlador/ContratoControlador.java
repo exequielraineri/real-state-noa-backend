@@ -16,7 +16,9 @@ import com.PracticaProfesional.inmobiliaria.servicios.ClienteServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.ContratoServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.InmuebleServicios;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +42,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("contratos")
 public class ContratoControlador {
-    
+
     Map<String, Object> response;
-    
+
     @Autowired
     private ContratoServicios contratoService;
     @Autowired
@@ -51,20 +53,33 @@ public class ContratoControlador {
     private UsuarioServicios usuarioService;
     @Autowired
     private InmuebleServicios inmuebleService;
-    
+
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(required = false, name = "estado") EnumEstadoContrato estado,
-            @RequestParam(required = false, name = "fechaDesde") LocalDateTime fechaDesde,
-            @RequestParam(required = false, name = "fechaHasta") LocalDateTime fechaHasta,
+            @RequestParam(required = false, name = "fechaDesde") String fechaDesdeStr,
+            @RequestParam(required = false, name = "fechaHasta") String fechaHastaStr,
             @RequestParam(required = false, name = "cliente") Integer cliente,
             @RequestParam(required = false, name = "tipoContrato") EnumTipoContrato tipoContrato,
-            @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo
-    ) {
+            @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo) {
+
+        response = new HashMap<>();
         try {
-            System.out.println(fechaDesde);
-            System.out.println(fechaHasta);
-            response = new HashMap<>();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            LocalDateTime fechaDesde = null;
+            LocalDateTime fechaHasta = null;
+
+            // Limpiar las fechas eliminando espacios y saltos de línea
+            if (fechaDesdeStr != null && !fechaDesdeStr.isEmpty()) {
+                fechaDesdeStr = fechaDesdeStr.trim();
+                fechaDesde = LocalDate.parse(fechaDesdeStr, formatter).atStartOfDay();
+            }
+            if (fechaHastaStr != null && !fechaHastaStr.isEmpty()) {
+                fechaHastaStr = fechaHastaStr.trim();
+                fechaHasta = LocalDate.parse(fechaHastaStr, formatter).atTime(23, 59, 59);
+            }
+
+            // Llamar al servicio con los filtros
             response.put("data", contratoService.listarFiltrados(activo, estado, fechaDesde, fechaHasta, cliente, tipoContrato));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
@@ -72,7 +87,7 @@ public class ContratoControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("{id}")
     public ResponseEntity<Map<String, Object>> obtenerContratos(@PathVariable Integer id) {
         try {
@@ -89,7 +104,7 @@ public class ContratoControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> nuevoContrato(@RequestBody Contrato contrato) {
         try {
@@ -97,7 +112,7 @@ public class ContratoControlador {
             Inmueble inmueble = inmuebleService.obtener(contrato.getInmueble().getId()).orElse(null);
             Cliente cliente = clienteService.obtener(contrato.getCliente().getId()).orElse(null);
             Usuario agente = usuarioService.obtener(contrato.getAgente().getId()).orElse(null);
-            
+
             if (inmueble == null) {
                 response.put("data", "No se encontro el inmueble");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -125,19 +140,19 @@ public class ContratoControlador {
                 contrato.setTipoCliente(EnumTipoCliente.INQUILINO);
                 contrato.generarPagos();
             }
-            
+
             contrato.setEstado(EnumEstadoContrato.PENDIENTE);
             response.put("data", contratoService.guardar(contrato));
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-            
+
         } catch (NumberFormatException e) {
             response.put("error", "Error al procesar la transaccion");
             response.put("mensaje", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
+
     }
-    
+
     @DeleteMapping("{id}")
     public ResponseEntity<Map<String, Object>> eliminar(@PathVariable Integer id) {
         try {
@@ -155,5 +170,5 @@ public class ContratoControlador {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
 }
