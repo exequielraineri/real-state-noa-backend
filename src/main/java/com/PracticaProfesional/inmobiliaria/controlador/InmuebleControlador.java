@@ -17,8 +17,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import org.hibernate.HibernateException;
@@ -158,7 +158,7 @@ public class InmuebleControlador {
             @PathVariable(name = "idInmueble") Integer id,
             @RequestParam(name = "imagenes") MultipartFile[] imagenes) {
         LocalDateTime fechaRegistro = LocalDateTime.now();
-        SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
         Path directorioPath = Paths.get(RUTA_IMAGENES);
         try {
             response = new HashMap<>();
@@ -179,14 +179,14 @@ public class InmuebleControlador {
 
             inmueble.getImagenes().clear();
             for (MultipartFile image : imagenes) {
-                String nombreImagen = sf.format(fechaRegistro) + "_" + image.getOriginalFilename();
+                String nombreImagen = dtf.format(fechaRegistro) + "_" + image.getOriginalFilename();
                 Path rutaImagen = directorioPath.resolve(nombreImagen);
 
                 Files.write(rutaImagen, image.getBytes());
 
                 Imagen imagen = new Imagen();
                 imagen.setActivo(true);
-                imagen.setNombre(sf.format(fechaRegistro) + "_" + image.getOriginalFilename());
+                imagen.setNombre(dtf.format(fechaRegistro) + "_" + image.getOriginalFilename());
                 inmueble.addImagen(imagen);
             }
             inmueble = inmuebleServicio.guardar(inmueble);

@@ -202,8 +202,7 @@ public class Contrato implements Serializable {
     }
 
     private void generarPagoVentasCoutas() {
-        LocalDateTime fechaPago;
-        fechaPago = fechaContrato;
+        LocalDateTime fechaPago = fechaContrato;
         Pago pagoInicial = new Pago();
         pagoInicial.setFechaPago(fechaPago);
         BigDecimal porcentaje = getEntrega().divide(BigDecimal.valueOf(100));
@@ -226,8 +225,7 @@ public class Contrato implements Serializable {
 
     public void generarPagosVentas() {
         pagos.clear();
-        LocalDateTime fechaPago;
-        fechaPago = fechaContrato;
+        LocalDateTime fechaPago = fechaContrato;
         setearImporte();
         if (this.frecuenciaPago == EnumFrecuenciaPago.UNICO_PAGO) {
             generarPagoUnico(fechaPago);
