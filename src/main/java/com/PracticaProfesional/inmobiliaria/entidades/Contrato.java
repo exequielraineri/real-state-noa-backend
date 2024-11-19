@@ -44,6 +44,7 @@ public class Contrato implements Serializable {
     private Integer id;
 
     @Column(name = "tipo_contrato", nullable = false)
+    @Enumerated(EnumType.STRING)
     private EnumTipoContrato tipoContrato;
 
     @Column(name = "fecha_contrato", nullable = false)

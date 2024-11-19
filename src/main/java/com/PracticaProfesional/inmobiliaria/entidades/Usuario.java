@@ -13,7 +13,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -111,5 +113,4 @@ public class Usuario implements Serializable {
     private boolean activo;
 
     private BigDecimal totalGanancias = BigDecimal.ZERO;
-
 }

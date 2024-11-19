@@ -46,26 +46,13 @@ public class TransaccionControlador {
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(required = false, name = "estado", defaultValue = "true") boolean estado,
-            @RequestParam(required = false, name = "fechaDesde") String fechaDesdeStr,
-            @RequestParam(required = false, name = "fechaHasta") String fechaHastaStr,
+            @RequestParam(required = false, name = "fechaDesde") LocalDateTime fechaDesde,
+            @RequestParam(required = false, name = "fechaHasta") LocalDateTime fechaHasta,
             @RequestParam(required = false, name = "tipoTransaccion") String TipoTransaccion,
             @RequestParam(required = false, name = "tipoOperacion") String TipoOperacion
     ) {
         try {
             response = new HashMap<>();
-             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-            LocalDateTime fechaDesde = null;
-            LocalDateTime fechaHasta = null;
-
-            // Limpiar las fechas eliminando espacios y saltos de línea
-            if (fechaDesdeStr != null && !fechaDesdeStr.isEmpty()) {
-                fechaDesdeStr = fechaDesdeStr.trim();
-                fechaDesde = LocalDate.parse(fechaDesdeStr, formatter).atStartOfDay();
-            }
-            if (fechaHastaStr != null && !fechaHastaStr.isEmpty()) {
-                fechaHastaStr = fechaHastaStr.trim();
-                fechaHasta = LocalDate.parse(fechaHastaStr, formatter).atTime(23, 59, 59);
-            }
             response.put("data", tranService.listarFiltrado(estado, fechaDesde, fechaHasta, TipoOperacion, TipoTransaccion));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

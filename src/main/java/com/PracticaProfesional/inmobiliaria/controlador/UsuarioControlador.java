@@ -7,6 +7,7 @@ package com.PracticaProfesional.inmobiliaria.controlador;
 import com.PracticaProfesional.inmobiliaria.entidades.Usuario;
 import com.PracticaProfesional.inmobiliaria.servicios.UsuarioServicios;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,8 @@ public class UsuarioControlador {
             @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo) {
         try {
             response = new HashMap<>();
-            response.put(("data"), userService.listarFiltrado(provincia, activo));
+            List<Usuario> listarFiltrado = userService.listarFiltrado(provincia, activo);
+            response.put(("data"), listarFiltrado);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             response.put("error", e.getMessage());

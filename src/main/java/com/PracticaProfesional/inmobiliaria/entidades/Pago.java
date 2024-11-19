@@ -47,8 +47,8 @@ public class Pago implements Serializable {
     @Column(name = "monto")
     private BigDecimal monto;
 
-    @Column(name = "interes")
-    private BigDecimal interes;
+    @Column(name = "gananciaAgente")
+    private BigDecimal gananciaAgente;
 
     @Column(name = "estado", nullable = false)
     private String estado;
@@ -87,6 +87,7 @@ public class Pago implements Serializable {
                 gananciasPorPagos = BigDecimal.ZERO;
             }
         }
+        this.gananciaAgente=gananciasPorPagos;
         agente.setTotalGanancias(agente.getTotalGanancias().add(gananciasPorPagos));
     }
 

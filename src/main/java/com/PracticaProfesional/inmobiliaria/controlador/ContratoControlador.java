@@ -57,28 +57,14 @@ public class ContratoControlador {
     @GetMapping
     public ResponseEntity<Map<String, Object>> listar(
             @RequestParam(required = false, name = "estado") EnumEstadoContrato estado,
-            @RequestParam(required = false, name = "fechaDesde") String fechaDesdeStr,
-            @RequestParam(required = false, name = "fechaHasta") String fechaHastaStr,
+            @RequestParam(required = false, name = "fechaDesde") LocalDateTime fechaDesde,
+            @RequestParam(required = false, name = "fechaHasta") LocalDateTime fechaHasta,
             @RequestParam(required = false, name = "cliente") Integer cliente,
             @RequestParam(required = false, name = "tipoContrato") EnumTipoContrato tipoContrato,
             @RequestParam(required = false, name = "activo", defaultValue = "true") boolean activo) {
 
         response = new HashMap<>();
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-            LocalDateTime fechaDesde = null;
-            LocalDateTime fechaHasta = null;
-
-            // Limpiar las fechas eliminando espacios y saltos de línea
-            if (fechaDesdeStr != null && !fechaDesdeStr.isEmpty()) {
-                fechaDesdeStr = fechaDesdeStr.trim();
-                fechaDesde = LocalDate.parse(fechaDesdeStr, formatter).atStartOfDay();
-            }
-            if (fechaHastaStr != null && !fechaHastaStr.isEmpty()) {
-                fechaHastaStr = fechaHastaStr.trim();
-                fechaHasta = LocalDate.parse(fechaHastaStr, formatter).atTime(23, 59, 59);
-            }
-
             response.put("data", contratoService.listarFiltrados(activo, estado, fechaDesde, fechaHasta, cliente, tipoContrato));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
