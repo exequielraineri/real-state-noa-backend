@@ -1,0 +1,33 @@
+version: '2.1'
+
+services:
+  api_inmobiliaria:
+    build: .
+    ports:
+      - 9595:9595
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/inmobiliaria
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - database
+    networks:
+      - red_inmobiliaria
+
+  database:
+    image: mysql:latest
+    restart: always
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: inmobiliaria
+    ports:
+      - 3307:3306  # Mapea el puerto local 3307 al puerto 3306 del contenedor
+    volumes:
+      - /home/usuario/Documents/vol:/var/lib/mysql
+    networks:
+      - red_inmobiliaria
+
+networks:
+  red_inmobiliaria:
+    driver: bridge

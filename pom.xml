@@ -89,5 +89,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>api-inmobiliaria</finalName>
     </build>
 </project>
