@@ -1,10 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
@@ -13,18 +8,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- *
- * @author Sofia
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
@@ -79,22 +68,16 @@ public class Usuario implements Serializable {
     @Column(name = "comision_alquiler", nullable = false)
     private BigDecimal comisionAlquiler;
 
-    //@JsonManagedReference(value = "agente-transacciones")
     @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Transaccion> transacciones = new ArrayList<>();
 
-    //@JsonManagedReference(value = "agente-contratos")
+   
     @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
     @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
-    //@JsonManagedReference(value = "agente-consultas")
-    @JsonIgnore
-    @JsonIgnoreProperties(value = {"agente"}, allowSetters = true)
-    @OneToMany(mappedBy = "agente", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Consulta> consultas = new ArrayList<>();
-
+   
     public void agregarTransaccion(Transaccion transaccion) {
         transacciones.add(transaccion);
         transaccion.setAgente(this);
@@ -103,11 +86,6 @@ public class Usuario implements Serializable {
     public void agregarContrato(Contrato contrato) {
         contratos.add(contrato);
         contrato.setAgente(this);
-    }
-
-    public void agregarConsulta(Consulta consulta) {
-        consultas.add(consulta);
-        consulta.setAgente(this);
     }
 
     private boolean activo;

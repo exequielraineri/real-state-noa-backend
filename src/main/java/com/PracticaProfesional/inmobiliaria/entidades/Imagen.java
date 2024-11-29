@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,10 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- *
- *
- */
+
 @Entity
 @Table(name = "imagen")
 @Getter
@@ -33,7 +26,6 @@ public class Imagen implements Serializable {
     @Column(name = "nombre")
     private String nombre;
 
-    //@JsonBackReference(value = "inmueble-imagenes")
     @JsonIgnoreProperties(value = {"imagenes"}, allowSetters = true)
     @ManyToOne
     @JoinColumn(name = "id_inmueble")

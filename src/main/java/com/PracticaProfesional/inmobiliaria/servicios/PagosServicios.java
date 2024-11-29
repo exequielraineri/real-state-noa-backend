@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PracticaProfesional.inmobiliaria.servicios;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Pago;
@@ -9,17 +5,13 @@ import com.PracticaProfesional.inmobiliaria.interfaz.PagosInterface;
 import com.PracticaProfesional.inmobiliaria.repository.PagosInterfaceRepo;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author Sofia
- */
+
 @Service
 public class PagosServicios implements PagosInterface {
 

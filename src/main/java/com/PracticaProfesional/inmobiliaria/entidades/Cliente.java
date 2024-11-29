@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -27,10 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- *
- *
- */
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
@@ -67,23 +60,16 @@ public class Cliente implements Serializable {
 
     private boolean activo;
 
-    //@JsonManagedReference(value = "propietario-inmuebles")
     @JsonIgnoreProperties(value = {"propietario"}, allowSetters = true)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "propietario", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Inmueble> inmuebles = new ArrayList<>();
 
     
-
-    //@JsonManagedReference(value = "cliente-contratos")
     @JsonIgnoreProperties(value = {"cliente"}, allowSetters = true)
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
-    //@JsonManagedReference(value = "cliente-consultas")
-    @JsonIgnore
-    @JsonIgnoreProperties(value = {"cliente"}, allowSetters = true)
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Consulta> consultas = new ArrayList<>();
+   
 
     public void agregarInmueble(Inmueble inmueble) {
         inmuebles.add(inmueble);
@@ -95,9 +81,6 @@ public class Cliente implements Serializable {
         contrato.setCliente(this);
     }
 
-    public void agregarConsulta(Consulta consulta) {
-        consultas.add(consulta);
-        consulta.setCliente(this);
-    }
+   
 
 }

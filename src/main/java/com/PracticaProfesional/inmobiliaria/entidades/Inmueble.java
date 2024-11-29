@@ -18,10 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- *
- *
- */
+
 @Getter
 @Setter
 @Data
@@ -42,8 +39,6 @@ public class Inmueble implements Serializable {
     private String titulo;
 
     private boolean activo;
-    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    //@JsonBackReference(value = "propietario-inmuebles")
     @JsonIgnoreProperties(value = {"inmuebles", "consultas","contratos"}, allowSetters = true)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_propietario")
@@ -106,22 +101,15 @@ public class Inmueble implements Serializable {
     private boolean vidrieraCalle;
     private boolean venta;
 
-    //@JsonManagedReference(value = "inmueble-contratos")
     @JsonIgnoreProperties(value = {"inmueble"}, allowSetters = true)
     @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contrato> contratos = new ArrayList<>();
 
-    //@JsonManagedReference(value = "inmueble-imagenes")
     @JsonIgnoreProperties(value = {"inmueble"}, allowSetters = true)
     @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Imagen> imagenes = new ArrayList<>();
 
-    //@JsonManagedReference(value = "inmueble-consultas")
-    @JsonIgnore
-    @JsonIgnoreProperties(value = {"inmueble"}, allowSetters = true)
-    @OneToMany(mappedBy = "inmueble", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Consulta> consultas = new ArrayList<>();
-
+   
     // Métodos para agregar/quitar imágenes
     public void addImagen(Imagen imagen) {
         imagenes.add(imagen);

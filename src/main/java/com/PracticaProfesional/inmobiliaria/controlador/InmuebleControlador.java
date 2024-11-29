@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PracticaProfesional.inmobiliaria.controlador;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Cliente;
@@ -42,10 +38,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- *
- * @author Sofia
- */
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("inmuebles")
@@ -293,7 +286,6 @@ public class InmuebleControlador {
         viejo.setImpInmobiliarios(nuevo.getImpInmobiliarios());
         viejo.setImpMunicipales(nuevo.getImpMunicipales());
         viejo.setMts2(nuevo.getMts2());
-        //viejo.setPropietario(nuevo.getPropietario());
         viejo.setVidrieraCalle(nuevo.isVidrieraCalle());
         viejo.setVenta(nuevo.isVenta());
         viejo.setTipoOperacion(nuevo.getTipoOperacion());

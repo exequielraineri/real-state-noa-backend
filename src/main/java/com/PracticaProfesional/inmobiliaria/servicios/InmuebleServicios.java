@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PracticaProfesional.inmobiliaria.servicios;
 
 import com.PracticaProfesional.inmobiliaria.entidades.Inmueble;
@@ -15,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-/**
- *
- *
- */
+
 @Service
 public class InmuebleServicios implements InmuebleInterface {
 

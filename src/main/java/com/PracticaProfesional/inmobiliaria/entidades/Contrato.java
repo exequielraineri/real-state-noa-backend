@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.PracticaProfesional.inmobiliaria.entidades;
 
 import com.PracticaProfesional.inmobiliaria.entidades.util.EnumEstadoContrato;
@@ -24,10 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- *
- *
- */
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
@@ -89,12 +82,10 @@ public class Contrato implements Serializable {
     @JoinColumn(name = "id_agente")
     private Usuario agente;
 
-    //@JsonManagedReference(value = "contrato-pagos")
     @JsonIgnoreProperties(value = {"contrato"}, allowSetters = true)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "contrato", fetch = FetchType.LAZY)
     private List<Pago> pagos = new ArrayList<>();
 
-    //@JsonManagedReference(value = "contrato-notificaciones")
     @JsonIgnoreProperties(value = {"contrato"}, allowSetters = true)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contrato", orphanRemoval = true)
     private List<Notificacion> notificaciones = new ArrayList<>();
