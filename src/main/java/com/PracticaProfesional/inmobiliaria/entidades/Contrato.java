@@ -86,10 +86,7 @@ public class Contrato implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "contrato", fetch = FetchType.LAZY)
     private List<Pago> pagos = new ArrayList<>();
 
-    @JsonIgnoreProperties(value = {"contrato"}, allowSetters = true)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contrato", orphanRemoval = true)
-    private List<Notificacion> notificaciones = new ArrayList<>();
-
+  
     //controlar las bajas logicas
     private boolean activo;
     private BigDecimal entrega;
@@ -100,11 +97,7 @@ public class Contrato implements Serializable {
         pago.setContrato(this);
     }
 
-    public void agregarNotificacion(Notificacion notificacion) {
-        notificaciones.add(notificacion);
-        notificacion.setContrato(this);
-    }
-
+  
     public int getCantidadPagos() {
         return pagos.size();
     }
